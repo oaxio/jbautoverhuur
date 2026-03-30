@@ -1,22 +1,15 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
-import { getOidcConfig, sessionOptions } from '../../../lib/auth';
-import * as client from 'openid-client';
+import { sessionOptions } from '../../../lib/auth';
 
-export async function GET(request) {
+export async function GET() {
+  // Destroy the local session cookie — no need to hit Replit's OIDC end-session
   const session = await getIronSession(cookies(), sessionOptions);
   session.destroy();
   await session.save();
 
-  try {
-    const config = await getOidcConfig();
-    const logoutUrl = client.buildEndSessionUrl(config, {
-      client_id: process.env.REPL_ID,
-      post_logout_redirect_uri: new URL('/', request.url).href,
-    });
-    return NextResponse.redirect(logoutUrl.href);
-  } catch {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
+  const dest = domain ? `https://${domain}/` : '/';
+  return NextResponse.redirect(dest);
 }

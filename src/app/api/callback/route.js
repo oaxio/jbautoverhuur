@@ -4,7 +4,6 @@ import { getIronSession } from 'iron-session';
 import { sessionOptions } from '../../../lib/auth';
 
 const TOKEN_ENDPOINT = 'https://replit.com/oidc/token';
-const USERINFO_ENDPOINT = 'https://replit.com/oidc/userinfo';
 
 export async function GET(request) {
   const url = new URL(request.url);
@@ -47,21 +46,26 @@ export async function GET(request) {
     return NextResponse.redirect(loginDest);
   }
 
-  // Fetch user info
-  const userRes = await fetch(USERINFO_ENDPOINT, {
-    headers: { Authorization: `Bearer ${tokenData.access_token}` },
-  });
-  const userInfo = await userRes.json();
-  console.log('[callback] userInfo keys:', Object.keys(userInfo));
+  // Decode the ID token JWT to get user claims (we trust Replit's signed response)
+  let claims = {};
+  if (tokenData.id_token) {
+    try {
+      const payload = tokenData.id_token.split('.')[1];
+      claims = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
+    } catch (e) {
+      console.error('[callback] failed to decode id_token:', e.message);
+    }
+  }
+  console.log('[callback] claims keys:', Object.keys(claims));
 
   // Store session
   const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
-    id: userInfo.sub ?? userInfo.id ?? null,
-    email: userInfo.email ?? null,
-    firstName: userInfo.first_name ?? userInfo.given_name ?? null,
-    lastName: userInfo.last_name ?? userInfo.family_name ?? null,
-    profileImageUrl: userInfo.profile_image_url ?? userInfo.picture ?? null,
+    id: claims.sub ?? null,
+    email: claims.email ?? null,
+    firstName: claims.first_name ?? claims.given_name ?? null,
+    lastName: claims.last_name ?? claims.family_name ?? null,
+    profileImageUrl: claims.profile_image_url ?? claims.picture ?? null,
   };
   await session.save();
 
