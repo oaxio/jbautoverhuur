@@ -88,11 +88,10 @@ export default function RootLayout({ children }) {
                 </p>
                 <button
                   onClick={() => {
-                    // /api/auth/start redirects server-side to the correct
-                    // Replit domain URL before starting OAuth, so PKCE cookies
-                    // and the callback always share the same origin.
-                    // We open a new tab to avoid iframe cross-origin issues.
-                    window.open('/api/auth/start', '_blank', 'noopener');
+                    // Use the absolute app URL so the browser can reach it
+                    // even when the preview pane loads via http://0.0.0.0:5000.
+                    const base = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                    window.open(`${base}/api/login`, '_blank', 'noopener');
                   }}
                   style={{
                     display: 'block',
