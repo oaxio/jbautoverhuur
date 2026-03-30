@@ -121,9 +121,12 @@ export default function CreateContract() {
     fetch('/api/tenant/settings', { credentials: 'include' })
       .then(r => r.ok ? r.json() : {})
       .then(data => {
-        if (data.name) setTenantName(data.name);
-        if (data.contract_terms) setContractTerms(data.contract_terms);
+        if (data.name)            setTenantName(data.name);
+        if (data.contract_terms)  setContractTerms(data.contract_terms);
         if (data.contract_bullets) setContractBullets(data.contract_bullets);
+        if (data.primary_color)   setTenantPrimaryColor(data.primary_color);
+        if (data.bg_color)        setTenantBgColor(data.bg_color);
+        if (data.logo_url)        setTenantLogoUrl(data.logo_url);
       })
       .catch(() => {});
   }, []);
@@ -190,6 +193,9 @@ export default function CreateContract() {
   const [contractTerms, setContractTerms] = useState('');
   const [contractBullets, setContractBullets] = useState('');
   const [tenantName, setTenantName] = useState('');
+  const [tenantPrimaryColor, setTenantPrimaryColor] = useState('#e8b84b');
+  const [tenantBgColor, setTenantBgColor] = useState('#0a0a14');
+  const [tenantLogoUrl, setTenantLogoUrl] = useState('');
 
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
@@ -249,6 +255,9 @@ export default function CreateContract() {
         contractTerms:       contractTerms,
         contractBullets:     contractBullets,
         tenantName:          tenantName,
+        primaryColor:        tenantPrimaryColor,
+        bgColor:             tenantBgColor,
+        logoUrl:             tenantLogoUrl,
       });
 
       const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
