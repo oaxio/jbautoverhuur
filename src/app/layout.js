@@ -78,31 +78,35 @@ export default function RootLayout({ children }) {
   const hasTenants = tenants.length > 0;
   const hasTenant = !!user?.tenantId;
 
-  // Is the user a member of the domain's tenant?
-  const isDevMode = domainTenant?.dev === true; // Replit dev URL or localhost
-  const isLockedToDomain = !isDevMode && domainTenant !== null; // null = unknown/prod domain, object with id = custom domain
-  const isMemberOfDomainTenant = isLockedToDomain
-    ? tenants.some(t => t.id === domainTenant?.id)
-    : true; // Dev mode or generic URL — no domain restriction
+  // Domain access logic — three distinct cases after loading:
+  //   isDevMode   → Replit dev URL or localhost, no restrictions
+  //   domainTenant?.id → registered custom domain, check membership
+  //   domainTenant === null → unrecognised prod domain, block
+  const isDevMode = domainTenant?.dev === true;
+  const isCustomDomain = !isDevMode && !!domainTenant?.id;
+  const isUnknownProdDomain = !isDevMode && domainTenant === null;
+  const isMemberOfDomainTenant = isCustomDomain
+    ? tenants.some(t => t.id === domainTenant.id)
+    : true;
 
-  // Determine which blocking case applies (only for authenticated users)
-  const noTenantAccess = isAuthenticated && !hasTenants; // logged in but no memberships at all
-  const domainAccessDenied = isAuthenticated && isLockedToDomain && !isMemberOfDomainTenant; // wrong domain
+  // Blocking conditions (authenticated users only)
+  const noTenantAccess = isAuthenticated && !hasTenants;
+  const domainAccessDenied = isAuthenticated && isCustomDomain && !isMemberOfDomainTenant;
 
-  // Redirect to tenant-select only when: auth, has tenants, no active tenant chosen, generic URL, not already there
+  // Redirect to tenant-select when: auth, has tenants, no active tenant, not on custom domain, not already there
   useEffect(() => {
     if (
       isAuthenticated &&
       hasTenants &&
       !hasTenant &&
-      !isLockedToDomain &&
+      !isCustomDomain &&
       !isTenantSelect &&
       !isPublicPage &&
       !isAdminPage
     ) {
       window.location.href = '/tenant-select';
     }
-  }, [isAuthenticated, hasTenants, hasTenant, isLockedToDomain, isTenantSelect, isPublicPage, isAdminPage]);
+  }, [isAuthenticated, hasTenants, hasTenant, isCustomDomain, isTenantSelect, isPublicPage, isAdminPage]);
 
   const domainColor = domainTenant?.primary_color ?? '#e8b84b';
 
@@ -182,8 +186,8 @@ export default function RootLayout({ children }) {
     content = children;
   } else if (isLoading) {
     content = spinner;
-  } else if (!isLockedToDomain) {
-    // Not on a registered custom domain — no access at all
+  } else if (isUnknownProdDomain) {
+    // Unrecognised production domain — block entirely
     content = (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
         <div className="glass-card" style={{ width: '100%', maxWidth: '380px', padding: '2.5rem 2rem', textAlign: 'center' }}>
