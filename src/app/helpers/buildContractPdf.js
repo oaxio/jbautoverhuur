@@ -82,6 +82,7 @@ export async function buildContractPdf({
   bedrijfTelefoon = '',
   bedrijfEmail = '',
   bedrijfWebsite = '',
+  bedrijfKvk = '',
 } = {}) {
 
   const btw = parseFloat(btwPercentage) || 21;
@@ -142,6 +143,7 @@ export async function buildContractPdf({
     bedrijfTelefoon ? `Tel: ${bedrijfTelefoon}` : '',
     bedrijfEmail,
     bedrijfWebsite,
+    bedrijfKvk ? `KVK: ${bedrijfKvk}` : '',
   ].map(s => sanitize(s || '')).filter(Boolean).join('   |   ');
 
   // ── Header (reused for terms pages) ──
@@ -322,7 +324,7 @@ export async function buildContractPdf({
 
   const halfW     = (W - M * 2 - 16) / 2;
   const col2start = M + halfW + 16;
-  const imgAreaH  = 95;   // taller for the car diagram
+  const imgAreaH  = 130;  // vierkant schadeplaatje (626×626) past hier: 130×130pt gecentreerd
 
   txt(p1, 'Handtekening huurder/bestuurder', M, y, { size: 7.5, f: bold });
   txt(p1, 'Schaderapport', col2start, y, { size: 7.5, f: bold });
@@ -373,9 +375,9 @@ export async function buildContractPdf({
     const pageTop = H - 72;                  // y where text starts (20pt below 52pt header)
     const bottomY = M + 16;
 
-    const BODY_SIZE   = 6.5;
-    const HEAD_SIZE   = 7.5;
-    const BODY_LEAD   = 8.5;
+    const BODY_SIZE   = 6;
+    const HEAD_SIZE   = 7;
+    const BODY_LEAD   = 8;
 
     let tp, col, ty;
 

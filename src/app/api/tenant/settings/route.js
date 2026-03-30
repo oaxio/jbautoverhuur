@@ -19,7 +19,7 @@ export async function GET() {
     const result = await db.query(
       `SELECT id, name, primary_color, bg_color, bg_image_url, logo_url,
               contract_terms, contract_bullets,
-              bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website
+              bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website, bedrijf_kvk
        FROM tenants WHERE id = $1`,
       [tenantId]
     );
@@ -41,7 +41,7 @@ export async function PUT(request) {
     const {
       primary_color, bg_color, bg_image_url, logo_url,
       contract_terms, contract_bullets,
-      bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website,
+      bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website, bedrijf_kvk,
     } = await request.json();
 
     const db = getDb();
@@ -57,11 +57,12 @@ export async function PUT(request) {
            bedrijf_telefoon  = COALESCE($9, bedrijf_telefoon),
            bedrijf_email     = COALESCE($10, bedrijf_email),
            bedrijf_website   = COALESCE($11, bedrijf_website),
+           bedrijf_kvk       = COALESCE($12, bedrijf_kvk),
            updated_at        = NOW()
        WHERE id = $7
        RETURNING id, name, primary_color, bg_color, bg_image_url, logo_url,
                  contract_terms, contract_bullets,
-                 bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website`,
+                 bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website, bedrijf_kvk`,
       [
         primary_color || null,
         bg_color || null,
@@ -74,6 +75,7 @@ export async function PUT(request) {
         bedrijf_telefoon !== undefined ? bedrijf_telefoon : null,
         bedrijf_email !== undefined ? bedrijf_email : null,
         bedrijf_website !== undefined ? bedrijf_website : null,
+        bedrijf_kvk !== undefined ? bedrijf_kvk : null,
       ]
     );
 

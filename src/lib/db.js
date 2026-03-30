@@ -36,6 +36,7 @@ export async function initDb() {
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_telefoon TEXT DEFAULT ''`);
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_email TEXT DEFAULT ''`);
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_website TEXT DEFAULT ''`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_kvk TEXT DEFAULT ''`);
 
   await db.query(`
     INSERT INTO tenants (name, slug, primary_color)

@@ -131,6 +131,7 @@ export default function CreateContract() {
         if (data.bedrijf_telefoon) setBedrijfTelefoon(data.bedrijf_telefoon);
         if (data.bedrijf_email)    setBedrijfEmail(data.bedrijf_email);
         if (data.bedrijf_website)  setBedrijfWebsite(data.bedrijf_website);
+        if (data.bedrijf_kvk)      setBedrijfKvk(data.bedrijf_kvk);
       })
       .catch(() => {});
   }, []);
@@ -204,6 +205,7 @@ export default function CreateContract() {
   const [bedrijfTelefoon, setBedrijfTelefoon] = useState('');
   const [bedrijfEmail, setBedrijfEmail] = useState('');
   const [bedrijfWebsite, setBedrijfWebsite] = useState('');
+  const [bedrijfKvk, setBedrijfKvk] = useState('');
 
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
@@ -236,8 +238,8 @@ export default function CreateContract() {
       // Combineer damage-car.jpg achtergrond + getekende markeringen tot één PNG
       let damageData = null;
       try {
-        // Canvas-afmetingen matchen de PDF-verhouding (~252 × 95pt → 480 × 181px)
-        const CW = 480, CH = 181;
+        // damage-car.jpg is 626×626 (vierkant) — export ook vierkant, zodat auto niet uitrekt
+        const CW = 300, CH = 300;
         const offscreen = document.createElement('canvas');
         offscreen.width  = CW;
         offscreen.height = CH;
@@ -303,6 +305,7 @@ export default function CreateContract() {
         bedrijfTelefoon:     bedrijfTelefoon,
         bedrijfEmail:        bedrijfEmail,
         bedrijfWebsite:      bedrijfWebsite,
+        bedrijfKvk:          bedrijfKvk,
       });
 
       const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -601,8 +604,8 @@ export default function CreateContract() {
         <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
           <div className="section-header">🖊 Schaderapport — teken op de auto</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {/* Vaste canvas 480×181px — zelfde 2.65:1 verhouding als het PDF-vak */}
-            <div style={{ position: 'relative', width: 480, height: 181 }}>
+            {/* Vierkante canvas 300×300 — zelfde verhouding als damage-car.jpg (626×626) */}
+            <div style={{ position: 'relative', width: 300, height: 300 }}>
               <img
                 src="/damage-car.jpg"
                 alt="auto schadetekening"
@@ -612,8 +615,8 @@ export default function CreateContract() {
                 ref={sigCanvasDamage}
                 penColor="red"
                 canvasProps={{
-                  width: 480,
-                  height: 181,
+                  width: 300,
+                  height: 300,
                   className: 'signature-canvas',
                   style: { background: 'transparent', position: 'absolute', inset: 0, zIndex: 1 },
                 }}

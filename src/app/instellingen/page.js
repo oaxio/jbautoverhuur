@@ -85,6 +85,7 @@ export default function InstellingenPage() {
     bedrijf_telefoon: '',
     bedrijf_email: '',
     bedrijf_website: '',
+    bedrijf_kvk: '',
   });
   const [original, setOriginal] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -108,6 +109,7 @@ export default function InstellingenPage() {
           bedrijf_telefoon: data.bedrijf_telefoon || '',
           bedrijf_email: data.bedrijf_email || '',
           bedrijf_website: data.bedrijf_website || '',
+          bedrijf_kvk: data.bedrijf_kvk || '',
         };
         setForm(vals);
         setOriginal(vals);
@@ -291,6 +293,7 @@ export default function InstellingenPage() {
                 { key: 'bedrijf_telefoon', label: 'Telefoonnummer', placeholder: '+31 6 12345678' },
                 { key: 'bedrijf_email',    label: 'E-mailadres',   placeholder: 'info@jouwbedrijf.nl' },
                 { key: 'bedrijf_website',  label: 'Website',       placeholder: 'www.jouwbedrijf.nl' },
+                { key: 'bedrijf_kvk',      label: 'KVK-nummer',    placeholder: '12345678' },
               ].map(({ key, label, placeholder }) => (
                 <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>
