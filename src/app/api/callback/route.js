@@ -14,9 +14,13 @@ export async function GET(request) {
   const codeVerifier = request.cookies.get('oidc_verifier')?.value;
   const callbackUrl = request.cookies.get('oidc_callback')?.value;
 
-  // Derive the public base URL from the stored callback URL or env var
+  // Derive the public base URL from the stored callbackUrl cookie — this
+  // already contains the correct domain the user came from (set by /api/login).
+  // Only fall back to REPLIT_DOMAINS if the cookie is missing.
   const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
-  const publicBase = domain ? `https://${domain}` : (callbackUrl ? new URL(callbackUrl).origin : null);
+  const publicBase = callbackUrl
+    ? new URL(callbackUrl).origin
+    : (domain ? `https://${domain}` : null);
 
   if (!code || !storedState || !codeVerifier || returnedState !== storedState) {
     const loginDest = publicBase ? `${publicBase}/api/login` : '/api/login';
