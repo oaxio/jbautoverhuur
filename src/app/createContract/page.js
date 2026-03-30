@@ -31,7 +31,7 @@ function Field({ label, value, onChange, type }) {
       value={value}
       type={type || 'text'}
       onChange={(e) => onChange(e.target.value)}
-      InputLabelProps={{ shrink: type === 'date' || type === 'time' ? true : undefined }}
+      InputLabelProps={{ shrink: type === 'date' || type === 'time' || type === 'datetime-local' ? true : undefined }}
     />
   )
 }
