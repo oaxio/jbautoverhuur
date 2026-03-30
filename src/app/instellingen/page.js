@@ -65,7 +65,8 @@ export default function InstellingenPage() {
       if (!res.ok) throw new Error(data.error || 'Opslaan mislukt');
       setOriginal(form);
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      // Reload after short delay so the layout picks up the updated session branding
+      setTimeout(() => window.location.reload(), 1200);
     } catch (e) {
       setError(e.message);
     }

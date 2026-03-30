@@ -49,7 +49,20 @@ export async function PUT(request) {
        RETURNING id, name, primary_color, bg_color, bg_image_url, logo_url`,
       [primary_color || null, bg_color || null, bg_image_url ?? null, logo_url ?? null, tenantId]
     );
-    return NextResponse.json(result.rows[0]);
+
+    const updated = result.rows[0];
+
+    // Update the session tenants array so the layout picks up the new branding immediately
+    if (session.tenants) {
+      session.tenants = session.tenants.map(t =>
+        t.id === tenantId
+          ? { ...t, primary_color: updated.primary_color, bg_color: updated.bg_color, bg_image_url: updated.bg_image_url, logo_url: updated.logo_url }
+          : t
+      );
+      await session.save();
+    }
+
+    return NextResponse.json(updated);
   } catch (e) {
     console.error('[tenant settings PUT]', e);
     return NextResponse.json({ error: 'Serverfout' }, { status: 500 });
