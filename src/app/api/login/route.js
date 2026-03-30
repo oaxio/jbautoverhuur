@@ -9,9 +9,23 @@ export async function GET(request) {
   const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier);
   const state = client.randomState();
 
-  const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
-  // Never use request.url here — it contains the internal 0.0.0.0:5000 address.
-  const baseUrl = domain ? `https://${domain}` : new URL(request.url).origin.replace('http://0.0.0.0', 'https://localhost').replace('http://127.0.0.1', 'https://localhost');
+  // Detect the domain the user is actually visiting from via headers.
+  // request.url resolves to 0.0.0.0:5000 internally, so we rely on
+  // X-Forwarded-Host / Host headers set by the Replit proxy instead.
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const hostHeader = request.headers.get('host');
+  const allowedDomains = (process.env.REPLIT_DOMAINS ?? '').split(',').map(d => d.trim()).filter(Boolean);
+  const firstDomain = allowedDomains[0];
+
+  // Use the forwarded/host header if it matches a known Replit domain,
+  // otherwise fall back to the first entry in REPLIT_DOMAINS.
+  const requestHost = forwardedHost || hostHeader || '';
+  const isKnownDomain = allowedDomains.includes(requestHost) ||
+    requestHost.endsWith('.replit.dev') ||
+    requestHost.endsWith('.replit.app');
+  const domain = isKnownDomain ? requestHost : firstDomain;
+
+  const baseUrl = domain ? `https://${domain}` : 'https://localhost:5000';
   const callbackUrl = `${baseUrl}/api/callback`;
 
   const authUrl = client.buildAuthorizationUrl(config, {
