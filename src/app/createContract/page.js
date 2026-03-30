@@ -1,9 +1,9 @@
 "use client"
 import Link from 'next/link';
 import { TextField, Button } from "@mui/material"
-import defaultPdfString from "../helpers/defaultPdfString";
 import defaultPdfFactureString from "../helpers/defaultPdfFactureString"
 import { PDFDocument } from 'pdf-lib';
+import { buildContractPdf } from '../helpers/buildContractPdf';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import SignatureCanvas from 'react-signature-canvas'
@@ -117,6 +117,15 @@ export default function CreateContract() {
         }
       }
     }).catch(() => {});
+
+    fetch('/api/tenant/settings', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : {})
+      .then(data => {
+        if (data.name) setTenantName(data.name);
+        if (data.contract_terms) setContractTerms(data.contract_terms);
+        if (data.contract_bullets) setContractBullets(data.contract_bullets);
+      })
+      .catch(() => {});
   }, []);
 
   const generateIntakeLink = async () => {
@@ -177,6 +186,11 @@ export default function CreateContract() {
     setLoadingIntake(false);
   };
 
+  const [opmerkingen, setOpmerkingen] = useState('');
+  const [contractTerms, setContractTerms] = useState('');
+  const [contractBullets, setContractBullets] = useState('');
+  const [tenantName, setTenantName] = useState('');
+
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
   const [btwPercentage, setBtwPercentage] = useState('21');
@@ -202,65 +216,48 @@ export default function CreateContract() {
   const printToPdf = async () => {
     setGenerating(true);
     setOpen(true);
+    try {
+      const sigData    = sigCanvas.current?.isEmpty?.()      ? null : sigCanvas.current?.toDataURL('image/png');
+      const damageData = sigCanvasDamage.current?.isEmpty?.() ? null : sigCanvasDamage.current?.toDataURL('image/png');
 
-    const originalBytes = defaultPdfString;
-    const btw = parseFloat(btwPercentage) || 21;
-    var autoPrijs = (TarievenAuto * DagenAuto).toFixed(2).toString();
-    var prijsBtw = ((autoPrijs / (100 + btw)) * btw).toFixed(2).toString();
-    var prijsExcBtw = (autoPrijs - prijsBtw).toFixed(2).toString();
+      const pdfBytes = await buildContractPdf({
+        voornaam:            Voornaam,
+        achternaam:          Achternaam,
+        email:               Email,
+        telefoon:            Telefoon,
+        geboortedatum:       Geboortedatum,
+        straatnaam:          Straatnaam,
+        postcodeWoonplaats:  PostcodeWoonplaats,
+        documentnummer:      Documentnummer,
+        rijbewijsAfgifteDatum: RijbewijsAfgifteDatum,
+        ophaaldatum:         Ophaaldatum,
+        ophaaltijd:          OphaalTijd,
+        retourdatum:         RetourDatum,
+        retourtijd:          RetourTijd,
+        autogegevens:        Autogegevens,
+        kenteken:            Kenteken,
+        kleur:               Kleur,
+        brandstof:           Brandstof,
+        startKmStand:        startKmStand,
+        tarief:              TarievenAuto,
+        dagen:               DagenAuto,
+        btwPercentage:       btwPercentage,
+        borgVoldaanDatum:    borgVoldaanDatum,
+        opmerkingen:         opmerkingen,
+        handtekeningDataUrl:       sigData,
+        handtekeningSchadeDataUrl: damageData,
+        contractTerms:       contractTerms,
+        contractBullets:     contractBullets,
+        tenantName:          tenantName,
+      });
 
-    const pdfDoc = await PDFDocument.load(originalBytes)
-    const pages = pdfDoc.getPages()
-    const firstPage = pages[0]
-
-    const pngImage = await pdfDoc.embedPng(sigCanvas.current.toDataURL('image/png'));
-    const pngDims = pngImage.scale(0.15);
-    const pngImageDamage = await pdfDoc.embedPng(sigCanvasDamage.current.toDataURL('image/png'));
-
-    firstPage.drawImage(pngImage, { x: 60, y: 120, width: pngDims.width, height: pngDims.height })
-    firstPage.drawText(disclaimer, {
-      x: 70,
-      y: 113,
-      size: 6.5,
-    })
-    firstPage.drawImage(pngImageDamage, { x: 95, y: 220, width: 160, height: 160 })
-
-    firstPage.drawText(Voornaam, { x: 135, y: 632, size: 10 })
-    firstPage.drawText(Achternaam, { x: 135, y: 620, size: 10 })
-    firstPage.drawText(fmtDate(Geboortedatum), { x: 135, y: 608, size: 10 })
-    firstPage.drawText(Email, { x: 135, y: 596, size: 10 })
-    firstPage.drawText(Telefoon, { x: 135, y: 584, size: 10 })
-    firstPage.drawText(Straatnaam, { x: 420, y: 633, size: 10 })
-    firstPage.drawText(PostcodeWoonplaats, { x: 420, y: 619, size: 10 })
-    firstPage.drawText(Documentnummer, { x: 420, y: 607, size: 10 })
-    firstPage.drawText(fmtDate(RijbewijsAfgifteDatum), { x: 420, y: 594, size: 10 })
-    firstPage.drawText(fmtDate(Ophaaldatum), { x: 150, y: 550, size: 10 })
-    firstPage.drawText(OphaalTijd, { x: 150, y: 537, size: 10 })
-    firstPage.drawText(fmtDate(RetourDatum), { x: 395, y: 550, size: 10 })
-    firstPage.drawText(RetourTijd, { x: 395, y: 537, size: 10 })
-    firstPage.drawText(Autogegevens, { x: 80, y: 491, size: 10 })
-    firstPage.drawText(Kenteken, { x: 280, y: 670, size: 10 })
-    firstPage.drawText(Kenteken, { x: 170, y: 491, size: 10 })
-    firstPage.drawText(Kleur, { x: 260, y: 491, size: 10 })
-    firstPage.drawText(Brandstof, { x: 350, y: 491, size: 10 })
-    firstPage.drawText(startKmStand, { x: 440, y: 491, size: 10 })
-    firstPage.drawText(TarievenAuto, { x: 80, y: 430, size: 10 })
-    firstPage.drawText(DagenAuto, { x: 145, y: 430, size: 10 })
-    firstPage.drawText(autoPrijs, { x: 210, y: 430, size: 10 })
-    firstPage.drawText(prijsExcBtw, { x: 275, y: 430, size: 10 })
-    firstPage.drawText(btwPercentage, { x: 340, y: 430, size: 10 })
-    firstPage.drawText(prijsBtw, { x: 400, y: 430, size: 10 })
-    firstPage.drawText(autoPrijs, { x: 465, y: 430, size: 10 })
-    firstPage.drawText(prijsExcBtw, { x: 483, y: 375, size: 10 })
-    firstPage.drawText(prijsBtw, { x: 483, y: 352, size: 10 })
-    firstPage.drawText(autoPrijs, { x: 483, y: 329, size: 10 })
-    firstPage.drawText(fmtDateTime(borgVoldaanDatum), { x: 477, y: 283, size: 8 })
-    firstPage.drawText(autoPrijs, { x: 483, y: 258, size: 10 })
-
-    const pdfBytes = await pdfDoc.saveAsBase64()
-    const binaryData = new Uint8Array(atob(pdfBytes).split('').map(c => c.charCodeAt(0)));
-    const pdfBlob = new Blob([binaryData], { type: 'application/pdf' });
-    setUrl(URL.createObjectURL(pdfBlob));
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      setUrl(URL.createObjectURL(pdfBlob));
+    } catch (e) {
+      console.error('[PDF gen]', e);
+      alert('Fout bij genereren contract: ' + e.message);
+      setOpen(false);
+    }
     setGenerating(false);
   };
 
@@ -517,6 +514,35 @@ export default function CreateContract() {
           <Field label="Borg voldaan (datum + tijd)" value={borgVoldaanDatum} onChange={setborgVoldaanDatum} type="datetime-local" />
           <Field label="Factuurnummer" value={orderNummer} onChange={setOrderNummer} />
         </SectionCard>
+
+        <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
+          <div className="section-header" style={{ marginBottom: '0.75rem' }}>📝 Opmerkingen</div>
+          <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)', margin: '0 0 0.85rem', lineHeight: 1.5 }}>
+            Contractspecifieke opmerkingen — komen terecht in het contract (veld "Opmerkingen").
+          </p>
+          <textarea
+            value={opmerkingen}
+            onChange={e => setOpmerkingen(e.target.value)}
+            rows={4}
+            placeholder="Bijv: Sleutels overhandigd om 09:00 uur. Kleine kras links achter reeds aanwezig voor verhuur."
+            style={{
+              width: '100%',
+              boxSizing: 'border-box',
+              background: 'rgba(0,0,0,0.3)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 10,
+              color: 'rgba(255,255,255,0.88)',
+              padding: '0.85rem 1rem',
+              fontSize: '0.88rem',
+              outline: 'none',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              lineHeight: 1.6,
+            }}
+            onFocus={e => { e.target.style.borderColor = 'rgba(232,184,75,0.4)'; }}
+            onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; }}
+          />
+        </div>
 
         <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
           <div className="section-header">🖊 Schaderapport — teken op de auto</div>

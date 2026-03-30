@@ -29,8 +29,59 @@ function ColorPicker({ label, value, onChange }) {
   );
 }
 
+function TextAreaField({ label, hint, value, onChange, rows = 6, placeholder = '' }) {
+  const lines = (value || '').split('\n').length;
+  const chars = (value || '').length;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>
+          {label}
+        </label>
+        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
+          {lines} regel{lines !== 1 ? 's' : ''} · {chars} tekens
+        </span>
+      </div>
+      {hint && (
+        <p style={{ margin: 0, fontSize: '0.77rem', color: 'rgba(255,255,255,0.28)', lineHeight: 1.5 }}>
+          {hint}
+        </p>
+      )}
+      <textarea
+        value={value || ''}
+        onChange={e => onChange(e.target.value)}
+        rows={rows}
+        placeholder={placeholder}
+        style={{
+          background: 'rgba(0,0,0,0.35)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 10,
+          color: 'rgba(255,255,255,0.88)',
+          padding: '0.85rem 1rem',
+          fontSize: '0.83rem',
+          outline: 'none',
+          resize: 'vertical',
+          fontFamily: 'ui-monospace, "Cascadia Code", "Source Code Pro", monospace',
+          lineHeight: 1.6,
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+        onFocus={e => { e.target.style.borderColor = 'rgba(232,184,75,0.4)'; }}
+        onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; }}
+      />
+    </div>
+  );
+}
+
 export default function InstellingenPage() {
-  const [form, setForm] = useState({ primary_color: '#e8b84b', bg_color: '#0a0a14', bg_image_url: '', logo_url: '' });
+  const [form, setForm] = useState({
+    primary_color: '#e8b84b',
+    bg_color: '#0a0a14',
+    bg_image_url: '',
+    logo_url: '',
+    contract_bullets: '',
+    contract_terms: '',
+  });
   const [original, setOriginal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,7 +93,14 @@ export default function InstellingenPage() {
       .then(r => r.json())
       .then(data => {
         if (data.error) { setError(data.error); return; }
-        const vals = { primary_color: data.primary_color || '#e8b84b', bg_color: data.bg_color || '#0a0a14', bg_image_url: data.bg_image_url || '', logo_url: data.logo_url || '' };
+        const vals = {
+          primary_color: data.primary_color || '#e8b84b',
+          bg_color: data.bg_color || '#0a0a14',
+          bg_image_url: data.bg_image_url || '',
+          logo_url: data.logo_url || '',
+          contract_bullets: data.contract_bullets || '',
+          contract_terms: data.contract_terms || '',
+        };
         setForm(vals);
         setOriginal(vals);
       })
@@ -65,7 +123,6 @@ export default function InstellingenPage() {
       if (!res.ok) throw new Error(data.error || 'Opslaan mislukt');
       setOriginal(form);
       setSaved(true);
-      // Reload after short delay so the layout picks up the updated session branding
       setTimeout(() => window.location.reload(), 1200);
     } catch (e) {
       setError(e.message);
@@ -73,27 +130,53 @@ export default function InstellingenPage() {
     setSaving(false);
   };
 
-  const isDirty = original && (
-    form.primary_color !== original.primary_color ||
-    form.bg_color !== original.bg_color ||
-    form.bg_image_url !== original.bg_image_url ||
-    form.logo_url !== original.logo_url
-  );
+  const isDirty = original && Object.keys(form).some(k => form[k] !== original[k]);
 
   const primaryColor = form.primary_color || GOLD;
   const bgColor = form.bg_color || '#0a0a14';
 
+  const SaveBar = () => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingTop: '0.5rem' }}>
+      <button
+        onClick={save}
+        disabled={saving || !isDirty}
+        style={{
+          background: isDirty ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}bb)` : 'rgba(255,255,255,0.08)',
+          color: isDirty ? '#000' : 'rgba(255,255,255,0.3)',
+          fontWeight: 700, fontSize: '0.9rem',
+          padding: '0.65rem 1.75rem', borderRadius: 10, border: 'none',
+          cursor: isDirty && !saving ? 'pointer' : 'not-allowed',
+          transition: 'all 0.2s',
+        }}
+      >
+        {saving ? 'Opslaan…' : 'Opslaan'}
+      </button>
+      {saved && (
+        <span style={{ color: '#50c878', fontSize: '0.85rem', fontWeight: 600 }}>
+          ✓ Opgeslagen
+        </span>
+      )}
+      {isDirty && !saving && (
+        <button
+          onClick={() => setForm(original)}
+          style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.83rem', cursor: 'pointer', padding: '0.4rem 0.75rem' }}
+        >
+          Annuleren
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <div style={{ minHeight: '100vh', paddingTop: '5rem', paddingBottom: '3rem', padding: '5rem 1rem 3rem' }}>
-      <div style={{ maxWidth: 560, margin: '0 auto' }}>
+      <div style={{ maxWidth: 720, margin: '0 auto' }}>
 
-        {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ color: 'white', fontWeight: 800, fontSize: '1.5rem', margin: '0 0 0.3rem' }}>
             Instellingen
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.88rem', margin: 0 }}>
-            Pas de huisstijl van je portaal aan
+            Pas de huisstijl en contractteksten van je portaal aan
           </p>
         </div>
 
@@ -108,17 +191,12 @@ export default function InstellingenPage() {
             <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
               <p className="section-header" style={{ marginBottom: '1rem' }}>Voorbeeld</p>
               <div style={{
-                borderRadius: 12,
-                overflow: 'hidden',
+                borderRadius: 12, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.1)',
                 backgroundImage: form.bg_image_url ? `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%), url(${form.bg_image_url})` : undefined,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                backgroundSize: 'cover', backgroundPosition: 'center',
                 background: !form.bg_image_url ? `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)` : undefined,
-                padding: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
+                padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem',
               }}>
                 {form.logo_url ? (
                   <img src={form.logo_url} alt="logo" style={{ height: 40, maxWidth: 120, objectFit: 'contain', borderRadius: 4 }} onError={e => { e.target.style.display = 'none'; }} />
@@ -143,8 +221,8 @@ export default function InstellingenPage() {
               </div>
             </div>
 
-            {/* Form */}
-            <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Huisstijl */}
+            <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <p className="section-header" style={{ marginBottom: 0 }}>Huisstijl</p>
 
               <ColorPicker label="Accentkleur" value={form.primary_color} onChange={set('primary_color')} />
@@ -188,35 +266,43 @@ export default function InstellingenPage() {
                 </p>
               )}
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingTop: '0.25rem' }}>
-                <button
-                  onClick={save}
-                  disabled={saving || !isDirty}
-                  style={{
-                    background: isDirty ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}bb)` : 'rgba(255,255,255,0.08)',
-                    color: isDirty ? '#000' : 'rgba(255,255,255,0.3)',
-                    fontWeight: 700, fontSize: '0.9rem',
-                    padding: '0.65rem 1.75rem', borderRadius: 10, border: 'none',
-                    cursor: isDirty && !saving ? 'pointer' : 'not-allowed',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {saving ? 'Opslaan…' : 'Opslaan'}
-                </button>
-                {saved && (
-                  <span style={{ color: '#50c878', fontSize: '0.85rem', fontWeight: 600 }}>
-                    ✓ Opgeslagen
-                  </span>
-                )}
-                {isDirty && !saving && (
-                  <button
-                    onClick={() => setForm(original)}
-                    style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.83rem', cursor: 'pointer', padding: '0.4rem 0.75rem' }}
-                  >
-                    Annuleren
-                  </button>
-                )}
+              <SaveBar />
+            </div>
+
+            {/* Contract teksten */}
+            <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <p className="section-header" style={{ marginBottom: '0.25rem' }}>Contractteksten</p>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.3)', lineHeight: 1.5 }}>
+                  Deze teksten worden opgenomen in elk gegenereerd huurcontract.
+                </p>
               </div>
+
+              <TextAreaField
+                label="Bulletpoints (Voorwaarden — pagina 1)"
+                hint="Elke regel is een bulletpoint onderaan het contract. Leeg laten voor de ingebouwde standaardtekst."
+                rows={8}
+                value={form.contract_bullets}
+                onChange={set('contract_bullets')}
+                placeholder={`Eigen risico per gebeurtenis: EUR 5.000,-\nBorg: EUR 2.500,-\nExtra kilometers a EUR 1,- per km\nRoken verboden - bij constatering EUR 250,-\nTe laat inleveren: EUR 100,- per uur\nAuto vuil ingeleverd: EUR 25,- schoonmaakkosten`}
+              />
+
+              <TextAreaField
+                label="Algemene Voorwaarden (pagina 2 van het contract)"
+                hint="Volledige tekst van de algemene voorwaarden. Regels die beginnen met 'ARTIKEL' worden als kopje opgemaakt. Leeg laten om geen tweede pagina toe te voegen."
+                rows={22}
+                value={form.contract_terms}
+                onChange={set('contract_terms')}
+                placeholder={`ARTIKEL 1 TOEPASSELIJKHEID\nDeze Algemene Voorwaarden zijn van toepassing op alle overeenkomsten van huur en verhuur van voertuigen...\n\nARTIKEL 2 HET AANBOD\n1. Verhuurder brengt een aanbod schriftelijk of mondeling uit...\n\n...`}
+              />
+
+              {error && (
+                <p style={{ color: '#ff7070', fontSize: '0.83rem', margin: 0, background: 'rgba(255,80,80,0.08)', padding: '0.6rem 0.8rem', borderRadius: 8 }}>
+                  {error}
+                </p>
+              )}
+
+              <SaveBar />
             </div>
           </>
         )}

@@ -27,7 +27,7 @@ Staff use this app to:
   - `autos/` — Vehicle management (add, edit, delete saved vehicles)
   - `toegang-geweigerd/` — Access denied page
   - `components/` — Reusable components (header, etc.)
-  - `helpers/` — PDF template base64 strings
+  - `helpers/` — PDF builder (buildContractPdf.js — programmatic, no base64 template) + invoice base64 string
   - `api/cars/` — CRUD API for saved vehicles
   - `api/auth/` — Auth config and user endpoints
   - `api/login/`, `api/callback/`, `api/logout/` — OIDC auth flow

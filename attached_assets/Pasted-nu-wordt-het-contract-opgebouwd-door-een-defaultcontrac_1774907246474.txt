@@ -1,0 +1,313 @@
+nu wordt het contract opgebouwd door een defaultcontractpdf base 64 string, eigenlijk wil ik dit om laten bouwen door jou, zodat we een eigen generieke contract opbouwen.
+
+De volgende informstie moet erop komen
+
+Brandstof Begin KM-stand
+Kilometer Extra kilometer Prijs per kilometer BTW% BTW€ Totaal
+Huurder/bestuurder
+Voornaam:
+Autogegevens Kenteken Kleur
+Tarief Dagen Prijs BTW (%) BTW (€) Totaal
+Opmerkingen:
+Handtekening huurder/bestuurder:
+Subtotaal excl. BTW
+€
+€
+Subtotaal
+€
+Borg voldaan op (datum/tijd)
+Totaal €
+Schade
+* Eigen risico per gebeurtenis is €5000,- (afhankelijk van de auto kan dit bedrag oplopen tot €10000,-)
+* Indien er extra kilometers worden gereden, hanteren wij een tarief van €1 per extra gereden kilometer
+* Niet rokers auto verboden te roken in het voertuig. Bij constatering wordt er €250,- in rekening gebracht
+* Indien de auto te laat wordt ingeleverd, hanteren wij een tarief van €100,- per uur
+* Bij het terug brengen van een auto die niet schoon is, wordt er €25,- in rekening gebracht
+Prijs berekening
+Koperhoek 78B
+Tel: +31629409255
+E-mail: jbautoverhuur@gmail.com
+Excl BTW
+BTW bedrag
+Huurcontract
+KENTEKEN:
+Website: jb-autoverhuur.nl
+jbautoverhuur
+* De borg is €2500,- (afhankelijk van de auto kan dit bedrag oplopen tot €5000,-)
+Straatnaam en huisnummer:
+Achternaam:
+Email:
+Telefoon:
+Geboortedatum:
+Postcode/Woonplaats:
+Document/BSN nummer:
+Rijbewijs afgifte datum:
+Reservering
+Ophaaldatum:
+Ophaaltijd:
+Retourdatum:
+Retourtijd:
+3162LA Rhoon
+21
+KVK: 75849402
+€15000,-)
+Door te tekenen gaat u akkoord met de algemene voorwaarden.
+30-03-2026
+23:45
+0.00 0.00 21 0.00 0.00
+0.00
+0.00
+0.00
+30-03-2026 23:45
+0.00
+ARTIKEL 1 TOEPASSELIJKHEID
+Deze Algemene Voorwaarden zijn van toepassing op alle overeenkomsten van huur en verhuur van voertuigen, inclusief eventuele
+accessoires die tussen verhuurder en huurder worden afgesloten.
+ARTIKEL 2 HET AANBOD
+1. Verhuurder brengt een aanbod schriftelijk of mondeling uit naar keuze van de huurder.
+2. Het aanbod is gedurende 14 dagen onherroepelijk behalve in het geval van onvoldoende beschikbaarheid.
+3. Het aanbod bevat een volledige en nauwkeurige omschrijving van de huurtermijn, de huursom, mogelijk bijkomende kosten en de
+waarborgsom.
+5. Het aanbod vermeldt de wijze van betaling en de wijze van zekerheidstelling.
+6. Het aanbod gaat indien redelijkerwijs mogelijk vergezeld van deze Algemene Voorwaarden, mits niet mogelijk wordt deze Algemene
+Voorwaarden bij het te sluiten overeenkomst alsnog ter hand gesteld.
+ARTIKEL 3 DE OVEREENKOMST
+1. De overeenkomst komt tot stand door aanvaarding van het aanbod, een mondelinge overeenkomst dient ten alle tijden schriftelijk te
+worden bevestigd door de verhuurder.
+2. De huurovereenkomst wordt aangegaan voor de periode en het tarief zoals op de huurovereenkomst is vermeld of anderszins
+overeengekomen. De huurovereenkomst vermeldt tevens het tijdstip van begin en einde van de huurperiode.
+ARTIKEL 4 DE PRIJS EN EVENTUELE WIJZIGINGEN HIERVAN
+1. De huursom en de eventuele bijkomende kostenelementen zoals prijs per kilometer worden vooraf overeengekomen evenals de
+eventuele bevoegdheid tot tussentijdse prijswijziging. De verhuurder draagt er zorg voor dat de huursom op duidelijke wijze op de
+huurovereenkomst vermeld staat.
+2. Als binnen drie maanden na het sluiten van de overeenkomst een prijswijziging optreedt, zal deze geen invloed hebben op de
+overeengekomen prijs. De huurder heeft recht op ontbinding van de overeenkomst als na drie maanden na het sluiten van de
+overeenkomst maar voordat de huurperiode is aangevangen de prijs wordt verhoogd, tenzij bij de overeenkomst bedongen is dat de
+huurperiode later dan drie maanden na de overeenkomst zal aanvangen.
+3. Het tweede lid is niet van toepassing op prijswijzigingen die uit de wet voortvloeien zoals die ter zake van de BTW.
+4. Vaststelling van het aantal gereden kilometers geschiedt aan de hand van de kilometerteller en de GPS-tracker (die ook
+kilometerstanden bijhoudt en dit automatisch verwerkt). Bij defect van deze twee instrumenten zal het aantal gereden kilometers op
+de meest gerede wijze worden vastgesteld.
+5. Gedurende de huurperiode zijn de aan het gebruik van het voertuig verbonden kosten zoals, tolgelden, Eurovignet en de kosten voor
+brandstof, reiniging en parkeren voor rekening van de huurder.
+6. Onverminderd dienst gehoudenheid tot schadevergoeding indien daartoe gronden bestaan, kunnen huurder geen kosten in rekening
+gebracht worden die niet overeengekomen zijn.
+ARTIKEL 5 DE HUURPERIODE EN OVERSCHRIJDING VAN DE HUURPERIODE
+1. Huurder is verplicht het voertuig uiterlijk op de dag en op het tijdstip waarop de huurperiode eindigt, aan de vestiging van JB Car
+Fleet B.V. in te leveren. Verhuurder is verplicht het voertuig, tijdens openingstijden in ontvangst te nemen.
+2. Het voertuig mag slechts met toestemming van de verhuurder worden teruggebracht buiten de reguliere openingstijden en/of op
+een andere plaats dan de vestiging van JB Car Fleet B.V.
+3. Afspraken over het eerder terugbrengen van het voertuig binnen de overeengekomen huurperiode zijn vrijblijvend.
+4. Indien het voertuig niet na afloop van de eventuele verlengde huurovereenkomst is ingeleverd op de afgesproken wijze, is
+verhuurder gerechtigd het voertuig onmiddellijk terug te nemen. De uit deze overeenkomst voortvloeiende verplichtingen van huurder
+blijven van kracht tot het moment dat het voertuig weer in het bezit is van verhuurder.
+5. Indien huurder het voertuig niet tijdig heeft ingeleverd, is verhuurder gerechtigd 10% van de dagprijs in rekening te brengen voor elk
+uur waarmee de huurperiode wordt overschreden. Na overschrijding met 3 uur kan per dag tot 1½ keer de daghuurprijs in rekening
+gebracht worden onverminderd de verplichting van huurder tot vergoeding van door verhuurder geleden en te lijden schade. Als het
+feitelijk blijvend onmogelijk is om het voertuig te retourneren dan wordt geen verhoogde huurprijs in rekening gebracht. De verhoging
+van de huurprijs geldt niet indien huurder aantoont dat de overschrijding van de huurtermijn het gevolg is van overmacht.
+ARTIKEL 6 ANNULERING
+1. Indien een overeenkomst wordt geannuleerd, is de huurder een door de verhuurder te bepalen bedrag schuldig, dit hangt onder meer
+van de periode tussen de reservering en annulering af. Bij aanbetalingen wordt het ingenomen indien wagen wordt geannuleerd bij een
+reservering.
+ARTIKEL 7 BETALING
+1. Alleen voor huurovereenkomsten waarvan de huurperiode binnen drie maanden aanvangt, kan vooruitbetaling tot 50% van de
+huursom worden gevraagd. Bij aanvang van de huurperiode kan betaling van een waarborgsom worden verlangd.
+2. De waarborgsom wordt geretourneerd onder verrekening van de nog openstaande kosten zodra het voertuig is ingeleverd, tenzij er
+sprake is van schade van het voertuig. In geval van schade aan het voertuig wordt de waarborgsom geretourneerd voor zover deze het
+bedrag waarvoor huurder aansprakelijk is, niet overschrijdt. Deze retournering zal plaatsvinden zodra duidelijk is dat van een dergelijke
+overschrijding sprake is. Indien er slechts sprake is van schade aan het voertuig, zal de retournering in ieder geval plaatsvinden binnen
+2 maanden; indien er (ook) sprake is van schade aan derden, binnen 6 maanden.
+3. In geval de schade van de verhuurder is veroorzaakt door derden en verhuurder de schade volledig op deze derden verhaald heeft,
+zal de waarborgsom binnen 14 dagen na het verhaal van de schade worden geretourneerd. Verhuurder zal zich inspannen om schade
+veroorzaakt door derden zo spoedig mogelijk te verhalen. De verhuurder houdt de huurder op de hoogte van de ontwikkelingen.
+4. Tenzij anders is overeengekomen, dient betaling van de huursom onmiddellijk na afloop van de huurperiode te geschieden, betaling
+van andere bedragen dient te geschieden binnen 14 dagen na ontvangst van de betreffende factuur. Bij niet betaling is huurder van
+rechtswege in verzuim, vanaf de datum van verzuim is huurder over het openstaande bedrag de wettelijke rente voor
+niet-handelsovereenkomsten verschuldigd. Huurder is daarentegen gehouden tot betaling van de kosten die verhuurder maakt ten
+behoeve van incasso.
+ARTIKEL 8 VERPLICHTINGEN HUURDER
+1. Huurder dient met het voertuig om te gaan zoals een goed huurder betaamt en ervoor te zorgen dat het voertuig overeenkomstig
+zijn bestemming wordt gebruikt. Zo is het huurder verboden het voertuig te gebruiken om een circuit dan wel op een terrein waarvoor
+het voertuig niet geschikt is of op een terrein waarvan huurder of bestuurder te kennen is gegeven dat betreding daarvan op eigen
+risico is.
+2. Huurder is verplicht het voertuig in oorspronkelijke staat bij verhuurder terug te bezorgen. Dit houdt onder meer in dat huurder
+verplicht is eventuele door of namens hem aangebrachte veranderingen en toevoegingen aan het voertuig ongedaan te maken, en wel
+in een zodanige mate dat hij het voertuig weer in de oorspronkelijke staat bij verhuurder kan inleveren. Huurder kan hiervoor geen
+enkel recht op vergoeding doen gelden.
+3. Alleen personen in de huurovereenkomst als bestuurder zijn aangeduid, mogen het voertuig besturen. Het is huurder niet
+toegestaan het voertuig ter beschikking te stellen aan een persoon die niet als bestuurder is vermeld op de overeenkomst. Bij
+constatering hiervan zal de gehele borg bij huurder in rekening worden gebracht. Huurder dient er zorgvuldig op te zien geen van de in
+de huurovereenkomst als bestuurder aangeduide personen het voertuig bestuurt indien deze daartoe onbevoegd is of kennelijk
+geestelijk of lichamelijk ongeschikt is.
+4. Het is huurder niet toegestaan het voertuig door te verhuren aan derden.
+5. Het is huurder niet toegestaan het voertuig te gebruiken voor rijles of voor vervoer van personen en/of goederen tegen betaling
+anders dan ten behoeve van ‘carpooling’ of met het voertuig wedstrijden, snelheids-, rijvaardigheids-, of betrouwbaarheidsproeven te
+houden.
+6. Het is huurder niet toegestaan het voertuig buiten de landsgrenzen van Nederland te brengen, tenzij schriftelijk anders is
+overeengekomen met verhuurder.
+7. In geval van voor huurder kenbare of waarneembare schade of defecten aan het voertuig, is het huurder niet toegestaan het voertuig
+zodanig te gebruiken dat dit kan leiden tot verergering van de schade of defecten of tot vermindering van de verkeersveiligheid.
+8. Huurder is verplicht de verplichtingen en verboden van dit artikel op te leggen aan bestuurder, passagiers en andere gebruikers van
+het voertuig en toe te zien op de nakoming daarvan.
+8.1. Huurder dient onder meer zorgvuldig om te gaan met de bij het voertuig behorende sleutels, de bediening van de alarminstallatie
+en de bij het voertuig behorende documenten.
+ARTIKEL 9 INSTRUCTIES VOOR DE HUURDER
+1. Huurder dient het oliepeil en de bandenspanning op niveau te (laten) houden en dient gevolg te geven aan een oproep van
+verhuurder om het voertuig voor onderhoud aan te bieden. Een dergelijke oproep van verhuurder zal zo tijdig gedaan worden dat
+huurder daaraan redelijkerwijs kan voldoen. Bij huurperioden van een maand of korter zal verhuurder niet verplichten het voertuig voor
+regulier onderhouden aan te bieden. Vervangend vervoer zal kosteloos aan huurder verstrekt worden indien het oorspronkelijk gehuurd
+voertuig voor reguliere onderhoud door verhuurder ingenomen wordt.
+2. Huurder is verplicht het voertuig schoon in te leveren. Bij niet-nakoming van de verplichting zullen er schoonmaakkosten van
+minimaal 30 euro in rekening gebracht worden.
+3. Huurder dient de door verhuurder aangegeven voor het voertuig geschikte brandstof te tanken met, indien vereist, de door
+verhuurder aangegeven vereiste toevoegingen.
+4. In geval van voor huurder kenbare of waarneembare defecten, schade aan of met het voertuig toegebracht of vermissing van het
+voertuig is huurder verplicht:
+- hier zo spoedig mogelijk melding van te maken;
+- de instructies van verhuurder op te volgen;
+- gevraagd en ongevraagd alle inlichtingen en bescheiden die op de gebeurtenis betrekking hebben aan verhuurder of aan diens
+verzekeraar te verstrekken;
+- het voertuig niet achter te laten zonder het behoorlijk tegen het risico van beschadiging of vermissing beschermd te hebben;
+- de verhuurder en door de verhuurder aangewezen personen alle gevraagde medewerking te verlenen ter verkrijging van
+schadevergoeding van derden of als verweer tegen aanspraken van derden.
+5. Bij ongevallen, beschadiging of vermissing is huurder daarnaast verplicht;
+- hiervan melding te doen bij de politie ter plaatse;
+- zo spoedig mogelijk een volledig ingevuld en ondertekend schadeaangifteformulier aan verhuurder over te leggen;
+- zich van erkenning van schuld in enigerlei vorm te onthouden.
+6. Huurder is verplicht de verplichtingen en verboden van dit artikel op de leggen aan bestuurder, passagiers en andere gebruikers van
+het voertuig en toe te zien op de nakoming daarvan.
+7. Huurder dient verhuurder zo spoedig mogelijk te informeren over:
+- verstoring van de werking van de kilometerteller en de snelheidsbegrenzer zodra huurder er redelijkerwijs vanuit mag gaan dat er
+sprake is van een verstoring;
+- verbreking van het verzegelpan van het brandstoftoevoersysteem zodra huurder redelijkerwijs vanuit mag gaan dat er sprake is van
+een verbreking;
+- het optreden van een gebeurtenis waardoor schade aan, met of door het voertuig ontstaat of redelijkerwijs kan ontstaan;
+- het optreden van een gebeurtenis waardoor schade aan, met of door het voertuig ontstaat of redelijkerwijs kan ontstaan;
+- defect raken van het voertuig;
+- vermissing van of anderszins verlies van de macht over het voertuig, onderdelen en toebehoren daarvan;
+- beslaglegging op het voertuig; en over andere omstandigheden waarover verhuurder redelijkerwijs geïnformeerd dient te worden.
+8. Indien verhuurder inlichtingen aan autoriteiten dient te verstrekken over de identiteit van de persoon die op enig moment het
+voertuig heeft bestuurd of gebruikt, dient huurder in verband daarmee gestelde vragen van verhuurder zo spoedig mogelijk te
+beantwoorden.
+ARTIKEL 10 VERPLICHTINGEN VERHUURDER
+1. De verhuurder levert het voertuig met de overeengekomen accessoires en specificaties en voorzien van de in Nederland verplichte
+uitrusting, schoon, goed onderhouden en voor zover verhuurder kenbaar is of zou moeten zijn, in technisch goede staat af.
+2. Verhuurder stelt samen met huurder voorafgaand aan de verhuur een rapport op waarbij eventuele schade die zich al aan het
+voertuig bevindt, wordt aangegeven.
+3. Verhuurder overhandigt huurder voorafgaand aan de huurperiode de vereiste documenten.
+4. Verhuurder vermeldt duidelijk op de auto bij voorkeur in de nabijheid van de brandstofvulopening welk type brandstof plus eventuele
+toevoegingen voor het voertuig moet worden gebruikt.
+5. Verhuurder draagt zorg voor adequate pechhulp zowel in Nederland als in het buitenland. Pechhulp in het buitenland geldt alleen als
+is afgesproken dat het voertuig ook in het buitenland gebruikt mag worden.
+6. Indien pech het gevolg is van eigen schuld, dan worden de kosten van de hulp niet door verhuurder vergoed.
+7. Verhuurder inspecteert het voertuig direct bij inlevering door huurder op eventuele schade. Dit geldt zowel bij inlevering van het
+voertuig bij de eigen vestiging als bij inlevering van het voertuig op een andere locatie.
+ARTIKEL 11 AANSPRAKELIJKHEID VAN DE HUURDER VOOR SCHADE
+1. Huurder is in geval van schade van de verhuurder per schadegeval aansprakelijk tot het op het huurcontract vermelde eigen risico.
+2. Indien de schade evenwel is ontstaan ten gevolge van handelen of nalaten in strijd met artikel 8, is huurder volledig aansprakelijk
+voor schade van de verhuurder, tenzij hij bewijst dat dit handelen of nalaten hem niet toerekenbaar is of volledige vergoeding naar de
+maatstaven van redelijkheid en billijkheid onaanvaardbaar zou zijn.
+3. Indien het voertuig met toestemming van de verhuurder wordt teruggebracht buiten de openingstijden van de verhuurder en/of op
+een nader overeengekomen plaats niet zijnde de bedrijfslocatie van de verhuurder ter beschikking wordt gesteld voor afhalen door de
+verhuurder, blijft huurder overeenkomstig het eerste of tweede lid aansprakelijk voor de schade van de verhuurder ontstaan tot het
+tijdstip waarop verhuurder feitelijk het voertuig heeft geïnspecteerd of heeft laten inspecteren en in zijn bezit heeft. Verhuurder zal in
+de hier genoemde situaties het voertuig bij eerste gelegenheid inspecteren zal huurder direct informeren indien schade is
+geconstateerd.
+4. Voor schade van de verhuurder die bestaat uit vermogensschade ten gevolge van met of door het voertuig aan persoon of goed
+toegebracht nadeel, waarvoor verhuurder, de kentekenhouder of de aansprakelijkheidsverzekeraar van het voertuig jegens derden
+aansprakelijk is, geldt het bepaalde in het tweede lid van dit artikel slechts indien er volgens de voorwaarden van de
+WAM-verzekeringsovereenkomst geen dekking bestaat.
+5. In geval van schade aan het voertuig in het buitenland zijn de kosten van repatriëring van het voertuig voor rekening van verhuurder,
+tenzij het tweede lid van dit artikel van toepassing is.
+6. Huurder is aansprakelijk voor gedragingen en nalaten van de bestuurder, de passagiers en andere gebruikers van het voertuig, ook
+indien deze niet de instemming van huurder hadden.
+ARTIKEL 12 GEBREKEN AAN HET VOERTUIG EN AANSPRAKELIJKHEID VAN DE VERHUURDER
+1. Verhuurder is verplicht op verlangen van huurder gebreken te verhelpen, tenzij dit onmogelijk is of uitgaven vereist die in de gegeven
+omstandigheden redelijkerwijs niet van verhuurder zijn te vergen. Deze verplichting geldt niet indien huurder jegens verhuurder
+aansprakelijk is voor het ontstaan van het gebrek en/of voor het gevolg van het gebrek.
+ARTIKEL 13 OVERHEIDSMAATREGELEN EN INFORMATIE AAN AUTORITEITEN
+1. Voor rekening van huurder zijn alle sancties en gevolgen van maatregelen die in verband met het ter beschikking hebben door
+huurder c.q. gebruiken van het voertuig van overheidswege worden opgelegd, tenzij deze verband houden met een defect dat bij
+aanvang van de huur reeds aanwezig was of de sancties verband houden met omstandigheden die in de risicosfeer van verhuurder
+liggen.
+1.1. Indien deze sancties en maatregelen aan verhuurder worden opgelegd is huurder gehouden verhuurder op diens eerste verzoek
+schadeloos te stellen, waarbij huurder aanvullend de kosten van administratie verschuldigd wordt, met een minimum van €25,-
+(inclusief BTW). Verhuurder dienst die kosten zoveel mogelijk te beperken. Indien verhuurder in verband met enige gedragingen of
+nalaten van huurder, zoals een verkeersovertreding, informatie aan autoriteiten verstrekt, is huurder gehouden de daarmee gepaard
+gaande kosten te vergoeden, met een minimum van €10,- (inclusief BTW).
+1.2. Desgewenst krijgt de huurder een kopie van het officiële document waarmee de sanctie is opgelegd.
+ARTIKEL 14 BESLAG OP HET VOERTUIG
+1. In geval van administratief- , civiel- of strafrechtelijk beslag op het voertuig, wordt de waarborgsom bij huurder in rekening gebracht.
+Huurder blijft gehouden tot nakoming van de verplichtingen van de huurovereenkomst, waaronder die tot betaling van de huursom, tot
+het moment waarop het voertuig vrij van beslag en weer in het bezit van verhuurder is, tenzij het beslag verband houdt met
+omstandigheden die in de risicosfeer van de verhuurder liggen.
+2. Huurder is gehouden verhuurder schadeloos te stellen voor alle uit het beslag voortvloeiende kosten.
+ARTIKEL 15 ONTBINDING VAN DE HUUR
+1. Verhuurder is gerechtigd de huurovereenkomst zonder ingebrekestelling of rechterlijke tussenkomst te beëindigen en zich weer in
+het bezit van het voertuig te stellen onverminderd zijn recht op vergoeding van kosten, schade en rente indien:
+- huurder tijdens de huurperiode een of meer van zijn verplichtingen niet, niet tijdig o niet volledig nakomt tenzij de tekortkoming de
+ontbinding niet rechtvaardigt;
+- huurder overlijdt, onder curatele wordt gesteld, surseance van betaling aanvraagt, in staat van faillissement wordt verklaard, ten
+aanzien van hem de Wet Schuldsanering Natuurlijke Personen van toepassing wordt verklaard;
+- verhuurder van het bestaan van omstandigheden blijkt, die van dien aard zijn dat ware verhuurder hiervan op de hoogte geweest, hij
+de huurovereenkomst niet was aangegaan.
+2. Huurder zal alle medewerking aan verhuurder verlenen om zich weer in het bezit van het voertuig te doen stellen.
+3. Indien huurder overlijdt voordat de huurperiode aanvangt, is de huurovereenkomst zonder ingebrekestelling of rechterlijke
+tussenkomst ontbonden.
+4. Verhuurder is niet aansprakelijk voor schade ten gevolge van ontbinding op grond van dit artikel.
+ARTIKEL 16 VERWERKING VAN PERSOONSGEGEVENS VAN DE HUURDER EN VAN DE BESTUURDER
+1. De persoonsgegevens die worden vermeld op het contract worden door verhuurder als verantwoordelijke in de zin van de Wet
+Bescherming Persoonsgegevens verwerkt in een persoonsregistratie. Aan de hand van de verwerking kan verhuurder uitvoering geven
+aan artikel 13 van daar voorwaarden, de overeenkomst uitvoeren, huurder of bestuurder optimale service en actuele productinformatie
+geven en huurder of bestuurder gepersonaliseerde aanbiedingen doen. De persoonsgegevens kunnen tevens worden doorgegeven
+aan gerechtsdeurwaarders indien sprake is van tanken zonder betaling. Huurder en bestuurder kunnen om inzake en correctie met
+betrekking tot de verwerkte persoonsgegevens verzoeken en verzet aantekenen. Betreft het direct mailing, dan zal het verzet te allen
+tijde worden gehonoreerd.
+ARTIKEL 17 TOEPASSELIJK RECHT
+1. De huurovereenkomst wordt beheerst door Nederlands recht, tenzij op grond van dwingend recht het recht van een ander land van
+toepassing is.
+ARTIKEL 18 HUURVOORWAARDEN
+- JB Car Fleet B.V. behoudt zich te allen tijde het recht, zonder opgaaf van reden, een voertuig niet te verhuren.
+- JB Car Fleet B.V. behoudt zich het recht om prijzen en condities te wijzigen
+- JB Car Fleet B.V. behoudt zich het recht te allen tijde om een gelijkwaardig voertuig te leveren, indien een gereserveerd voertuig niet
+beschikbaar is.
+- JB Car Fleet B.V. is niet aansprakelijk voor diefstal en of verlies van persoonlijke spullen die door de huurder bij het inleveren van het
+voertuig zijn achtergelaten
+- Onder de 18 jaar en of minder dan 1 jaar in het bezit van een rijbewijs wordt er geen auto verhuurd.
+ARTIKEL 19 BETALINGEN, BORGSOM
+- Het huurbedrag dient te allen tijde vooruit betaald te worden indien verplicht samen met de borgsom.
+- De huurder is verplicht een dubbele legitimatie en een post-ID te overleggen, anders kan men geweigerd worden om een voertuig te
+huren.
+- JB Car Fleet B.V. behoudt zich te allen tijde het recht om de huurovereenkomst te ontbinden bij het niet nakomen van
+betalingsverplichtingen en/of regels, alle kosten die hieruit voortvloeien zijn volledig voor rekening van de huurder.
+ARTIKEL 20 HUURPERIODE, VERLENING, INBESLAGNAME
+- Het is alleen mogelijk om het voertuig buiten openingstijden in te leveren indien JB Car Fleet B.V. hier toestemming voor heeft
+gegeven.
+- Alle gehuurde voertuigen dienen voor 14:00 uur verlengd of ingeleverd te worden.
+- Alleen de huurder mag het voertuig inleveren en of verlengen. Het is niet toegestaan een ander dit te laten doen, anders wordt er een
+boete opgelegd ter hoogte van de eigen risico.
+- Het is verboden iemand ander te laten rijden die niet op het contract vermeld staat. Bij constatering hiervan wordt het contract per
+direct opgeheven en wordt de gehele borg in rekening gebracht.
+- Bij inbeslagname van het voertuig wordt er een boete opgelegd ter hoogte van de borg, eventuele ophaalkosten, juridische kosten en
+de huursom tot het voertuig weer in bezit van verhuurder is.
+ARTIKEL 21 VERZEKERING OVERIGE
+- Alle voertuigen zijn WA-CASCO verzekerd en hebben volgens polisvoorwaarden een eigen risico van €2500,- per gebeurtenis.
+- Bij discussie over de schuldvraag is de uitspraak van de verzekeringsmaatschappij bindend.
+- Schade dient binnen 24 uur gemeld te worden en d.m.v. een volledig ingevuld en ondertekend schadeformulier.
+- Indien men geen schade meldt en het voertuig inlevert waardoor wij hier achteraf, aansprakelijk voor worden gesteld, is de huurder
+volledig aansprakelijk voor alle geleden schade en is enkel het eigen risico niet van toepassing.
+- Uitgesloten van verzekering is en waarbij dan ook de volledige schade wordt belast bij:
+○ Schade ten gevolge van verduistering;
+○ Schade ten gevolge van boven de wettelijke toegestane alcoholconsumptie;
+○ Schade ten gevolge van vervoer van verboden middelen;
+○ Schade ten gevolge van diefstal/brandschade;
+○ Schade ten gevolge van het besturen van het voertuig zonder rijbewijs;
+○ Schade ten gevolge van het uitgeven van het voertuig aan mensen die, volgens de
+huurovereenkomst, niet gemachtigd zijn om het voertuig te besturen.
+- Bij diefstal en/of verduistering is de huurder verplicht binnen 24 uur aangifte te doen bij de lokale politie en deze in te leveren bij JB
+Car Fleet B.V..
+- Wanneer er zonder toestemming in het buitenland gereden wordt, wordt de gehele borg in rekening gebracht en gelden de
+buitenlandse tarieven.
+4. Het aanbod vermeldt de openingstijden van het bedrijf en het telefoonnummer waarop het bedrijf te bereiken is.
+GENERIEKE BEPALINGEN
