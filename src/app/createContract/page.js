@@ -88,7 +88,7 @@ export default function CreateContract() {
 
     firstPage.drawImage(pngImage, { x: 60, y: 120, width: pngDims.width, height: pngDims.height })
     firstPage.drawText('Door te tekenen gaat u akkoord met de algemene voorwaarden.', {
-      x: 45,
+      x: 80,
       y: 113,
       size: 6.5,
     })
