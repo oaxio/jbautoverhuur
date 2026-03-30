@@ -88,7 +88,7 @@ export default function CreateContract() {
 
     firstPage.drawImage(pngImage, { x: 60, y: 120, width: pngDims.width, height: pngDims.height })
     firstPage.drawText('Door te tekenen gaat u akkoord met de algemene voorwaarden.', {
-      x: 80,
+      x: 70,
       y: 113,
       size: 6.5,
     })
@@ -317,16 +317,29 @@ export default function CreateContract() {
         <DialogTitle style={{
           background: '#1a1a1a',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          padding: '0.85rem 1.25rem',
+          padding: '0.75rem 1rem',
         }}>
-          <span style={{ flex: 1, fontWeight: 700, fontSize: '0.95rem', color: 'white' }}>
-            📄 Contract Preview
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ flex: 1, fontWeight: 700, fontSize: '0.95rem', color: 'white' }}>
+              📄 Contract Preview
+            </span>
+            <button
+              onClick={handleClose}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'rgba(255,255,255,0.4)',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                padding: '0.2rem',
+                lineHeight: 1,
+              }}
+            >
+              ✕
+            </button>
+          </div>
           {!generating && (
-            <>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.6rem', flexWrap: 'wrap' }}>
               <a
                 href={url}
                 download="contract.pdf"
@@ -335,7 +348,7 @@ export default function CreateContract() {
                   border: '1px solid rgba(232,184,75,0.35)',
                   color: '#e8b84b',
                   borderRadius: 8,
-                  padding: '0.4rem 1rem',
+                  padding: '0.4rem 0.85rem',
                   textDecoration: 'none',
                   fontSize: '0.8rem',
                   fontWeight: 600,
@@ -350,7 +363,7 @@ export default function CreateContract() {
                   border: '1px solid rgba(255,255,255,0.12)',
                   color: 'rgba(255,255,255,0.8)',
                   borderRadius: 8,
-                  padding: '0.4rem 1rem',
+                  padding: '0.4rem 0.85rem',
                   fontSize: '0.8rem',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -358,22 +371,8 @@ export default function CreateContract() {
               >
                 Factuur genereren
               </button>
-            </>
+            </div>
           )}
-          <button
-            onClick={handleClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'rgba(255,255,255,0.4)',
-              fontSize: '1.2rem',
-              cursor: 'pointer',
-              padding: '0.2rem',
-              lineHeight: 1,
-            }}
-          >
-            ✕
-          </button>
         </DialogTitle>
         {generating ? (
           <div style={{

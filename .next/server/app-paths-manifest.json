@@ -1,4 +1,4 @@
 {
-  "/createContract/page": "app/createContract/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/createContract/page": "app/createContract/page.js"
 }
