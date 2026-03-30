@@ -1,6 +1,19 @@
 "use client"
 
-export default function Header({ user }) {
+import { useState, useEffect } from 'react'
+
+export default function Header() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsAuthenticated(localStorage.getItem('jb-auth') === 'true');
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jb-auth');
+    window.location.reload();
+  };
+
   return (
     <header className="fixed top-0 z-30 w-full" style={{
       background: 'rgba(0,0,0,0.7)',
@@ -30,45 +43,24 @@ export default function Header({ user }) {
           </span>
         </a>
 
-        <div className="flex items-center gap-3">
-          {user && (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                {user.profileImageUrl && (
-                  <img
-                    src={user.profileImageUrl}
-                    alt="avatar"
-                    style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                )}
-                <span style={{
-                  color: 'rgba(255,255,255,0.6)',
-                  fontSize: '0.82rem',
-                  display: 'none',
-                }}
-                  className="sm:block"
-                >
-                  {user.firstName || user.email || 'Gebruiker'}
-                </span>
-              </div>
-              <a
-                href="/api/logout"
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'rgba(255,255,255,0.35)',
-                  textDecoration: 'none',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 6,
-                  padding: '0.3rem 0.7rem',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Uitloggen
-              </a>
-            </>
-          )}
-          {!user && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.35)',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 6,
+                padding: '0.3rem 0.7rem',
+                cursor: 'pointer',
+                letterSpacing: '0.04em',
+              }}
+            >
+              Uitloggen
+            </button>
+          ) : (
             <div style={{
               fontSize: '0.7rem',
               letterSpacing: '0.12em',
