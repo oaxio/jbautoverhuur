@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTenantByDomain } from '../../../../lib/tenant';
+import { getDb } from '../../../../lib/db';
 
 const DEV_SUFFIXES = ['.replit.dev', '.repl.co', '.worf.replit.dev'];
 
@@ -9,38 +9,44 @@ function isDevHost(h) {
 
 function normalizeHost(raw) {
   if (!raw) return '';
-  return raw.toLowerCase().trim()
+  return raw
+    .toLowerCase()
+    .trim()
     .replace(/^https?:\/\//, '')
     .replace(/\/.*$/, '')
     .split(':')[0];
 }
 
 export async function GET(request) {
+  const rawXFH  = request.headers.get('x-forwarded-host') ?? '';
+  const rawHost = request.headers.get('host') ?? '';
+  const chosen  = rawXFH || rawHost;
+  const host    = normalizeHost(chosen);
+
+  console.log('[by-domain] x-forwarded-host:', rawXFH, '| host:', rawHost, '| resolved:', host);
+
+  if (!host) return NextResponse.json(null);
+
+  if (process.env.NODE_ENV === 'development' || isDevHost(host)) {
+    return NextResponse.json({ dev: true, _host: host });
+  }
+
   try {
-    // Collect all candidate host headers for debugging + reliability
-    const candidates = [
-      request.headers.get('x-forwarded-host'),
-      request.headers.get('host'),
-      request.headers.get('x-real-host'),
-      request.headers.get('x-original-host'),
-    ].filter(Boolean);
+    const db = getDb();
+    const result = await db.query(
+      `SELECT id, name, primary_color, logo_url, custom_domain
+       FROM tenants
+       WHERE LOWER(REPLACE(REPLACE(custom_domain, 'https://', ''), 'http://', '')) = $1
+         AND status = 'active'
+       LIMIT 1`,
+      [host]
+    );
 
-    const rawHost = candidates[0] ?? '';
-    const host = normalizeHost(rawHost);
-
-    console.log('[by-domain] candidates:', candidates, '→ resolved:', host);
-
-    if (!host) return NextResponse.json(null);
-
-    if (process.env.NODE_ENV === 'development' || isDevHost(host)) {
-      return NextResponse.json({ dev: true, _host: host });
-    }
-
-    const tenant = await getTenantByDomain(rawHost);
+    const tenant = result.rows[0] ?? null;
+    console.log('[by-domain] lookup result for', host, ':', tenant ? tenant.name : 'NOT FOUND');
 
     if (!tenant) {
-      console.log('[by-domain] no tenant found for host:', host);
-      return NextResponse.json({ _host: host }); // returns null-like but with debug info
+      return NextResponse.json({ notFound: true, _host: host });
     }
 
     return NextResponse.json({
@@ -51,7 +57,7 @@ export async function GET(request) {
       _host: host,
     });
   } catch (e) {
-    console.error('[by-domain]', e);
-    return NextResponse.json(null);
+    console.error('[by-domain] DB error:', e.message);
+    return NextResponse.json({ error: e.message, _host: host });
   }
 }

@@ -84,7 +84,7 @@ export default function RootLayout({ children }) {
   //   domainTenant === null → unrecognised prod domain, block
   const isDevMode = domainTenant?.dev === true;
   const isCustomDomain = !isDevMode && !!domainTenant?.id;
-  const isUnknownProdDomain = !isDevMode && domainTenant === null;
+  const isUnknownProdDomain = !isDevMode && (domainTenant === null || domainTenant?.notFound === true);
   const isMemberOfDomainTenant = isCustomDomain
     ? tenants.some(t => t.id === domainTenant.id)
     : true;
