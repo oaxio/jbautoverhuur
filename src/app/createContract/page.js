@@ -49,7 +49,10 @@ export default function CreateContract() {
 
   const [RetourDatum, setRetourDatum] = useState('');
   const [RetourTijd, setRetourTijd] = useState('');
-  const [Ophaaldatum, setOphaaldatum] = useState('');
+  const [Ophaaldatum, setOphaaldatum] = useState(() => {
+    const d = new Date();
+    return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+  });
   const [OphaalTijd, setOphaalTijd] = useState('');
   const [Autogegevens, setAutogegevens] = useState('');
   const [Kenteken, setKenteken] = useState('');
