@@ -63,6 +63,12 @@ export default function CreateContract() {
   const [url, setUrl] = useState('');
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Aanpasbare PDF-teksten
+  const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
+  const [btwPercentage, setBtwPercentage] = useState('21');
+  const [factuurOmschrijving, setFactuurOmschrijving] = useState('Autoverhuur');
 
   const sigCanvas = useRef({});
   const sigCanvasDamage = useRef({});
@@ -74,8 +80,9 @@ export default function CreateContract() {
     setOpen(true);
 
     const originalBytes = defaultPdfString;
+    const btw = parseFloat(btwPercentage) || 21;
     var autoPrijs = (TarievenAuto * DagenAuto).toFixed(2).toString();
-    var prijsBtw = ((autoPrijs / 121) * 21).toFixed(2).toString();
+    var prijsBtw = ((autoPrijs / (100 + btw)) * btw).toFixed(2).toString();
     var prijsExcBtw = (autoPrijs - prijsBtw).toFixed(2).toString();
 
     const pdfDoc = await PDFDocument.load(originalBytes)
@@ -87,7 +94,7 @@ export default function CreateContract() {
     const pngImageDamage = await pdfDoc.embedPng(sigCanvasDamage.current.toDataURL('image/png'));
 
     firstPage.drawImage(pngImage, { x: 60, y: 120, width: pngDims.width, height: pngDims.height })
-    firstPage.drawText('Door te tekenen gaat u akkoord met de algemene voorwaarden.', {
+    firstPage.drawText(disclaimer, {
       x: 70,
       y: 113,
       size: 6.5,
@@ -117,7 +124,7 @@ export default function CreateContract() {
     firstPage.drawText(DagenAuto, { x: 145, y: 430, size: 10 })
     firstPage.drawText(autoPrijs, { x: 210, y: 430, size: 10 })
     firstPage.drawText(prijsExcBtw, { x: 275, y: 430, size: 10 })
-    firstPage.drawText("21", { x: 340, y: 430, size: 10 })
+    firstPage.drawText(btwPercentage, { x: 340, y: 430, size: 10 })
     firstPage.drawText(prijsBtw, { x: 400, y: 430, size: 10 })
     firstPage.drawText(autoPrijs, { x: 465, y: 430, size: 10 })
     firstPage.drawText(prijsExcBtw, { x: 483, y: 375, size: 10 })
@@ -135,8 +142,9 @@ export default function CreateContract() {
 
   const invoiceToPdf = async () => {
     setGenerating(true);
+    const btw = parseFloat(btwPercentage) || 21;
     var autoPrijs = (TarievenAuto * DagenAuto).toFixed(2).toString();
-    var prijsBtw = ((autoPrijs / 121) * 21).toFixed(2).toString();
+    var prijsBtw = ((autoPrijs / (100 + btw)) * btw).toFixed(2).toString();
     var prijsExcBtw = (autoPrijs - prijsBtw).toFixed(2).toString();
 
     const pdfDoc = await PDFDocument.load(defaultPdfFactureString)
@@ -148,7 +156,7 @@ export default function CreateContract() {
     firstPage.drawText(PostcodeWoonplaats, { x: 75, y: 600, size: 10 })
     firstPage.drawText(orderNummer, { x: 155, y: 452, size: 10 })
     firstPage.drawText(Ophaaldatum, { x: 155, y: 425, size: 10 })
-    firstPage.drawText("Autoverhuur", { x: 80, y: 342, size: 10 })
+    firstPage.drawText(factuurOmschrijving, { x: 80, y: 342, size: 10 })
     firstPage.drawText("1x", { x: 317, y: 342, size: 10 })
     firstPage.drawText(autoPrijs, { x: 347, y: 342, size: 10 })
     firstPage.drawText(prijsExcBtw, { x: 405, y: 342, size: 10 })
@@ -276,6 +284,59 @@ export default function CreateContract() {
               Wissen
             </button>
           </div>
+        </div>
+
+        <div className="glass-card" style={{ padding: '1.25rem 1.75rem', marginBottom: '1.25rem' }}>
+          <button
+            onClick={() => setSettingsOpen(!settingsOpen)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.6)',
+              cursor: 'pointer',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              padding: 0,
+              width: '100%',
+            }}
+          >
+            <span style={{ fontSize: '1rem' }}>⚙️</span>
+            PDF Instellingen
+            <span style={{ marginLeft: 'auto', fontSize: '0.75rem', opacity: 0.5 }}>
+              {settingsOpen ? '▲ verberg' : '▼ toon'}
+            </span>
+          </button>
+
+          {settingsOpen && (
+            <div style={{ marginTop: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem 2rem' }}>
+              <TextField
+                fullWidth
+                variant="standard"
+                label="Disclaimer tekst (contract)"
+                value={disclaimer}
+                onChange={(e) => setDisclaimer(e.target.value)}
+                inputProps={{ style: { fontSize: '0.85rem' } }}
+              />
+              <TextField
+                fullWidth
+                variant="standard"
+                label="BTW-percentage (%)"
+                value={btwPercentage}
+                onChange={(e) => setBtwPercentage(e.target.value)}
+                type="number"
+              />
+              <TextField
+                fullWidth
+                variant="standard"
+                label="Omschrijving factuur"
+                value={factuurOmschrijving}
+                onChange={(e) => setFactuurOmschrijving(e.target.value)}
+              />
+            </div>
+          )}
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '3rem' }}>
