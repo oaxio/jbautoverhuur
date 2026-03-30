@@ -4,10 +4,12 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './components/header'
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
   const [user, setUser] = useState(undefined);
   const [loginUrl, setLoginUrl] = useState('');
 
@@ -27,13 +29,14 @@ export default function RootLayout({ children }) {
 
   const isLoading = user === undefined;
   const isAuthenticated = !!user;
+  const isPublicPage = pathname === '/toegang-geweigerd';
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <Header user={user} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {isLoading ? (
+          {isPublicPage ? children : isLoading ? (
             <div style={{
               minHeight: '100vh',
               display: 'flex',

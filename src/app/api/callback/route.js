@@ -58,6 +58,24 @@ export async function GET(request) {
   }
   console.log('[callback] claims keys:', Object.keys(claims));
 
+  // Check whitelist — only allowed emails may access the system
+  const userEmail = claims.email ?? null;
+  const userSub = claims.sub ?? null;
+  console.log('[callback] login attempt — sub:', userSub, 'email:', userEmail);
+
+  const allowedRaw = process.env.ALLOWED_EMAILS ?? '';
+  const allowedList = allowedRaw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+
+  if (allowedList.length > 0 && (!userEmail || !allowedList.includes(userEmail.toLowerCase()))) {
+    console.log('[callback] access denied for:', userEmail);
+    const deniedDest = publicBase ? `${publicBase}/toegang-geweigerd` : '/toegang-geweigerd';
+    const denyResponse = NextResponse.redirect(deniedDest);
+    denyResponse.cookies.set('oidc_state', '', { maxAge: 0, path: '/' });
+    denyResponse.cookies.set('oidc_verifier', '', { maxAge: 0, path: '/' });
+    denyResponse.cookies.set('oidc_callback', '', { maxAge: 0, path: '/' });
+    return denyResponse;
+  }
+
   // Store session
   const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
