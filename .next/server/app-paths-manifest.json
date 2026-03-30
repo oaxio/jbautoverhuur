@@ -1,6 +1,13 @@
 {
   "/page": "app/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/auth/config/route": "app/api/auth/config/route.js",
   "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js"
+  "/api/reservations/route": "app/api/reservations/route.js",
+  "/api/cars/route": "app/api/cars/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/admin/tenants/route": "app/api/admin/tenants/route.js",
+  "/api/admin/users/route": "app/api/admin/users/route.js",
+  "/icon.png/route": "app/icon.png/route.js"
 }

@@ -108,7 +108,9 @@ export default function RootLayout({ children }) {
     }
   }, [isAuthenticated, hasTenants, hasTenant, isCustomDomain, isTenantSelect, isPublicPage, isAdminPage]);
 
-  const domainColor = domainTenant?.primary_color ?? '#e8b84b';
+  const activeTenant = tenants.find(t => t.id === user?.tenantId) ?? null;
+  const domainColor = domainTenant?.primary_color ?? activeTenant?.primary_color ?? '#e8b84b';
+  const bgColor = domainTenant?.bg_color ?? activeTenant?.bg_color ?? '#0a0a14';
 
   const loginScreen = (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -246,6 +248,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* Dynamic per-tenant background overlay — replaces static body::before in CSS */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+          background: `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)`,
+        }} />
         <Header user={user} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           {content}

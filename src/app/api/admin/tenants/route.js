@@ -25,7 +25,7 @@ export async function POST(request) {
   try {
     await requireSuperAdmin(cookies());
     const db = getDb();
-    const { name, slug, status, primary_color, logo_url, custom_domain, billing_plan, features } = await request.json();
+    const { name, slug, status, primary_color, bg_color, logo_url, custom_domain, billing_plan, features } = await request.json();
 
     if (!name?.trim() || !slug?.trim()) {
       return NextResponse.json({ error: 'Naam en slug zijn verplicht' }, { status: 400 });
@@ -39,14 +39,15 @@ export async function POST(request) {
     }
 
     const result = await db.query(`
-      INSERT INTO tenants (name, slug, status, primary_color, logo_url, custom_domain, billing_plan, features)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO tenants (name, slug, status, primary_color, bg_color, logo_url, custom_domain, billing_plan, features)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
     `, [
       name.trim(),
       cleanSlug,
       status || 'active',
       primary_color || '#e8b84b',
+      bg_color || '#0a0a14',
       logo_url || null,
       custom_domain || null,
       billing_plan || 'free',

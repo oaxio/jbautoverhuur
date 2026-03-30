@@ -19,6 +19,7 @@ export async function initDb() {
       slug TEXT NOT NULL UNIQUE,
       status TEXT NOT NULL DEFAULT 'active',
       primary_color TEXT DEFAULT '#e8b84b',
+      bg_color TEXT DEFAULT '#0a0a14',
       logo_url TEXT,
       features JSONB DEFAULT '{}',
       billing_plan TEXT DEFAULT 'free',
@@ -27,6 +28,7 @@ export async function initDb() {
       updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bg_color TEXT DEFAULT '#0a0a14'`);
 
   await db.query(`
     INSERT INTO tenants (name, slug, primary_color)

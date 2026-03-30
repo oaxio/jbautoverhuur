@@ -76,7 +76,7 @@ const statusColor = (s) => s === 'active' ? 'rgba(80,200,120,0.25)' : 'rgba(255,
 // TENANT FORM
 // ─────────────────────────────────────────────────────────────────────────────
 function TenantForm({ initial, onSave, onClose }) {
-  const [form, setForm] = useState({ name: '', slug: '', status: 'active', primary_color: '#e8b84b', billing_plan: 'free', logo_url: '', custom_domain: '', ...initial });
+  const [form, setForm] = useState({ name: '', slug: '', status: 'active', primary_color: '#e8b84b', bg_color: '#0a0a14', billing_plan: 'free', logo_url: '', custom_domain: '', ...initial });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState('');
   const set = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
@@ -115,9 +115,26 @@ function TenantForm({ initial, onSave, onClose }) {
         <Select label="Billing plan" value={form.billing_plan} onChange={set('billing_plan')} options={[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'enterprise', label: 'Enterprise' }]} />
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-        <Input label="Kleurcode" value={form.primary_color} onChange={set('primary_color')} placeholder="#e8b84b" />
-        <Input label="Logo URL" value={form.logo_url} onChange={set('logo_url')} placeholder="https://..." />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>Accentkleur</label>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <input type="color" value={form.primary_color} onChange={e => set('primary_color')(e.target.value)}
+              style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.14)', background: 'none', cursor: 'pointer', padding: 2 }} />
+            <input type="text" value={form.primary_color} onChange={e => set('primary_color')(e.target.value)}
+              style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 8, color: 'white', padding: '0.55rem 0.8rem', fontSize: '0.88rem', outline: 'none' }} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>Achtergrondkleur</label>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <input type="color" value={form.bg_color || '#0a0a14'} onChange={e => set('bg_color')(e.target.value)}
+              style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.14)', background: 'none', cursor: 'pointer', padding: 2 }} />
+            <input type="text" value={form.bg_color || '#0a0a14'} onChange={e => set('bg_color')(e.target.value)}
+              style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 8, color: 'white', padding: '0.55rem 0.8rem', fontSize: '0.88rem', outline: 'none' }} />
+          </div>
+        </div>
       </div>
+      <Input label="Logo URL" value={form.logo_url} onChange={set('logo_url')} placeholder="https://..." />
       <Input label="Eigen domein / subdomein" value={form.custom_domain} onChange={set('custom_domain')} placeholder="verhuur.mijnbedrijf.nl" />
       {err && <p style={{ color: '#ff7070', fontSize: '0.82rem', margin: 0 }}>{err}</p>}
       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.25rem' }}>

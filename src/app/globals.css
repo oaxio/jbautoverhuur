@@ -10,16 +10,7 @@ body {
   min-height: 100vh;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(10,10,20,0.88) 100%);
-  z-index: 0;
-}
+/* Overlay is now rendered dynamically in layout.js as a JSX div, coloured per tenant */
 
 /* Glass card effect */
 .glass-card {

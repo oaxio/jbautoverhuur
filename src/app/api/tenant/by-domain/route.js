@@ -54,6 +54,7 @@ export async function GET(request) {
       name: tenant.name,
       primary_color: tenant.primary_color,
       logo_url: tenant.logo_url,
+      bg_color: tenant.bg_color,
       _host: host,
     });
   } catch (e) {
