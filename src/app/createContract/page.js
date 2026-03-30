@@ -86,7 +86,32 @@ export default function CreateContract() {
   const [loadingIntake, setLoadingIntake] = useState(false);
 
   useEffect(() => {
-    fetch('/api/cars').then(r => r.ok ? r.json() : []).then(setCars).catch(() => {});
+    const sp = new URLSearchParams(window.location.search);
+    const v = sp.get('voornaam');
+    const a = sp.get('achternaam');
+    const t = sp.get('telefoon');
+    const d = sp.get('ophaaldatum');
+    const dagen = sp.get('dagen');
+    const carId = sp.get('carId');
+    if (v) setVoornaam(v);
+    if (a) setAchternaam(a);
+    if (t) setTelefoon(t);
+    if (d) setOphaaldatum(d);
+    if (dagen) setDagenAuto(dagen);
+
+    fetch('/api/cars').then(r => r.ok ? r.json() : []).then(data => {
+      setCars(data);
+      if (carId) {
+        const car = data.find(c => String(c.id) === carId);
+        if (car) {
+          setSelectedCarId(carId);
+          setAutogegevens(car.autogegevens);
+          setKenteken(car.kenteken);
+          setKleur(car.kleur);
+          setBrandstof(car.brandstof);
+        }
+      }
+    }).catch(() => {});
   }, []);
 
   const generateIntakeLink = async () => {

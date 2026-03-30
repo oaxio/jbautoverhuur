@@ -81,7 +81,7 @@ export default function PlanningPage() {
   });
 
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ car_id: '', customer_name: '', phone: '', start_date: '', end_date: '', notes: '' });
+  const [form, setForm] = useState({ car_id: '', first_name: '', last_name: '', phone: '', start_date: '', end_date: '', notes: '' });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -104,14 +104,15 @@ export default function PlanningPage() {
   const nextMonth = () => setViewStart(d => { const n = new Date(d); n.setMonth(n.getMonth() + 1); n.setDate(1); return n; });
 
   const openAdd = (carId = '', startDate = '') => {
-    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), customer_name: '', phone: '', start_date: startDate, end_date: startDate, notes: '' });
+    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), first_name: '', last_name: '', phone: '', start_date: startDate, end_date: startDate, notes: '' });
     setModal({ type: 'add' });
   };
 
   const openEdit = (res) => {
     setForm({
       car_id: String(res.car_id),
-      customer_name: res.customer_name,
+      first_name: res.first_name || res.customer_name?.split(' ')[0] || '',
+      last_name: res.last_name || res.customer_name?.split(' ').slice(1).join(' ') || '',
       phone: res.phone || '',
       start_date: res.start_date?.split('T')[0] || res.start_date,
       end_date: res.end_date?.split('T')[0] || res.end_date,
@@ -302,13 +303,16 @@ export default function PlanningPage() {
             </select>
           </Field>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <Field label="Klantnaam *">
-              <input value={form.customer_name} onChange={e => setForm(f => ({ ...f, customer_name: e.target.value }))} style={inputStyle} placeholder="Voornaam Achternaam" />
+            <Field label="Voornaam *">
+              <input value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} style={inputStyle} placeholder="Jan" />
             </Field>
-            <Field label="Telefoonnummer">
-              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+31 6 ..." type="tel" />
+            <Field label="Achternaam *">
+              <input value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} style={inputStyle} placeholder="Jansen" />
             </Field>
           </div>
+          <Field label="Telefoonnummer">
+            <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+31 6 ..." type="tel" />
+          </Field>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <Field label="Startdatum *">
               <input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} style={inputStyle} />
@@ -324,7 +328,7 @@ export default function PlanningPage() {
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
             <button
               onClick={saveReservation}
-              disabled={saving || !form.customer_name || !form.start_date || !form.end_date}
+              disabled={saving || !form.first_name || !form.last_name || !form.start_date || !form.end_date}
               style={{
                 flex: 1,
                 background: saving ? 'rgba(232,184,75,0.3)' : 'linear-gradient(135deg, #e8b84b, #c9962e)',
@@ -337,19 +341,47 @@ export default function PlanningPage() {
               {saving ? 'Opslaan…' : 'Opslaan'}
             </button>
             {modal.type === 'edit' && (
-              <button
-                onClick={deleteReservation}
-                disabled={deleting}
-                style={{
-                  background: 'rgba(255,60,60,0.1)',
-                  border: '1px solid rgba(255,60,60,0.3)',
-                  color: '#ff6b6b', borderRadius: 9,
-                  padding: '0.7rem 1rem', fontWeight: 700, fontSize: '0.9rem',
-                  cursor: deleting ? 'not-allowed' : 'pointer',
-                }}
-              >
-                {deleting ? '…' : 'Verwijderen'}
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    const car = cars.find(c => String(c.id) === form.car_id);
+                    const start = form.start_date;
+                    const end = form.end_date;
+                    const dagen = start && end ? Math.max(1, Math.round((new Date(end) - new Date(start)) / 86400000) + 1) : '';
+                    const params = new URLSearchParams({
+                      voornaam: form.first_name,
+                      achternaam: form.last_name,
+                      telefoon: form.phone || '',
+                      ophaaldatum: start || '',
+                      dagen: String(dagen),
+                      carId: form.car_id || '',
+                    });
+                    window.location.href = `/createContract?${params.toString()}`;
+                  }}
+                  style={{
+                    background: 'rgba(100,180,255,0.12)',
+                    border: '1px solid rgba(100,180,255,0.3)',
+                    color: '#7ec8ff', borderRadius: 9,
+                    padding: '0.7rem 1rem', fontWeight: 700, fontSize: '0.85rem',
+                    cursor: 'pointer', whiteSpace: 'nowrap',
+                  }}
+                >
+                  📄 Contract
+                </button>
+                <button
+                  onClick={deleteReservation}
+                  disabled={deleting}
+                  style={{
+                    background: 'rgba(255,60,60,0.1)',
+                    border: '1px solid rgba(255,60,60,0.3)',
+                    color: '#ff6b6b', borderRadius: 9,
+                    padding: '0.7rem 1rem', fontWeight: 700, fontSize: '0.9rem',
+                    cursor: deleting ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {deleting ? '…' : 'Verwijderen'}
+                </button>
+              </>
             )}
           </div>
         </Modal>

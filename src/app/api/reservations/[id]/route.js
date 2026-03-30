@@ -4,11 +4,12 @@ import { getDb } from '../../../../lib/db';
 export async function PUT(request, { params }) {
   try {
     const db = getDb();
-    const { car_id, customer_name, start_date, end_date, notes, phone } = await request.json();
+    const { car_id, first_name, last_name, start_date, end_date, notes, phone } = await request.json();
+    const customer_name = `${first_name} ${last_name}`;
     const result = await db.query(
-      `UPDATE reservations SET car_id=$1, customer_name=$2, start_date=$3, end_date=$4, notes=$5, phone=$6
-       WHERE id=$7 RETURNING *`,
-      [car_id, customer_name, start_date, end_date, notes || '', phone || '', params.id]
+      `UPDATE reservations SET car_id=$1, customer_name=$2, first_name=$3, last_name=$4, start_date=$5, end_date=$6, notes=$7, phone=$8
+       WHERE id=$9 RETURNING *`,
+      [car_id, customer_name, first_name, last_name, start_date, end_date, notes || '', phone || '', params.id]
     );
     if (result.rows.length === 0) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 });
     return NextResponse.json(result.rows[0]);

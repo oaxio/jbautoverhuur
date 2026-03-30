@@ -20,14 +20,15 @@ export async function GET() {
 export async function POST(request) {
   try {
     const db = getDb();
-    const { car_id, customer_name, start_date, end_date, notes, phone } = await request.json();
-    if (!car_id || !customer_name || !start_date || !end_date) {
+    const { car_id, first_name, last_name, start_date, end_date, notes, phone } = await request.json();
+    if (!car_id || !first_name || !last_name || !start_date || !end_date) {
       return NextResponse.json({ error: 'Verplichte velden ontbreken' }, { status: 400 });
     }
+    const customer_name = `${first_name} ${last_name}`;
     const result = await db.query(
-      `INSERT INTO reservations (car_id, customer_name, start_date, end_date, notes, phone)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [car_id, customer_name, start_date, end_date, notes || '', phone || '']
+      `INSERT INTO reservations (car_id, customer_name, first_name, last_name, start_date, end_date, notes, phone)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [car_id, customer_name, first_name, last_name, start_date, end_date, notes || '', phone || '']
     );
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (e) {
