@@ -1,0 +1,142 @@
+Je bent een senior software architect en full-stack engineer.
+
+Ik wil mijn bestaande Replit app ombouwen naar een **multi-tenant SaaS-app voor meerdere klanten**.
+
+Doel:
+
+* één gedeelde codebase
+* één gedeelde deployment
+* meerdere klanten (tenants) in dezelfde app
+* strikte datascheiding per tenant
+* later uitbreidbaar met custom domeinen, branding en feature flags per klant
+
+Werk met mijn **bestaande codebase** en pas die incrementeel aan, zonder onnodige rewrites.
+
+Voer dit plan uit:
+
+1. **Analyseer eerst de huidige app-structuur**
+
+   * detecteer gebruikte stack, framework, database, auth en API-structuur
+   * beschrijf kort welke onderdelen aangepast moeten worden voor multi-tenancy
+   * maak daarna pas wijzigingen
+
+2. **Voeg een tenant-model toe**
+
+   * maak een `tenants` tabel/model
+   * minimale velden:
+
+     * `id`
+     * `name`
+     * `slug`
+     * `status`
+     * `created_at`
+     * `updated_at`
+   * voeg waar nodig ook een `tenant_users` of membership-relatie toe
+
+3. **Maak alle klantdata tenant-aware**
+
+   * voeg `tenant_id` toe aan alle relevante tabellen/entities
+   * update relaties, queries, services en API-routes zodat data altijd gefilterd wordt op `tenant_id`
+   * voorkom dat een tenant data van een andere tenant kan lezen of wijzigen
+
+4. **Auth en autorisatie aanpassen**
+
+   * koppel gebruikers aan één of meerdere tenants
+   * bepaal bij login of request welke tenant actief is
+   * voeg veilige tenant-resolutie toe via:
+
+     * subdomain, OF
+     * tenant slug in URL, OF
+     * membership selector na login
+   * adviseer wat in mijn huidige codebase het beste past en implementeer dat
+
+5. **Middleware / request context**
+
+   * maak middleware of request context die de actieve tenant bepaalt
+   * zorg dat backend-logica tenant-context automatisch gebruikt
+   * voorkom dat developers tenant-filtering vergeten door dit centraal af te dwingen
+
+6. **Database migraties**
+
+   * maak alle benodigde migraties
+   * geef veilige defaults waar nodig
+   * maak een migratiepad voor bestaande single-tenant data naar een eerste default tenant
+
+7. **Seed en demo-data**
+
+   * maak een seedscript met:
+
+     * 2 tenants
+     * testgebruikers
+     * voorbeelddata per tenant
+   * laat zien dat tenant A tenant B niet kan zien
+
+8. **Configuratie per tenant**
+
+   * voeg optioneel velden toe voor:
+
+     * logo
+     * primary color
+     * custom domain
+     * feature flags
+     * billing plan
+   * structureer dit toekomstbestendig
+
+9. **Frontend aanpassen**
+
+   * toon tenantnaam/branding waar relevant
+   * zorg dat navigatie, dashboard en API-calls tenant-aware zijn
+   * voeg indien nodig tenant-switching toe voor admins met toegang tot meerdere tenants
+
+10. **Beveiliging**
+
+* controleer op plekken waar tenant-lekkage kan ontstaan
+* voeg safeguards toe in:
+
+  * queries
+  * route handlers
+  * API endpoints
+  * frontend state
+* benoem expliciet welke security-risico’s je hebt opgelost
+
+11. **Refactor pragmatisch**
+
+* verander alleen wat nodig is
+* behoud zoveel mogelijk bestaande structuur
+* lever werkende, duidelijke, onderhoudbare code op
+
+12. **Documentatie**
+
+* maak een kort `MULTI_TENANT.md` bestand met:
+
+  * architectuur
+  * tenant-resolutie
+  * datamodel
+  * migratie-uitleg
+  * hoe nieuwe tenant wordt aangemaakt
+  * hoe lokale tests uitgevoerd worden
+
+Belangrijke eisen:
+
+* gebruik best practices
+* hou het simpel en production-minded
+* geen mock-architectuur, maar echte implementatie
+* toon per stap welke bestanden je aanpast
+* leg kort uit waarom
+* als iets in mijn stack onduidelijk is, leid het af uit de bestaande code en kies de meest logische aanpak
+* als er meerdere goede opties zijn, kies de meest pragmatische voor Replit deployment
+
+Extra oplevering:
+
+* geef aan welke delen later nodig zijn voor:
+
+  * custom domains per klant
+  * aparte feature flags per klant
+  * enterprise klant met dedicated deployment
+* voeg waar mogelijk tests toe voor tenant-isolatie
+
+Begin met:
+
+1. analyse van de bestaande codebase
+2. implementatieplan
+3. daarna de concrete codewijzigingen

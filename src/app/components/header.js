@@ -1,6 +1,9 @@
 "use client"
 
 export default function Header({ user }) {
+  const tenantName = user?.tenants?.find(t => t.id === user?.tenantId)?.name ?? null;
+  const hasMultipleTenants = (user?.tenants?.length ?? 0) > 1;
+
   return (
     <header className="fixed top-0 z-30 w-full" style={{
       background: 'rgba(0,0,0,0.7)',
@@ -26,13 +29,32 @@ export default function Header({ user }) {
             fontSize: '1rem',
             letterSpacing: '0.04em',
           }}>
-            Autoverhuur
+            {tenantName ?? 'Autoverhuur'}
           </span>
         </a>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
           {user ? (
             <>
+              {hasMultipleTenants && (
+                <a
+                  href="/tenant-select"
+                  title="Van bedrijf wisselen"
+                  style={{
+                    fontSize: '0.72rem',
+                    color: '#e8b84b',
+                    textDecoration: 'none',
+                    background: 'rgba(232,184,75,0.1)',
+                    border: '1px solid rgba(232,184,75,0.25)',
+                    borderRadius: 6,
+                    padding: '0.25rem 0.6rem',
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ⇄ Wissel
+                </a>
+              )}
               {user.profileImageUrl && (
                 <img
                   src={user.profileImageUrl}
@@ -72,5 +94,5 @@ export default function Header({ user }) {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '../../../lib/auth';
+import { resolveUserTenants } from '../../../lib/tenant';
 
 const TOKEN_ENDPOINT = 'https://replit.com/oidc/token';
 
@@ -14,9 +15,6 @@ export async function GET(request) {
   const codeVerifier = request.cookies.get('oidc_verifier')?.value;
   const callbackUrl = request.cookies.get('oidc_callback')?.value;
 
-  // Derive the public base URL from the stored callbackUrl cookie — this
-  // already contains the correct domain the user came from (set by /api/login).
-  // Only fall back to REPLIT_DOMAINS if the cookie is missing.
   const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
   const publicBase = callbackUrl
     ? new URL(callbackUrl).origin
@@ -27,7 +25,6 @@ export async function GET(request) {
     return NextResponse.redirect(loginDest);
   }
 
-  // Exchange authorization code for tokens directly
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
@@ -50,7 +47,6 @@ export async function GET(request) {
     return NextResponse.redirect(loginDest);
   }
 
-  // Decode the ID token JWT to get user claims (we trust Replit's signed response)
   let claims = {};
   if (tokenData.id_token) {
     try {
@@ -60,9 +56,7 @@ export async function GET(request) {
       console.error('[callback] failed to decode id_token:', e.message);
     }
   }
-  console.log('[callback] claims keys:', Object.keys(claims));
 
-  // Check whitelist — only allowed emails may access the system
   const userEmail = claims.email ?? null;
   const userSub = claims.sub ?? null;
   console.log('[callback] login attempt — sub:', userSub, 'email:', userEmail);
@@ -80,24 +74,38 @@ export async function GET(request) {
     return denyResponse;
   }
 
-  // Store session
+  // Resolve which tenants this user belongs to
+  let tenants = [];
+  let tenantId = null;
+  try {
+    tenants = await resolveUserTenants(userSub, userEmail);
+    if (tenants.length === 1) {
+      tenantId = tenants[0].id;
+    }
+    // If multiple tenants → tenantId stays null, user must select on /tenant-select
+  } catch (e) {
+    console.error('[callback] tenant resolution failed:', e.message);
+  }
+
   const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
-    id: claims.sub ?? null,
-    email: claims.email ?? null,
+    id: userSub,
+    email: userEmail,
     firstName: claims.first_name ?? claims.given_name ?? null,
     lastName: claims.last_name ?? claims.family_name ?? null,
     profileImageUrl: claims.profile_image_url ?? claims.picture ?? null,
   };
+  session.tenants = tenants;
+  session.tenantId = tenantId;
   await session.save();
 
-  // Redirect to the public home page — never use request.url here as it
-  // contains the internal 0.0.0.0:5000 address, not the public domain.
-  const homeDest = publicBase ? `${publicBase}/` : '/';
+  const homeDest = publicBase
+    ? (tenantId ? `${publicBase}/` : `${publicBase}/tenant-select`)
+    : (tenantId ? '/' : '/tenant-select');
+
   const response = NextResponse.redirect(homeDest);
   response.cookies.set('oidc_state', '', { maxAge: 0, path: '/' });
   response.cookies.set('oidc_verifier', '', { maxAge: 0, path: '/' });
   response.cookies.set('oidc_callback', '', { maxAge: 0, path: '/' });
-
   return response;
 }

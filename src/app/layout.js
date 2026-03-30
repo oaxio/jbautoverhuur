@@ -19,8 +19,6 @@ export default function RootLayout({ children }) {
       .then(data => setUser(data))
       .catch(() => setUser(null));
 
-    // Fetch the absolute login URL from the server so we never end up
-    // navigating to http://0.0.0.0:5000 (the internal dev address).
     fetch('/api/auth/config')
       .then(res => res.json())
       .then(data => setLoginUrl(data.loginUrl))
@@ -29,14 +27,24 @@ export default function RootLayout({ children }) {
 
   const isLoading = user === undefined;
   const isAuthenticated = !!user;
+  const hasTenant = !!user?.tenantId;
+
   const isPublicPage = pathname === '/toegang-geweigerd' || pathname.startsWith('/intake/');
+  const isTenantSelect = pathname === '/tenant-select';
+
+  // Redirect to tenant-select if authenticated but no tenant chosen (and not already there)
+  useEffect(() => {
+    if (isAuthenticated && !hasTenant && !isTenantSelect && !isPublicPage) {
+      window.location.href = '/tenant-select';
+    }
+  }, [isAuthenticated, hasTenant, isTenantSelect, isPublicPage]);
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <Header user={user} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {isPublicPage ? children : isLoading ? (
+          {isPublicPage || isTenantSelect ? children : isLoading ? (
             <div style={{
               minHeight: '100vh',
               display: 'flex',
