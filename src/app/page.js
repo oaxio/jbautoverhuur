@@ -117,6 +117,45 @@ export default function Home() {
             </div>
           </a>
 
+          <a href="/planning" style={{ textDecoration: 'none' }}>
+            <div className="glass-card" style={{
+              padding: '2rem',
+              transition: 'border-color 0.2s, transform 0.2s',
+              cursor: 'pointer',
+            }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'rgba(232,184,75,0.45)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: 'rgba(232,184,75,0.15)',
+                border: '1px solid rgba(232,184,75,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.4rem', marginBottom: '1.25rem',
+              }}>📅</div>
+              <div style={{
+                fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: '#e8b84b', fontWeight: 700, marginBottom: '0.4rem',
+              }}>Verhuur</div>
+              <h2 style={{ color: 'white', fontWeight: 700, fontSize: '1.2rem', marginBottom: '0.5rem' }}>
+                Planning
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: '1.5rem' }}>
+                Bekijk en beheer verhuringen per voertuig in een overzichtelijke tijdlijn.
+              </p>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                color: '#e8b84b', fontSize: '0.82rem', fontWeight: 600,
+              }}>Bekijken →</div>
+            </div>
+          </a>
+
           <a href="/autos" style={{ textDecoration: 'none' }}>
             <div className="glass-card" style={{
               padding: '2rem',

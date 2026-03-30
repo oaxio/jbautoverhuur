@@ -11,15 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/createContract/page": [
+    "/planning/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/createContract/page.js"
-    ],
-    "/intake/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/intake/[token]/page.js"
+      "static/chunks/app/planning/page.js"
     ]
   }
 }
