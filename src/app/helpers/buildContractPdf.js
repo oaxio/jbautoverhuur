@@ -326,19 +326,23 @@ export async function buildContractPdf({
   const schadeX = col2start;
   const schadeY = y - imgAreaH;
 
+  // Teken schade-afbeelding met behoud van aspect ratio, gecentreerd in het vak
+  const drawFit = (page, image, areaX, areaY, areaW, areaH) => {
+    const dims = image.scaleToFit(areaW, areaH);
+    const ox   = (areaW - dims.width)  / 2;
+    const oy   = (areaH - dims.height) / 2;
+    page.drawImage(image, { x: areaX + ox, y: areaY + oy, width: dims.width, height: dims.height });
+  };
+
   if (handtekeningSchadeDataUrl) {
     try {
       const img2 = await pdfDoc.embedPng(handtekeningSchadeDataUrl);
-      p1.drawImage(img2, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
+      drawFit(p1, img2, schadeX, schadeY, halfW, imgAreaH);
     } catch (_) {
-      // Fallback: toon alleen de auto-achtergrond
-      if (damageCarImage) {
-        p1.drawImage(damageCarImage, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
-      }
+      if (damageCarImage) drawFit(p1, damageCarImage, schadeX, schadeY, halfW, imgAreaH);
     }
   } else if (damageCarImage) {
-    // Geen markeringen getekend — toon lege auto
-    p1.drawImage(damageCarImage, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
+    drawFit(p1, damageCarImage, schadeX, schadeY, halfW, imgAreaH);
   } else {
     p1.drawRectangle({ x: schadeX, y: schadeY, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
   }

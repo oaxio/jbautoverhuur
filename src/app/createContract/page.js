@@ -228,26 +228,27 @@ export default function CreateContract() {
       // Combineer damage-car.jpg achtergrond + getekende markeringen tot één PNG
       let damageData = null;
       try {
-        const CSIZE = 300;
+        // Canvas-afmetingen matchen de PDF-verhouding (~252 × 95pt → 480 × 181px)
+        const CW = 480, CH = 181;
         const offscreen = document.createElement('canvas');
-        offscreen.width  = CSIZE;
-        offscreen.height = CSIZE;
+        offscreen.width  = CW;
+        offscreen.height = CH;
         const ctx = offscreen.getContext('2d');
 
         // 1) Teken de autoafbeelding als achtergrond
         await new Promise((res) => {
           const bgImg = new Image();
-          bgImg.onload = () => { ctx.drawImage(bgImg, 0, 0, CSIZE, CSIZE); res(); };
+          bgImg.onload = () => { ctx.drawImage(bgImg, 0, 0, CW, CH); res(); };
           bgImg.onerror = res;
           bgImg.src = '/damage-car.jpg';
         });
 
-        // 2) Teken de markeringen er bovenop (alleen als de canvas niet leeg is)
+        // 2) Teken de markeringen er bovenop (schaal van 504×190 canvas naar export-canvas)
         if (!sigCanvasDamage.current?.isEmpty?.()) {
           const marksUrl = sigCanvasDamage.current.toDataURL('image/png');
           await new Promise((res) => {
             const marksImg = new Image();
-            marksImg.onload = () => { ctx.drawImage(marksImg, 0, 0, CSIZE, CSIZE); res(); };
+            marksImg.onload = () => { ctx.drawImage(marksImg, 0, 0, CW, CH); res(); };
             marksImg.onerror = res;
             marksImg.src = marksUrl;
           });
@@ -588,7 +589,8 @@ export default function CreateContract() {
         <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
           <div className="section-header">🖊 Schaderapport — teken op de auto</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ position: 'relative', width: 300, height: 300 }}>
+            {/* Vaste canvas 480×181px — zelfde 2.65:1 verhouding als het PDF-vak */}
+            <div style={{ position: 'relative', width: 480, height: 181 }}>
               <img
                 src="/damage-car.jpg"
                 alt="auto schadetekening"
@@ -597,7 +599,12 @@ export default function CreateContract() {
               <SignatureCanvas
                 ref={sigCanvasDamage}
                 penColor="red"
-                canvasProps={{ width: 300, height: 300, className: 'signature-canvas', style: { background: 'transparent', position: 'relative', zIndex: 1 } }}
+                canvasProps={{
+                  width: 480,
+                  height: 181,
+                  className: 'signature-canvas',
+                  style: { background: 'transparent', position: 'absolute', inset: 0, zIndex: 1 },
+                }}
               />
             </div>
             <button
