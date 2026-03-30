@@ -3,5 +3,6 @@
   "/api/cars/route": "app/api/cars/route.js",
   "/page": "app/page.js",
   "/api/reservations/route": "app/api/reservations/route.js",
-  "/planning/page": "app/planning/page.js"
+  "/instellingen/page": "app/instellingen/page.js",
+  "/api/tenant/settings/route": "app/api/tenant/settings/route.js"
 }
