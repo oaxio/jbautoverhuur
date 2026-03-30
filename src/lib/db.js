@@ -29,6 +29,7 @@ export async function initDb() {
     )
   `);
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bg_color TEXT DEFAULT '#0a0a14'`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bg_image_url TEXT`);
 
   await db.query(`
     INSERT INTO tenants (name, slug, primary_color)

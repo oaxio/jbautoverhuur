@@ -109,8 +109,9 @@ export default function RootLayout({ children }) {
   }, [isAuthenticated, hasTenants, hasTenant, isCustomDomain, isTenantSelect, isPublicPage, isAdminPage]);
 
   const activeTenant = tenants.find(t => t.id === user?.tenantId) ?? null;
-  const domainColor = domainTenant?.primary_color ?? activeTenant?.primary_color ?? '#e8b84b';
-  const bgColor = domainTenant?.bg_color ?? activeTenant?.bg_color ?? '#0a0a14';
+  const domainColor   = domainTenant?.primary_color  ?? activeTenant?.primary_color  ?? '#e8b84b';
+  const bgColor       = domainTenant?.bg_color       ?? activeTenant?.bg_color       ?? '#0a0a14';
+  const bgImageUrl    = domainTenant?.bg_image_url   ?? activeTenant?.bg_image_url   ?? '/background.jpg';
 
   const loginScreen = (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -248,7 +249,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* Dynamic per-tenant background overlay — replaces static body::before in CSS */}
+        {/* Dynamic per-tenant background image */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: `url(${bgImageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }} />
+        {/* Dynamic per-tenant colour overlay */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
           background: `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)`,

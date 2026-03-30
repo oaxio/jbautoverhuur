@@ -30,7 +30,7 @@ function ColorPicker({ label, value, onChange }) {
 }
 
 export default function InstellingenPage() {
-  const [form, setForm] = useState({ primary_color: '#e8b84b', bg_color: '#0a0a14', logo_url: '' });
+  const [form, setForm] = useState({ primary_color: '#e8b84b', bg_color: '#0a0a14', bg_image_url: '', logo_url: '' });
   const [original, setOriginal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,7 +42,7 @@ export default function InstellingenPage() {
       .then(r => r.json())
       .then(data => {
         if (data.error) { setError(data.error); return; }
-        const vals = { primary_color: data.primary_color || '#e8b84b', bg_color: data.bg_color || '#0a0a14', logo_url: data.logo_url || '' };
+        const vals = { primary_color: data.primary_color || '#e8b84b', bg_color: data.bg_color || '#0a0a14', bg_image_url: data.bg_image_url || '', logo_url: data.logo_url || '' };
         setForm(vals);
         setOriginal(vals);
       })
@@ -75,6 +75,7 @@ export default function InstellingenPage() {
   const isDirty = original && (
     form.primary_color !== original.primary_color ||
     form.bg_color !== original.bg_color ||
+    form.bg_image_url !== original.bg_image_url ||
     form.logo_url !== original.logo_url
   );
 
@@ -109,7 +110,10 @@ export default function InstellingenPage() {
                 borderRadius: 12,
                 overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.1)',
-                background: `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)`,
+                backgroundImage: form.bg_image_url ? `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%), url(${form.bg_image_url})` : undefined,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                background: !form.bg_image_url ? `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)` : undefined,
                 padding: '1.5rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -143,7 +147,23 @@ export default function InstellingenPage() {
               <p className="section-header" style={{ marginBottom: 0 }}>Huisstijl</p>
 
               <ColorPicker label="Accentkleur" value={form.primary_color} onChange={set('primary_color')} />
-              <ColorPicker label="Achtergrondkleur" value={form.bg_color} onChange={set('bg_color')} />
+              <ColorPicker label="Achtergrondkleur (overlay)" value={form.bg_color} onChange={set('bg_color')} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>
+                  Achtergrondafbeelding URL
+                </label>
+                <input
+                  type="text"
+                  value={form.bg_image_url}
+                  onChange={e => set('bg_image_url')(e.target.value)}
+                  placeholder="https://jouwbedrijf.nl/background.jpg"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 10, color: 'white', padding: '0.6rem 0.9rem', fontSize: '0.88rem', outline: 'none' }}
+                />
+                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: '0.77rem', margin: 0 }}>
+                  Directe URL naar een afbeelding (JPG, PNG, WebP). Leeg laten voor de standaard achtergrond.
+                </p>
+              </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>

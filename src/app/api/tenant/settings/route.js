@@ -17,7 +17,7 @@ export async function GET() {
 
     const db = getDb();
     const result = await db.query(
-      `SELECT id, name, primary_color, bg_color, logo_url FROM tenants WHERE id = $1`,
+      `SELECT id, name, primary_color, bg_color, bg_image_url, logo_url FROM tenants WHERE id = $1`,
       [tenantId]
     );
     if (!result.rows[0]) return NextResponse.json({ error: 'Tenant niet gevonden' }, { status: 404 });
@@ -35,18 +35,19 @@ export async function PUT(request) {
     const tenantId = session.tenantId;
     if (!tenantId) return NextResponse.json({ error: 'Geen actieve tenant' }, { status: 400 });
 
-    const { primary_color, bg_color, logo_url } = await request.json();
+    const { primary_color, bg_color, bg_image_url, logo_url } = await request.json();
 
     const db = getDb();
     const result = await db.query(
       `UPDATE tenants
        SET primary_color = COALESCE($1, primary_color),
            bg_color      = COALESCE($2, bg_color),
-           logo_url      = $3,
+           bg_image_url  = $3,
+           logo_url      = $4,
            updated_at    = NOW()
-       WHERE id = $4
-       RETURNING id, name, primary_color, bg_color, logo_url`,
-      [primary_color || null, bg_color || null, logo_url || null, tenantId]
+       WHERE id = $5
+       RETURNING id, name, primary_color, bg_color, bg_image_url, logo_url`,
+      [primary_color || null, bg_color || null, bg_image_url ?? null, logo_url ?? null, tenantId]
     );
     return NextResponse.json(result.rows[0]);
   } catch (e) {

@@ -55,6 +55,7 @@ export async function GET(request) {
       primary_color: tenant.primary_color,
       logo_url: tenant.logo_url,
       bg_color: tenant.bg_color,
+      bg_image_url: tenant.bg_image_url,
       _host: host,
     });
   } catch (e) {

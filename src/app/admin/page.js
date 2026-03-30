@@ -89,7 +89,7 @@ const statusColor = (s) => s === 'active' ? 'rgba(80,200,120,0.25)' : 'rgba(255,
 // TENANT FORM
 // ─────────────────────────────────────────────────────────────────────────────
 function TenantForm({ initial, onSave, onClose }) {
-  const [form, setForm] = useState({ name: '', slug: '', status: 'active', primary_color: '#e8b84b', bg_color: '#0a0a14', billing_plan: 'free', logo_url: '', custom_domain: '', ...initial });
+  const [form, setForm] = useState({ name: '', slug: '', status: 'active', primary_color: '#e8b84b', bg_color: '#0a0a14', bg_image_url: '', billing_plan: 'free', logo_url: '', custom_domain: '', ...initial });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState('');
   const set = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
@@ -128,7 +128,8 @@ function TenantForm({ initial, onSave, onClose }) {
         <Select label="Billing plan" value={form.billing_plan} onChange={set('billing_plan')} options={[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'enterprise', label: 'Enterprise' }]} />
       </div>
       <ColorPicker label="Accentkleur" value={form.primary_color} onChange={set('primary_color')} />
-      <ColorPicker label="Achtergrondkleur" value={form.bg_color || '#0a0a14'} onChange={set('bg_color')} />
+      <ColorPicker label="Achtergrondkleur (overlay)" value={form.bg_color || '#0a0a14'} onChange={set('bg_color')} />
+      <Input label="Achtergrondafbeelding URL" value={form.bg_image_url || ''} onChange={set('bg_image_url')} placeholder="https://... (leeg = standaard)" />
       <Input label="Logo URL" value={form.logo_url} onChange={set('logo_url')} placeholder="https://..." />
       <Input label="Eigen domein / subdomein" value={form.custom_domain} onChange={set('custom_domain')} placeholder="verhuur.mijnbedrijf.nl" />
       {err && <p style={{ color: '#ff7070', fontSize: '0.82rem', margin: 0 }}>{err}</p>}

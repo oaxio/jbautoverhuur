@@ -24,7 +24,7 @@ export async function getTenantByDomain(host) {
   if (cleanHost.endsWith('.replit.dev') || cleanHost.endsWith('.repl.co') || cleanHost === 'localhost') return null;
   const db = getDb();
   const result = await db.query(
-    `SELECT id, name, slug, primary_color, logo_url, bg_color, custom_domain
+    `SELECT id, name, slug, primary_color, logo_url, bg_color, bg_image_url, custom_domain
      FROM tenants
      WHERE LOWER(REGEXP_REPLACE(custom_domain, '^https?://', '')) = $1 AND status = 'active'
      LIMIT 1`,
@@ -62,7 +62,7 @@ export async function resolveUserTenants(userSub, userEmail) {
   const db = getDb();
 
   let result = await db.query(
-    `SELECT t.id, t.name, t.slug, t.primary_color, t.logo_url, t.bg_color, tu.role
+    `SELECT t.id, t.name, t.slug, t.primary_color, t.logo_url, t.bg_color, t.bg_image_url, tu.role
      FROM tenant_users tu
      JOIN tenants t ON t.id = tu.tenant_id
      WHERE tu.user_sub = $1 AND t.status = 'active'

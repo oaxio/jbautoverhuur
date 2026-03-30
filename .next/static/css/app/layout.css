@@ -521,9 +521,6 @@ video {
     max-width: 1536px;
   }
 }
-.static {
-  position: static;
-}
 .fixed {
   position: fixed;
 }
@@ -626,11 +623,8 @@ video {
 }
 
 body {
-  background-image: url("/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
   min-height: 100vh;
+  /* Background image + overlay are applied dynamically in layout.js per tenant */
 }
 
 /* Overlay is now rendered dynamically in layout.js as a JSX div, coloured per tenant */

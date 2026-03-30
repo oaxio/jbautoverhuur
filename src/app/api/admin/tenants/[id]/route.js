@@ -32,7 +32,7 @@ export async function PUT(request, { params }) {
   try {
     await requireSuperAdmin(cookies());
     const db = getDb();
-    const { name, slug, status, primary_color, bg_color, logo_url, custom_domain, billing_plan, features } = await request.json();
+    const { name, slug, status, primary_color, bg_color, bg_image_url, logo_url, custom_domain, billing_plan, features } = await request.json();
 
     if (!name?.trim() || !slug?.trim()) {
       return NextResponse.json({ error: 'Naam en slug zijn verplicht' }, { status: 400 });
@@ -44,11 +44,11 @@ export async function PUT(request, { params }) {
 
     const result = await db.query(`
       UPDATE tenants SET name=$1, slug=$2, status=$3, primary_color=$4, bg_color=$5,
-        logo_url=$6, custom_domain=$7, billing_plan=$8, features=$9, updated_at=NOW()
-      WHERE id=$10 RETURNING *
+        bg_image_url=$6, logo_url=$7, custom_domain=$8, billing_plan=$9, features=$10, updated_at=NOW()
+      WHERE id=$11 RETURNING *
     `, [name.trim(), cleanSlug, status || 'active', primary_color || '#e8b84b',
-        bg_color || '#0a0a14', logo_url || null, custom_domain || null, billing_plan || 'free',
-        features ? JSON.stringify(features) : '{}', params.id]);
+        bg_color || '#0a0a14', bg_image_url || null, logo_url || null, custom_domain || null,
+        billing_plan || 'free', features ? JSON.stringify(features) : '{}', params.id]);
 
     if (result.rows.length === 0) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 });
     return NextResponse.json(result.rows[0]);
