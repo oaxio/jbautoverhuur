@@ -109,7 +109,7 @@ export default function RootLayout({ children }) {
   const loginScreen = (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div className="glass-card" style={{ width: '100%', maxWidth: '380px', padding: '2.5rem 2rem', textAlign: 'center' }}>
-        {domainTenant ? (
+        {domainTenant?.id ? (
           <div style={{ marginBottom: '1.75rem' }}>
             {domainTenant.logo_url ? (
               <img
