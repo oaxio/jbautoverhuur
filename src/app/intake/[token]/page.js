@@ -100,7 +100,7 @@ export default function IntakePage() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '2rem 1rem',
+    padding: '5rem 1rem 2rem',
     fontFamily: 'system-ui, sans-serif',
   };
 
