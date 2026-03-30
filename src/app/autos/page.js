@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { TextField } from '@mui/material';
 
 const BRANDSTOF_OPTIES = ['Benzine', 'Diesel', 'Elektrisch', 'Hybride', 'LPG'];
@@ -98,9 +99,9 @@ export default function AutosPage() {
     <main style={{ position: 'relative', zIndex: 1, padding: '5.5rem 1rem 3rem' }}>
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
         <div style={{ marginBottom: '2rem' }}>
-          <a href="/" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.75rem' }}>
+          <Link href="/" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.75rem' }}>
             ← Terug
-          </a>
+          </Link>
           <h1 style={{ color: 'white', fontWeight: 800, fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', letterSpacing: '-0.01em', marginBottom: '0.3rem' }}>
             Voertuigbeheer
           </h1>

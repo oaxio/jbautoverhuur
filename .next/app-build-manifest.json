@@ -11,10 +11,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/planning/page": [
+    "/createContract/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/planning/page.js"
+      "static/chunks/app/createContract/page.js"
     ]
   }
 }

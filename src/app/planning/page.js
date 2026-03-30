@@ -1,5 +1,7 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const COLORS = [
   '#e8b84b', '#4b9ee8', '#e84b6b', '#4be87a', '#b84be8',
@@ -72,6 +74,7 @@ const inputStyle = {
 };
 
 export default function PlanningPage() {
+  const router = useRouter();
   const [cars, setCars] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [viewStart, setViewStart] = useState(() => {
@@ -160,7 +163,7 @@ export default function PlanningPage() {
     <div style={{ minHeight: '100vh', padding: '6rem 1rem 3rem', maxWidth: 1200, margin: '0 auto' }}>
       <div style={{ marginBottom: '1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <a href="/" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)', textDecoration: 'none', display: 'block', marginBottom: '0.4rem' }}>← Terug</a>
+          <Link href="/" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)', textDecoration: 'none', display: 'block', marginBottom: '0.4rem' }}>← Terug</Link>
           <h1 style={{ color: 'white', fontWeight: 800, fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', marginBottom: '0.2rem' }}>Planning</h1>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Overzicht van verhuringen per voertuig</p>
         </div>
@@ -186,7 +189,7 @@ export default function PlanningPage() {
 
         {cars.length === 0 ? (
           <p style={{ color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' }}>
-            Geen voertuigen gevonden. <a href="/autos" style={{ color: '#e8b84b', textDecoration: 'none' }}>Voeg eerst voertuigen toe →</a>
+            Geen voertuigen gevonden. <Link href="/autos" style={{ color: '#e8b84b', textDecoration: 'none' }}>Voeg eerst voertuigen toe →</Link>
           </p>
         ) : (
           <div style={{ minWidth: LABEL_W + DAY_W * daysInView }}>
@@ -364,7 +367,7 @@ export default function PlanningPage() {
                       carId: form.car_id || '',
                       tarief: form.price_per_day || '',
                     });
-                    window.location.href = `/createContract?${params.toString()}`;
+                    router.push(`/createContract?${params.toString()}`);
                   }}
                   style={{
                     background: 'rgba(100,180,255,0.12)',

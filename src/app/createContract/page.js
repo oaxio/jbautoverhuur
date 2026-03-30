@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 import { TextField, Button } from "@mui/material"
 import defaultPdfString from "../helpers/defaultPdfString";
 import defaultPdfFactureString from "../helpers/defaultPdfFactureString"
@@ -299,7 +300,7 @@ export default function CreateContract() {
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
 
         <div style={{ marginBottom: '2rem' }}>
-          <a href="/" style={{
+          <Link href="/" style={{
             color: 'rgba(255,255,255,0.4)',
             fontSize: '0.8rem',
             textDecoration: 'none',
@@ -309,7 +310,7 @@ export default function CreateContract() {
             marginBottom: '0.75rem',
           }}>
             ← Terug
-          </a>
+          </Link>
           <h1 style={{
             color: 'white',
             fontWeight: 800,
@@ -498,7 +499,7 @@ export default function CreateContract() {
 
           {cars.length === 0 && (
             <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)' }}>
-              💡 Sla voertuigen op via <a href="/autos" style={{ color: '#e8b84b', textDecoration: 'none' }}>Voertuigbeheer</a> om ze hier snel te laden.
+              💡 Sla voertuigen op via <Link href="/autos" style={{ color: '#e8b84b', textDecoration: 'none' }}>Voertuigbeheer</Link> om ze hier snel te laden.
             </p>
           )}
         </div>
