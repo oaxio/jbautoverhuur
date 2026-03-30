@@ -1,6 +1,7 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
+import SignatureCanvas from 'react-signature-canvas';
 
 function Field({ label, value, onChange, type = 'text', required = false }) {
   return (
@@ -30,11 +31,14 @@ function Field({ label, value, onChange, type = 'text', required = false }) {
 
 export default function IntakePage() {
   const { token } = useParams();
+  const sigRef = useRef(null);
 
   const [status, setStatus] = useState('loading');
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [akkoord, setAkkoord] = useState(false);
+  const [sigEmpty, setSigEmpty] = useState(true);
 
   const [voornaam, setVoornaam] = useState('');
   const [achternaam, setAchternaam] = useState('');
@@ -60,15 +64,19 @@ export default function IntakePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!akkoord) { setError('U dient akkoord te gaan met de algemene voorwaarden.'); return; }
+    if (sigRef.current?.isEmpty()) { setError('Zet uw handtekening om verder te gaan.'); return; }
     setSubmitting(true);
     setError('');
     try {
+      const handtekeningKlant = sigRef.current.toDataURL('image/png');
       const res = await fetch(`/api/intake/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           voornaam, achternaam, straat, postcode, woonplaats,
           geboortedatum, telefoon, email, documentnummer, rijbewijsAfgiftedatum,
+          akkoord: true, handtekeningKlant,
         }),
       });
       if (!res.ok) {
@@ -145,7 +153,7 @@ export default function IntakePage() {
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
           <h2 style={{ color: 'white', fontWeight: 700, marginBottom: '0.5rem' }}>Bedankt!</h2>
           <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-            Uw gegevens zijn ontvangen door JB Autoverhuur.<br />
+            Uw gegevens en handtekening zijn ontvangen door JB Autoverhuur.<br />
             U hoeft niets meer te doen — wij regelen de rest.
           </p>
         </div>
@@ -205,6 +213,90 @@ export default function IntakePage() {
             </div>
           </div>
 
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,0.08)',
+            paddingTop: '1rem',
+            marginTop: '0.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+          }}>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', marginBottom: '0.5rem' }}>
+                Akkoordverklaring
+              </p>
+              <div
+                onClick={() => setAkkoord(v => !v)}
+                style={{
+                  display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                  cursor: 'pointer', userSelect: 'none',
+                  background: akkoord ? 'rgba(232,184,75,0.07)' : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${akkoord ? 'rgba(232,184,75,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                  borderRadius: 10, padding: '0.85rem 1rem',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <div style={{
+                  width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
+                  background: akkoord ? '#e8b84b' : 'rgba(255,255,255,0.1)',
+                  border: `2px solid ${akkoord ? '#e8b84b' : 'rgba(255,255,255,0.25)'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.15s',
+                }}>
+                  {akkoord && <span style={{ color: '#1a0f00', fontSize: '0.75rem', fontWeight: 900 }}>✓</span>}
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.83rem', lineHeight: 1.55, margin: 0 }}>
+                  Ik verklaar dat de bovenstaande gegevens correct zijn en ga akkoord met de{' '}
+                  <strong style={{ color: 'rgba(255,255,255,0.85)' }}>algemene voorwaarden</strong>{' '}
+                  van JB Autoverhuur. Door te ondertekenen bevestig ik dat ik het voertuig in goede staat heb ontvangen en mij houd aan de gemaakte afspraken.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', marginBottom: '0.5rem' }}>
+                Handtekening <span style={{ color: '#e8b84b' }}>*</span>
+              </p>
+              <div style={{
+                borderRadius: 10,
+                border: `1px solid ${sigEmpty ? 'rgba(255,255,255,0.15)' : 'rgba(232,184,75,0.35)'}`,
+                overflow: 'hidden',
+                background: 'rgba(255,255,255,0.96)',
+                position: 'relative',
+              }}>
+                <SignatureCanvas
+                  ref={sigRef}
+                  penColor="#111"
+                  canvasProps={{ style: { width: '100%', height: 150, display: 'block', touchAction: 'none' } }}
+                  onEnd={() => setSigEmpty(sigRef.current?.isEmpty() ?? true)}
+                />
+                {sigEmpty && (
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    pointerEvents: 'none',
+                    color: 'rgba(0,0,0,0.2)', fontSize: '0.82rem', fontStyle: 'italic',
+                  }}>
+                    Teken hier uw handtekening
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => { sigRef.current?.clear(); setSigEmpty(true); }}
+                style={{
+                  marginTop: '0.4rem',
+                  background: 'none', border: 'none',
+                  color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem',
+                  cursor: 'pointer', padding: 0,
+                  textDecoration: 'underline',
+                }}
+              >
+                Opnieuw tekenen
+              </button>
+            </div>
+          </div>
+
           {error && (
             <p style={{ color: '#ff6b6b', fontSize: '0.85rem', background: 'rgba(255,50,50,0.08)', padding: '0.6rem 0.9rem', borderRadius: 8, border: '1px solid rgba(255,50,50,0.2)' }}>
               {error}
@@ -227,7 +319,7 @@ export default function IntakePage() {
               letterSpacing: '0.02em',
             }}
           >
-            {submitting ? 'Versturen…' : 'Gegevens versturen →'}
+            {submitting ? 'Versturen…' : 'Gegevens en handtekening versturen →'}
           </button>
         </form>
       </div>

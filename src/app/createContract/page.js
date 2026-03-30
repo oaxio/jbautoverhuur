@@ -164,6 +164,9 @@ export default function CreateContract() {
         if (data.postcode && data.woonplaats) setPostcodeWoonplaats(`${data.postcode}  ${data.woonplaats}`);
         if (data.documentnummer) setDocumentnummer(data.documentnummer);
         if (data.rijbewijsAfgiftedatum) setRijbewijsAfgifteDatum(data.rijbewijsAfgiftedatum);
+        if (data.handtekeningKlant && sigCanvas.current?.fromDataURL) {
+          sigCanvas.current.fromDataURL(data.handtekeningKlant);
+        }
         setIntakeStatus('loaded');
       } else {
         setIntakeStatus('pending');

@@ -592,6 +592,12 @@ video {
 .capitalize {
   text-transform: capitalize;
 }
+.italic {
+  font-style: italic;
+}
+.underline {
+  text-decoration-line: underline;
+}
 .no-underline {
   text-decoration-line: none;
 }
