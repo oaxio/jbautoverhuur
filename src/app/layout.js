@@ -79,10 +79,11 @@ export default function RootLayout({ children }) {
   const hasTenant = !!user?.tenantId;
 
   // Is the user a member of the domain's tenant?
-  const isLockedToDomain = domainTenant !== null; // null = generic URL, object = custom domain
+  const isDevMode = domainTenant?.dev === true; // Replit dev URL or localhost
+  const isLockedToDomain = !isDevMode && domainTenant !== null; // null = unknown/prod domain, object with id = custom domain
   const isMemberOfDomainTenant = isLockedToDomain
     ? tenants.some(t => t.id === domainTenant?.id)
-    : true; // On generic URL, no domain restriction
+    : true; // Dev mode or generic URL — no domain restriction
 
   // Determine which blocking case applies (only for authenticated users)
   const noTenantAccess = isAuthenticated && !hasTenants; // logged in but no memberships at all
