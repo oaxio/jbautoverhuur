@@ -63,7 +63,10 @@ export default function CreateContract() {
   const [Brandstof, setBrandstof] = useState('');
   const [startKmStand, setstartKmStand] = useState('');
   const [TarievenAuto, setTarievenAuto] = useState('');
-  const [borgVoldaanDatum, setborgVoldaanDatum] = useState('');
+  const [borgVoldaanDatum, setborgVoldaanDatum] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  });
   const [DagenAuto, setDagenAuto] = useState('');
   const [orderNummer, setOrderNummer] = useState('');
 
