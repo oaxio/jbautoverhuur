@@ -1,5 +1,8 @@
 {
   "/page": "app/page.js",
+  "/api/auth/config/route": "app/api/auth/config/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js"
+  "/api/login/route": "app/api/login/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/icon.png/route": "app/icon.png/route.js"
 }
