@@ -22,11 +22,27 @@ Staff use this app to:
 ## Project Structure
 
 - `src/app/` — App Router pages and layout
-  - `page.js` — Home/dashboard with pincode auth
-  - `createContract/` — Contract creation form + PDF generation
+  - `page.js` — Home/dashboard
+  - `createContract/` — Contract creation form + PDF generation (with car selector)
+  - `autos/` — Vehicle management (add, edit, delete saved vehicles)
+  - `toegang-geweigerd/` — Access denied page
   - `components/` — Reusable components (header, etc.)
   - `helpers/` — PDF template base64 strings
+  - `api/cars/` — CRUD API for saved vehicles
+  - `api/auth/` — Auth config and user endpoints
+  - `api/login/`, `api/callback/`, `api/logout/` — OIDC auth flow
+- `src/lib/` — Shared utilities (db.js, auth.js)
 - `public/` — Static assets (background, car damage image)
+
+## Database
+
+PostgreSQL (Replit managed). Tables:
+- `cars` — saved vehicles (id, autogegevens, kenteken, kleur, brandstof, created_at)
+
+## Auth
+
+- Replit OIDC with PKCE
+- Email whitelist via `ALLOWED_EMAILS` secret (comma-separated)
 
 ## Development
 

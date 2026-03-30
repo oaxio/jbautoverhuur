@@ -6,7 +6,7 @@ import { PDFDocument } from 'pdf-lib';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import SignatureCanvas from 'react-signature-canvas'
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function SectionCard({ title, icon, children }) {
   return (
@@ -64,6 +64,13 @@ export default function CreateContract() {
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const [cars, setCars] = useState([]);
+  const [selectedCarId, setSelectedCarId] = useState('');
+
+  useEffect(() => {
+    fetch('/api/cars').then(r => r.ok ? r.json() : []).then(setCars).catch(() => {});
+  }, []);
 
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
@@ -213,13 +220,68 @@ export default function CreateContract() {
           <Field label="Rijbewijs afgiftedatum" value={RijbewijsAfgifteDatum} onChange={setRijbewijsAfgifteDatum} />
         </SectionCard>
 
-        <SectionCard title="Voertuiggegevens" icon="🚗">
-          <Field label="Autogegevens" value={Autogegevens} onChange={setAutogegevens} />
-          <Field label="Kenteken" value={Kenteken} onChange={setKenteken} />
-          <Field label="Kleur" value={Kleur} onChange={setKleur} />
-          <Field label="Brandstof" value={Brandstof} onChange={setBrandstof} />
-          <Field label="Begin KM-stand" value={startKmStand} onChange={setstartKmStand} />
-        </SectionCard>
+        <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
+          <div className="section-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+            <span>🚗</span> Voertuiggegevens
+          </div>
+
+          {cars.length > 0 && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                Snel laden uit opgeslagen voertuigen
+              </label>
+              <select
+                value={selectedCarId}
+                onChange={e => {
+                  const id = e.target.value;
+                  setSelectedCarId(id);
+                  if (id) {
+                    const car = cars.find(c => String(c.id) === id);
+                    if (car) {
+                      setAutogegevens(car.autogegevens);
+                      setKenteken(car.kenteken);
+                      setKleur(car.kleur);
+                      setBrandstof(car.brandstof);
+                    }
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: 8,
+                  color: 'white',
+                  padding: '0.6rem 0.85rem',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                }}
+              >
+                <option value="" style={{ background: '#1a1a1a' }}>— Selecteer een voertuig —</option>
+                {cars.map(car => (
+                  <option key={car.id} value={car.id} style={{ background: '#1a1a1a' }}>
+                    {car.autogegevens} — {car.kenteken}{car.kleur ? ` (${car.kleur})` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem 2rem' }}>
+            <Field label="Autogegevens" value={Autogegevens} onChange={setAutogegevens} />
+            <Field label="Kenteken" value={Kenteken} onChange={setKenteken} />
+            <Field label="Kleur" value={Kleur} onChange={setKleur} />
+            <Field label="Brandstof" value={Brandstof} onChange={setBrandstof} />
+            <Field label="Begin KM-stand" value={startKmStand} onChange={setstartKmStand} />
+          </div>
+
+          {cars.length === 0 && (
+            <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)' }}>
+              💡 Sla voertuigen op via <a href="/autos" style={{ color: '#e8b84b', textDecoration: 'none' }}>Voertuigbeheer</a> om ze hier snel te laden.
+            </p>
+          )}
+        </div>
 
         <SectionCard title="Verhuurperiode" icon="📅">
           <Field label="Ophaaldatum" value={Ophaaldatum} onChange={setOphaaldatum} />
