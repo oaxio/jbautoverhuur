@@ -188,7 +188,7 @@ export default function IntakePage() {
           <Field label="Geboortedatum" value={geboortedatum} onChange={setGeboortedatum} type="date" required />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <Field label="Telefoonnummer" value={telefoon} onChange={setTelefoon} type="tel" required />
-            <Field label="E-mailadres" value={email} onChange={setEmail} type="email" />
+            <Field label="E-mailadres" value={email} onChange={setEmail} type="email" required />
           </div>
 
           <div style={{

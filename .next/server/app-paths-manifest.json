@@ -1,10 +1,6 @@
 {
   "/page": "app/page.js",
-  "/api/intake/route": "app/api/intake/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/createContract/page": "app/createContract/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/intake/[token]/page": "app/intake/[token]/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
-  "/api/intake/[token]/route": "app/api/intake/[token]/route.js"
+  "/api/auth/config/route": "app/api/auth/config/route.js"
 }

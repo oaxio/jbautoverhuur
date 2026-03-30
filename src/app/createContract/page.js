@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import SignatureCanvas from 'react-signature-canvas'
 import { useState, useRef, useEffect } from "react";
+import { QRCodeSVG } from 'qrcode.react';
 
 function SectionCard({ title, icon, children }) {
   return (
@@ -340,11 +341,25 @@ export default function CreateContract() {
                     {loadingIntake ? 'Controleren…' : '⬇ Gegevens laden'}
                   </button>
                 </div>
-                {intakeStatus === 'pending' && (
-                  <p style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-                    Wacht tot de klant de link heeft ingevuld, klik daarna op "Gegevens laden".
-                  </p>
-                )}
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                  <div style={{
+                    background: 'white',
+                    borderRadius: 10,
+                    padding: '0.55rem',
+                    display: 'inline-flex',
+                    flexShrink: 0,
+                  }}>
+                    <QRCodeSVG value={intakeUrl} size={100} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 140 }}>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: '0 0 0.4rem 0', fontWeight: 600 }}>
+                      Scan of stuur de link
+                    </p>
+                    <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)', margin: 0, lineHeight: 1.5 }}>
+                      Klant scant de QR-code met zijn telefoon, of stuur de link via WhatsApp / e-mail. Klik daarna op "Gegevens laden" zodra de klant klaar is.
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
