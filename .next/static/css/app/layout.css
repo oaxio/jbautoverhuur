@@ -530,78 +530,76 @@ video {
 .top-0 {
   top: 0px;
 }
-.z-10 {
-  z-index: 10;
-}
-.z-20 {
-  z-index: 20;
+.z-30 {
+  z-index: 30;
 }
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
 }
-.mb-16 {
-  margin-bottom: 4rem;
-}
-.mt-16 {
-  margin-top: 4rem;
-}
-.mt-24 {
-  margin-top: 6rem;
-}
-.mt-6 {
-  margin-top: 1.5rem;
-}
-.block {
-  display: block;
-}
 .flex {
   display: flex;
+}
+.inline-flex {
+  display: inline-flex;
 }
 .grid {
   display: grid;
 }
+.h-14 {
+  height: 3.5rem;
+}
 .w-full {
   width: 100%;
 }
-.gap-8 {
-  gap: 2rem;
+.shrink {
+  flex-shrink: 1;
+}
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-2 {
+  gap: 0.5rem;
 }
 .border {
   border-width: 1px;
-}
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
-.p-4 {
-  padding: 1rem;
 }
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
 }
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
+.uppercase {
+  text-transform: uppercase;
 }
-
-body {
-  background: white;
+.no-underline {
+  text-decoration-line: none;
 }
-
-.signature-canvas {
-  background-image: url("/damage-car.jpg");
-  border: 1px solid black;
-  margin-bottom: 20px;
-  background-size: cover;
-  background-repeat: no-repeat;
+.outline {
+  outline-style: solid;
+}
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 body {
   background-image: url("/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
@@ -612,107 +610,96 @@ body::before {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: linear-gradient(to bottom right, black, black);
-  opacity: .6;
+  background: linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(10,10,20,0.88) 100%);
+  z-index: 0;
+}
+
+/* Glass card effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+}
+
+/* Section header */
+.section-header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Signature canvas */
+.signature-canvas {
+  background-image: url("/damage-car.jpg");
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .signature-canvas-2 {
   background-color: white;
-  border: 1px solid black;
-  position: relative;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
 }
 
-.MuiDialog-paper {
-  height: 100%;
-}
-
+/* MUI field overrides for dark bg */
 .MuiFormControl-root label,
-.MuiFormControl-root input {
-  color: white !important;
+.MuiFormControl-root input,
+.MuiInputBase-input {
+  color: rgba(255,255,255,0.92) !important;
+}
+
+.MuiFormLabel-root {
+  color: rgba(255,255,255,0.5) !important;
+  font-size: 0.85rem !important;
 }
 
 .MuiInputBase-root::before {
+  border-color: rgba(255,255,255,0.2) !important;
+}
+
+.MuiInputBase-root::after {
+  border-color: #e8b84b !important;
+}
+
+.MuiInputBase-root:hover::before {
+  border-color: rgba(255,255,255,0.4) !important;
+}
+
+/* Dialog overrides */
+.MuiDialog-paper {
+  height: 100%;
+  background: #111 !important;
   color: white !important;
-  border-color: white !important;
 }
 
-button {
-  background: white !important;
-  color: black !important;
-  border-color: white !important;
+.MuiDialogTitle-root {
+  background: #1a1a1a !important;
+  color: white !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
 }
 
-input[type=password]{
+/* Pincode input */
+input[type=password] {
   border: none;
-  width: 8.5ch;
-  background: 
-    repeating-linear-gradient(90deg, 
-        white 0, 
-        white 1ch, 
-        transparent 0, 
-        transparent 1.5ch) 
-      0 100%/100% 2px no-repeat;
-  font: 5ch consolas, monospace;
-  letter-spacing: .5ch;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 2.5rem;
+  letter-spacing: 1rem;
+  font-family: 'Courier New', monospace;
+  width: 100%;
+  text-align: center;
 }
 
-@media (min-width: 768px) {
-
-  .md\:container {
-    width: 100%;
-  }
-
-  @media (min-width: 640px) {
-
-    .md\:container {
-      max-width: 640px;
-    }
-  }
-
-  @media (min-width: 768px) {
-
-    .md\:container {
-      max-width: 768px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-
-    .md\:container {
-      max-width: 1024px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-
-    .md\:container {
-      max-width: 1280px;
-    }
-  }
-
-  @media (min-width: 1536px) {
-
-    .md\:container {
-      max-width: 1536px;
-    }
-  }
-
-  .md\:mt-24 {
-    margin-top: 6rem;
-  }
-
-  .md\:mt-32 {
-    margin-top: 8rem;
-  }
-
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .md\:p-0 {
-    padding: 0px;
-  }
-} 
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[12].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"Inter","arguments":[{"subsets":["latin"]}],"variableName":"inter"} ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
