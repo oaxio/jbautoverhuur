@@ -94,6 +94,25 @@ export default function Header({ user }) {
                   ⭐ Admin
                 </a>
               )}
+              {user?.tenantId && (
+                <a
+                  href="/instellingen"
+                  title="Huisstijl instellingen"
+                  style={{
+                    fontSize: '0.72rem',
+                    color: tenantColor,
+                    textDecoration: 'none',
+                    background: `${tenantColor}14`,
+                    border: `1px solid ${tenantColor}35`,
+                    borderRadius: 6,
+                    padding: '0.25rem 0.6rem',
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ⚙ Instellingen
+                </a>
+              )}
               {hasMultipleTenants && (
                 <a
                   href="/tenant-select"

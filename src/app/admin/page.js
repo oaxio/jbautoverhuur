@@ -47,6 +47,19 @@ const Input = ({ label, value, onChange, type = 'text', placeholder, required })
   </div>
 );
 
+const ColorPicker = ({ label, value, onChange }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+    <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>{label}</label>
+    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+      <input type="color" value={value || '#000000'} onChange={e => onChange(e.target.value)}
+        style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.14)', background: 'none', cursor: 'pointer', padding: 2, flexShrink: 0 }} />
+      <input type="text" value={value || ''} onChange={e => onChange(e.target.value)} placeholder="#rrggbb"
+        style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 8, color: 'white', padding: '0.55rem 0.8rem', fontSize: '0.88rem', outline: 'none', minWidth: 0 }} />
+      <div style={{ width: 28, height: 28, borderRadius: 6, background: value || '#000', border: '1px solid rgba(255,255,255,0.15)', flexShrink: 0 }} />
+    </div>
+  </div>
+);
+
 const Select = ({ label, value, onChange, options }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
     <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>{label}</label>
@@ -114,26 +127,8 @@ function TenantForm({ initial, onSave, onClose }) {
         <Select label="Status" value={form.status} onChange={set('status')} options={[{ value: 'active', label: 'Actief' }, { value: 'inactive', label: 'Inactief' }, { value: 'suspended', label: 'Gesuspendeerd' }]} />
         <Select label="Billing plan" value={form.billing_plan} onChange={set('billing_plan')} options={[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'enterprise', label: 'Enterprise' }]} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-          <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>Accentkleur</label>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <input type="color" value={form.primary_color} onChange={e => set('primary_color')(e.target.value)}
-              style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.14)', background: 'none', cursor: 'pointer', padding: 2 }} />
-            <input type="text" value={form.primary_color} onChange={e => set('primary_color')(e.target.value)}
-              style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 8, color: 'white', padding: '0.55rem 0.8rem', fontSize: '0.88rem', outline: 'none' }} />
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-          <label style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>Achtergrondkleur</label>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <input type="color" value={form.bg_color || '#0a0a14'} onChange={e => set('bg_color')(e.target.value)}
-              style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.14)', background: 'none', cursor: 'pointer', padding: 2 }} />
-            <input type="text" value={form.bg_color || '#0a0a14'} onChange={e => set('bg_color')(e.target.value)}
-              style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 8, color: 'white', padding: '0.55rem 0.8rem', fontSize: '0.88rem', outline: 'none' }} />
-          </div>
-        </div>
-      </div>
+      <ColorPicker label="Accentkleur" value={form.primary_color} onChange={set('primary_color')} />
+      <ColorPicker label="Achtergrondkleur" value={form.bg_color || '#0a0a14'} onChange={set('bg_color')} />
       <Input label="Logo URL" value={form.logo_url} onChange={set('logo_url')} placeholder="https://..." />
       <Input label="Eigen domein / subdomein" value={form.custom_domain} onChange={set('custom_domain')} placeholder="verhuur.mijnbedrijf.nl" />
       {err && <p style={{ color: '#ff7070', fontSize: '0.82rem', margin: 0 }}>{err}</p>}

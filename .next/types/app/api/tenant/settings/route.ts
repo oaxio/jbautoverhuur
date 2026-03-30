@@ -1,8 +1,8 @@
-// File: /home/runner/workspace/src/app/api/reservations/route.js
-import * as entry from '../../../../../src/app/api/reservations/route.js'
+// File: /home/runner/workspace/src/app/api/tenant/settings/route.js
+import * as entry from '../../../../../../src/app/api/tenant/settings/route.js'
 import type { NextRequest } from 'next/server.js'
 
-type TEntry = typeof import('../../../../../src/app/api/reservations/route.js')
+type TEntry = typeof import('../../../../../../src/app/api/tenant/settings/route.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
