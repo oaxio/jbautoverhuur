@@ -15,14 +15,13 @@ export async function GET(request) {
   const codeVerifier = request.cookies.get('oidc_verifier')?.value;
   const callbackUrl = request.cookies.get('oidc_callback')?.value;
 
-  console.log('[callback] code:', code ? 'present' : 'MISSING');
-  console.log('[callback] state match:', returnedState === storedState ? 'OK' : `MISMATCH (got ${returnedState}, expected ${storedState})`);
-  console.log('[callback] codeVerifier:', codeVerifier ? 'present' : 'MISSING');
-  console.log('[callback] callbackUrl:', callbackUrl);
+  // Derive the public base URL from the stored callback URL or env var
+  const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
+  const publicBase = domain ? `https://${domain}` : (callbackUrl ? new URL(callbackUrl).origin : null);
 
   if (!code || !storedState || !codeVerifier || returnedState !== storedState) {
-    console.log('[callback] guard failed, restarting login');
-    return NextResponse.redirect(new URL('/api/login', request.url));
+    const loginDest = publicBase ? `${publicBase}/api/login` : '/api/login';
+    return NextResponse.redirect(loginDest);
   }
 
   // Exchange authorization code for tokens directly
@@ -41,11 +40,11 @@ export async function GET(request) {
   });
 
   const tokenData = await tokenRes.json();
-  console.log('[callback] token response status:', tokenRes.status, tokenData.error ?? 'OK');
 
   if (!tokenRes.ok || tokenData.error) {
     console.error('[callback] token error:', tokenData);
-    return NextResponse.redirect(new URL('/api/login', request.url));
+    const loginDest = publicBase ? `${publicBase}/api/login` : '/api/login';
+    return NextResponse.redirect(loginDest);
   }
 
   // Fetch user info
@@ -53,21 +52,23 @@ export async function GET(request) {
     headers: { Authorization: `Bearer ${tokenData.access_token}` },
   });
   const userInfo = await userRes.json();
-  console.log('[callback] userinfo sub:', userInfo.sub ?? 'MISSING');
+  console.log('[callback] userInfo keys:', Object.keys(userInfo));
 
   // Store session
   const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
-    id: userInfo.sub,
+    id: userInfo.sub ?? userInfo.id ?? null,
     email: userInfo.email ?? null,
-    firstName: userInfo.first_name ?? null,
-    lastName: userInfo.last_name ?? null,
-    profileImageUrl: userInfo.profile_image_url ?? null,
+    firstName: userInfo.first_name ?? userInfo.given_name ?? null,
+    lastName: userInfo.last_name ?? userInfo.family_name ?? null,
+    profileImageUrl: userInfo.profile_image_url ?? userInfo.picture ?? null,
   };
   await session.save();
 
-  // Redirect home and clear PKCE cookies
-  const response = NextResponse.redirect(new URL('/', request.url));
+  // Redirect to the public home page — never use request.url here as it
+  // contains the internal 0.0.0.0:5000 address, not the public domain.
+  const homeDest = publicBase ? `${publicBase}/` : '/';
+  const response = NextResponse.redirect(homeDest);
   response.cookies.set('oidc_state', '', { maxAge: 0, path: '/' });
   response.cookies.set('oidc_verifier', '', { maxAge: 0, path: '/' });
   response.cookies.set('oidc_callback', '', { maxAge: 0, path: '/' });

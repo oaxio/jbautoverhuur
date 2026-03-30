@@ -10,7 +10,8 @@ export async function GET(request) {
   const state = client.randomState();
 
   const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
-  const baseUrl = domain ? `https://${domain}` : new URL(request.url).origin;
+  // Never use request.url here — it contains the internal 0.0.0.0:5000 address.
+  const baseUrl = domain ? `https://${domain}` : new URL(request.url).origin.replace('http://0.0.0.0', 'https://localhost').replace('http://127.0.0.1', 'https://localhost');
   const callbackUrl = `${baseUrl}/api/callback`;
 
   const authUrl = client.buildAuthorizationUrl(config, {
