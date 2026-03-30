@@ -209,7 +209,7 @@ export default function IntakePage() {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <Field label="Documentnummer (ID / paspoort)" value={documentnummer} onChange={setDocumentnummer} required />
-              <Field label="Rijbewijs afgiftedatum" value={rijbewijsAfgiftedatum} onChange={setRijbewijsAfgiftedatum} type="date" />
+              <Field label="Rijbewijs afgiftedatum" value={rijbewijsAfgiftedatum} onChange={setRijbewijsAfgiftedatum} type="date" required />
             </div>
           </div>
 
