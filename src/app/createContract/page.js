@@ -96,7 +96,17 @@ export default function CreateContract() {
     setGeneratingLink(false);
   };
 
-  const copyIntakeLink = () => {
+  const copyIntakeLink = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'JB Autoverhuur — vul uw gegevens in',
+          text: 'Klik op de link om uw huurgegevens in te vullen:',
+          url: intakeUrl,
+        });
+        return;
+      } catch {}
+    }
     navigator.clipboard.writeText(intakeUrl);
     setIntakeLinkCopied(true);
     setTimeout(() => setIntakeLinkCopied(false), 2000);
@@ -326,7 +336,7 @@ export default function CreateContract() {
                       cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap',
                     }}
                   >
-                    {intakeLinkCopied ? '✓ Gekopieerd' : 'Kopieer'}
+                    {intakeLinkCopied ? '✓ Gekopieerd' : (typeof navigator !== 'undefined' && navigator.share ? '📤 Delen' : 'Kopieer')}
                   </button>
                   <button
                     onClick={loadIntakeData}
@@ -451,8 +461,8 @@ export default function CreateContract() {
         </SectionCard>
 
         <SectionCard title="Tarieven & Betaling" icon="💶">
-          <Field label="Tarief per dag (€)" value={TarievenAuto} onChange={setTarievenAuto} />
-          <Field label="Aantal dagen" value={DagenAuto} onChange={setDagenAuto} />
+          <Field label="Tarief per dag (€)" value={TarievenAuto} onChange={setTarievenAuto} type="number" />
+          <Field label="Aantal dagen" value={DagenAuto} onChange={setDagenAuto} type="number" />
           <Field label="Borg voldaan (datum + tijd)" value={borgVoldaanDatum} onChange={setborgVoldaanDatum} />
           <Field label="Factuurnummer" value={orderNummer} onChange={setOrderNummer} />
         </SectionCard>
