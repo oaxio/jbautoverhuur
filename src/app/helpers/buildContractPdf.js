@@ -159,11 +159,11 @@ export async function buildContractPdf({
     txt(p1, k, W - M - kw, H - 38, { size: 13, f: bold, color: accentColor });
   }
 
-  // Title — extra breathing room after header
-  txt(p1, 'HUURCONTRACT', M, H - 68, { size: 18, f: bold });
-  hLine(p1, M, H - 73, W - M, { thickness: 1.5, color: accentColor });
+  // Title — ruim veld onder de header
+  txt(p1, 'HUURCONTRACT', M, H - 76, { size: 18, f: bold });
+  hLine(p1, M, H - 81, W - M, { thickness: 1.5, color: accentColor });
 
-  let y = H - 96;   // generous gap: 23pt between underline and first section
+  let y = H - 106;   // 25pt ademruimte tussen onderlijning en eerste sectie
 
   // ── HUURDER / BESTUURDER ──
   y = sectionBar(p1, 'HUURDER / BESTUURDER', y);
@@ -322,32 +322,25 @@ export async function buildContractPdf({
     p1.drawRectangle({ x: M, y: y - imgAreaH, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
   }
 
-  // Schade (right) — damage-car.jpg as background, marks on top
+  // Schade (right) — gecombineerde PNG (auto + markeringen al samengevoegd door de frontend)
   const schadeX = col2start;
   const schadeY = y - imgAreaH;
 
-  // Draw car background first
-  if (damageCarImage) {
-    const dims = damageCarImage.scaleToFit(halfW, imgAreaH);
-    const offsetX = (halfW - dims.width) / 2;
-    const offsetY = (imgAreaH - dims.height) / 2;
-    p1.drawImage(damageCarImage, {
-      x: schadeX + offsetX,
-      y: schadeY + offsetY,
-      width: dims.width,
-      height: dims.height,
-    });
-  } else {
-    p1.drawRectangle({ x: schadeX, y: schadeY, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
-  }
-
-  // Overlay drawn damage marks
   if (handtekeningSchadeDataUrl) {
     try {
       const img2 = await pdfDoc.embedPng(handtekeningSchadeDataUrl);
-      // Draw at same area as the car image so marks align
       p1.drawImage(img2, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
-    } catch (_) {}
+    } catch (_) {
+      // Fallback: toon alleen de auto-achtergrond
+      if (damageCarImage) {
+        p1.drawImage(damageCarImage, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
+      }
+    }
+  } else if (damageCarImage) {
+    // Geen markeringen getekend — toon lege auto
+    p1.drawImage(damageCarImage, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
+  } else {
+    p1.drawRectangle({ x: schadeX, y: schadeY, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
   }
 
   // ──────────────── PAGE 2+: ALGEMENE VOORWAARDEN (2 kolommen) ────────────────
@@ -358,9 +351,9 @@ export async function buildContractPdf({
     const pageTop = H - 68;                  // y where text starts (below header)
     const bottomY = M + 16;
 
-    const BODY_SIZE   = 7;
-    const HEAD_SIZE   = 8.5;
-    const BODY_LEAD   = 9.5;
+    const BODY_SIZE   = 6.5;
+    const HEAD_SIZE   = 7.5;
+    const BODY_LEAD   = 8.5;
 
     let tp, col, ty;
 
@@ -397,8 +390,13 @@ export async function buildContractPdf({
       if (isHeader) {
         ty -= 4;
         advance();
-        tp.drawText(l.trim(), { x: getX(), y: ty, size: HEAD_SIZE, font: bold, color: BLACK });
-        ty -= HEAD_SIZE + 4;
+        // Wrap artikel-headers binnen de kolombreedte
+        const headWrapped = wrapText(l.trim(), colW, HEAD_SIZE, bold);
+        for (const hl of headWrapped) {
+          advance();
+          tp.drawText(hl, { x: getX(), y: ty, size: HEAD_SIZE, font: bold, color: BLACK });
+          ty -= HEAD_SIZE + 3;
+        }
         continue;
       }
 

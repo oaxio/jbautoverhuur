@@ -223,8 +223,40 @@ export default function CreateContract() {
     setGenerating(true);
     setOpen(true);
     try {
-      const sigData    = sigCanvas.current?.isEmpty?.()      ? null : sigCanvas.current?.toDataURL('image/png');
-      const damageData = sigCanvasDamage.current?.isEmpty?.() ? null : sigCanvasDamage.current?.toDataURL('image/png');
+      const sigData = sigCanvas.current?.isEmpty?.() ? null : sigCanvas.current?.toDataURL('image/png');
+
+      // Combineer damage-car.jpg achtergrond + getekende markeringen tot één PNG
+      let damageData = null;
+      try {
+        const CSIZE = 300;
+        const offscreen = document.createElement('canvas');
+        offscreen.width  = CSIZE;
+        offscreen.height = CSIZE;
+        const ctx = offscreen.getContext('2d');
+
+        // 1) Teken de autoafbeelding als achtergrond
+        await new Promise((res) => {
+          const bgImg = new Image();
+          bgImg.onload = () => { ctx.drawImage(bgImg, 0, 0, CSIZE, CSIZE); res(); };
+          bgImg.onerror = res;
+          bgImg.src = '/damage-car.jpg';
+        });
+
+        // 2) Teken de markeringen er bovenop (alleen als de canvas niet leeg is)
+        if (!sigCanvasDamage.current?.isEmpty?.()) {
+          const marksUrl = sigCanvasDamage.current.toDataURL('image/png');
+          await new Promise((res) => {
+            const marksImg = new Image();
+            marksImg.onload = () => { ctx.drawImage(marksImg, 0, 0, CSIZE, CSIZE); res(); };
+            marksImg.onerror = res;
+            marksImg.src = marksUrl;
+          });
+        }
+
+        damageData = offscreen.toDataURL('image/png');
+      } catch (_) {
+        damageData = sigCanvasDamage.current?.isEmpty?.() ? null : sigCanvasDamage.current?.toDataURL('image/png');
+      }
 
       const pdfBytes = await buildContractPdf({
         voornaam:            Voornaam,
@@ -556,11 +588,18 @@ export default function CreateContract() {
         <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
           <div className="section-header">🖊 Schaderapport — teken op de auto</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <SignatureCanvas
-              ref={sigCanvasDamage}
-              penColor="red"
-              canvasProps={{ width: 300, height: 300, className: 'signature-canvas' }}
-            />
+            <div style={{ position: 'relative', width: 300, height: 300 }}>
+              <img
+                src="/damage-car.jpg"
+                alt="auto schadetekening"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', borderRadius: 6, pointerEvents: 'none' }}
+              />
+              <SignatureCanvas
+                ref={sigCanvasDamage}
+                penColor="red"
+                canvasProps={{ width: 300, height: 300, className: 'signature-canvas', style: { background: 'transparent', position: 'relative', zIndex: 1 } }}
+              />
+            </div>
             <button
               onClick={() => sigCanvasDamage.current.clear()}
               style={{
