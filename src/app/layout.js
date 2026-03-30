@@ -69,10 +69,13 @@ export default function RootLayout({ children }) {
   const [user, setUser] = useState(undefined);
   const [loginUrl, setLoginUrl] = useState('');
   const [domainTenant, setDomainTenant] = useState(undefined); // undefined = still loading
-  // Read cached branding from localStorage synchronously so there's no flash on navigation
-  const [storedBranding] = useState(() => readStoredBranding());
+  // Start empty (matches server render), then populate from localStorage after mount
+  const [storedBranding, setStoredBranding] = useState({});
 
   useEffect(() => {
+    // Read cached branding immediately after mount to avoid flash on soft navigations
+    setStoredBranding(readStoredBranding());
+
     fetch('/api/auth/user', { credentials: 'include' })
       .then(res => res.ok ? res.json() : null)
       .then(data => setUser(data))
