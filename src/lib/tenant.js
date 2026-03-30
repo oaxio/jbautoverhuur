@@ -36,7 +36,7 @@ export async function resolveUserTenants(userSub, userEmail) {
   const db = getDb();
 
   let result = await db.query(
-    `SELECT t.id, t.name, t.slug, t.primary_color, tu.role
+    `SELECT t.id, t.name, t.slug, t.primary_color, t.logo_url, tu.role
      FROM tenant_users tu
      JOIN tenants t ON t.id = tu.tenant_id
      WHERE tu.user_sub = $1 AND t.status = 'active'
@@ -57,7 +57,7 @@ export async function resolveUserTenants(userSub, userEmail) {
           [tenantId, userSub, userEmail]
         );
         result = await db.query(
-          `SELECT t.id, t.name, t.slug, t.primary_color, tu.role
+          `SELECT t.id, t.name, t.slug, t.primary_color, t.logo_url, tu.role
            FROM tenant_users tu
            JOIN tenants t ON t.id = tu.tenant_id
            WHERE tu.user_sub = $1 AND t.status = 'active'`,

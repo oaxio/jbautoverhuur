@@ -108,7 +108,6 @@ function TenantForm({ initial, onSave, onClose }) {
         <Input label="Kleurcode" value={form.primary_color} onChange={set('primary_color')} placeholder="#e8b84b" />
         <Input label="Logo URL" value={form.logo_url} onChange={set('logo_url')} placeholder="https://..." />
       </div>
-      <Input label="Custom domein" value={form.custom_domain} onChange={set('custom_domain')} placeholder="app.bedrijf.nl" />
       {err && <p style={{ color: '#ff7070', fontSize: '0.82rem', margin: 0 }}>{err}</p>}
       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.25rem' }}>
         <Btn onClick={onClose}>Annuleren</Btn>
