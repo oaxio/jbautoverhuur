@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: white;
+}
+
+.signature-canvas {
+  background-image: url("/damage-car.jpg");
+  border: 1px solid black;
+  margin-bottom: 20px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body {
+  background-image: url("/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: linear-gradient(to bottom right, black, black);
+  opacity: .6;
+}
+
+.signature-canvas-2 {
+  background-color: white;
+  border: 1px solid black;
+  position: relative;
+}
+
+.MuiDialog-paper {
+  height: 100%;
+}
+
+.MuiFormControl-root label,
+.MuiFormControl-root input {
+  color: white !important;
+}
+
+.MuiInputBase-root::before {
+  color: white !important;
+  border-color: white !important;
+}
+
+button {
+  background: white !important;
+  color: black !important;
+  border-color: white !important;
+}
+
+input[type=password]{
+  border: none;
+  width: 8.5ch;
+  background: 
+    repeating-linear-gradient(90deg, 
+        white 0, 
+        white 1ch, 
+        transparent 0, 
+        transparent 1.5ch) 
+      0 100%/100% 2px no-repeat;
+  font: 5ch consolas, monospace;
+  letter-spacing: .5ch;
+} 
