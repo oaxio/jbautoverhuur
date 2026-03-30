@@ -1,46 +1,72 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
-import * as client from 'openid-client';
-import { getOidcConfig, sessionOptions } from '../../../lib/auth';
+import { sessionOptions } from '../../../lib/auth';
+
+const TOKEN_ENDPOINT = 'https://replit.com/oidc/token';
+const USERINFO_ENDPOINT = 'https://replit.com/oidc/userinfo';
 
 export async function GET(request) {
-  const state = request.cookies.get('oidc_state')?.value;
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const returnedState = url.searchParams.get('state');
+
+  const storedState = request.cookies.get('oidc_state')?.value;
   const codeVerifier = request.cookies.get('oidc_verifier')?.value;
   const callbackUrl = request.cookies.get('oidc_callback')?.value;
 
-  if (!state || !codeVerifier) {
+  console.log('[callback] code:', code ? 'present' : 'MISSING');
+  console.log('[callback] state match:', returnedState === storedState ? 'OK' : `MISMATCH (got ${returnedState}, expected ${storedState})`);
+  console.log('[callback] codeVerifier:', codeVerifier ? 'present' : 'MISSING');
+  console.log('[callback] callbackUrl:', callbackUrl);
+
+  if (!code || !storedState || !codeVerifier || returnedState !== storedState) {
+    console.log('[callback] guard failed, restarting login');
     return NextResponse.redirect(new URL('/api/login', request.url));
   }
 
-  const config = await getOidcConfig();
+  // Exchange authorization code for tokens directly
+  const body = new URLSearchParams({
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: callbackUrl,
+    client_id: process.env.REPL_ID,
+    code_verifier: codeVerifier,
+  });
 
-  let tokens;
-  try {
-    tokens = await client.authorizationCodeGrant(config, new URL(request.url), {
-      pkceCodeVerifier: codeVerifier,
-      expectedState: state,
-      redirectUri: callbackUrl,
-    });
-  } catch (err) {
-    console.error('OIDC callback error:', err);
+  const tokenRes = await fetch(TOKEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+  });
+
+  const tokenData = await tokenRes.json();
+  console.log('[callback] token response status:', tokenRes.status, tokenData.error ?? 'OK');
+
+  if (!tokenRes.ok || tokenData.error) {
+    console.error('[callback] token error:', tokenData);
     return NextResponse.redirect(new URL('/api/login', request.url));
   }
 
-  const claims = tokens.claims();
+  // Fetch user info
+  const userRes = await fetch(USERINFO_ENDPOINT, {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` },
+  });
+  const userInfo = await userRes.json();
+  console.log('[callback] userinfo sub:', userInfo.sub ?? 'MISSING');
 
-  // Write user session via cookies() — this is included in any response returned
+  // Store session
   const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
-    id: claims.sub,
-    email: claims.email ?? null,
-    firstName: claims.first_name ?? null,
-    lastName: claims.last_name ?? null,
-    profileImageUrl: claims.profile_image_url ?? null,
+    id: userInfo.sub,
+    email: userInfo.email ?? null,
+    firstName: userInfo.first_name ?? null,
+    lastName: userInfo.last_name ?? null,
+    profileImageUrl: userInfo.profile_image_url ?? null,
   };
   await session.save();
 
-  // Redirect home and clear the PKCE cookies
+  // Redirect home and clear PKCE cookies
   const response = NextResponse.redirect(new URL('/', request.url));
   response.cookies.set('oidc_state', '', { maxAge: 0, path: '/' });
   response.cookies.set('oidc_verifier', '', { maxAge: 0, path: '/' });
