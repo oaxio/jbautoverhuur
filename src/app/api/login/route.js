@@ -11,8 +11,10 @@ export async function GET(request) {
   const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier);
   const state = client.randomState();
 
-  const origin = new URL(request.url).origin;
-  const callbackUrl = `${origin}/api/callback`;
+  // Use the Replit public domain so the redirect_uri is always reachable
+  const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
+  const baseUrl = domain ? `https://${domain}` : new URL(request.url).origin;
+  const callbackUrl = `${baseUrl}/api/callback`;
 
   const authUrl = client.buildAuthorizationUrl(config, {
     redirect_uri: callbackUrl,
