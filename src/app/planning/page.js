@@ -81,7 +81,7 @@ export default function PlanningPage() {
   });
 
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ car_id: '', first_name: '', last_name: '', phone: '', start_date: '', end_date: '', notes: '' });
+  const [form, setForm] = useState({ car_id: '', first_name: '', last_name: '', phone: '', price_per_day: '', start_date: '', end_date: '', notes: '' });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -104,7 +104,7 @@ export default function PlanningPage() {
   const nextMonth = () => setViewStart(d => { const n = new Date(d); n.setMonth(n.getMonth() + 1); n.setDate(1); return n; });
 
   const openAdd = (carId = '', startDate = '') => {
-    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), first_name: '', last_name: '', phone: '', start_date: startDate, end_date: startDate, notes: '' });
+    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), first_name: '', last_name: '', phone: '', price_per_day: '', start_date: startDate, end_date: startDate, notes: '' });
     setModal({ type: 'add' });
   };
 
@@ -114,6 +114,7 @@ export default function PlanningPage() {
       first_name: res.first_name || res.customer_name?.split(' ')[0] || '',
       last_name: res.last_name || res.customer_name?.split(' ').slice(1).join(' ') || '',
       phone: res.phone || '',
+      price_per_day: res.price_per_day ? String(res.price_per_day) : '',
       start_date: res.start_date?.split('T')[0] || res.start_date,
       end_date: res.end_date?.split('T')[0] || res.end_date,
       notes: res.notes || '',
@@ -310,9 +311,14 @@ export default function PlanningPage() {
               <input value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} style={inputStyle} placeholder="Jansen" />
             </Field>
           </div>
-          <Field label="Telefoonnummer">
-            <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+31 6 ..." type="tel" />
-          </Field>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <Field label="Telefoonnummer">
+              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+31 6 ..." type="tel" />
+            </Field>
+            <Field label="Prijs per dag (€)">
+              <input value={form.price_per_day} onChange={e => setForm(f => ({ ...f, price_per_day: e.target.value }))} style={inputStyle} placeholder="0.00" type="number" min="0" step="0.01" />
+            </Field>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <Field label="Startdatum *">
               <input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} style={inputStyle} />
@@ -355,6 +361,7 @@ export default function PlanningPage() {
                       ophaaldatum: start || '',
                       dagen: String(dagen),
                       carId: form.car_id || '',
+                      tarief: form.price_per_day || '',
                     });
                     window.location.href = `/createContract?${params.toString()}`;
                   }}
