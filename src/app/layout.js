@@ -181,6 +181,21 @@ export default function RootLayout({ children }) {
     content = children;
   } else if (isLoading) {
     content = spinner;
+  } else if (!isLockedToDomain) {
+    // Not on a registered custom domain — no access at all
+    content = (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+        <div className="glass-card" style={{ width: '100%', maxWidth: '380px', padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔒</div>
+          <h2 style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+            Niet beschikbaar
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', lineHeight: 1.55, margin: 0 }}>
+            Toegang is alleen mogelijk via jouw eigen domein.
+          </p>
+        </div>
+      </div>
+    );
   } else if (!isAuthenticated) {
     content = loginScreen;
   } else if (noTenantAccess) {
