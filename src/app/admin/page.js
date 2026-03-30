@@ -81,15 +81,25 @@ function TenantForm({ initial, onSave, onClose }) {
   const [err, setErr] = useState('');
   const set = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
 
+  const cleanDomain = (v) => v
+    .toLowerCase().trim()
+    .replace(/^https?:\/\//, '')
+    .replace(/\/.*$/, '')
+    .replace(/:.*$/, '');
+
   const autoSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   const save = async () => {
     setSaving(true); setErr('');
     try {
+      const payload = {
+        ...form,
+        custom_domain: form.custom_domain ? cleanDomain(form.custom_domain) : '',
+      };
       if (initial?.id) {
-        await api(`/api/admin/tenants/${initial.id}`, 'PUT', form);
+        await api(`/api/admin/tenants/${initial.id}`, 'PUT', payload);
       } else {
-        await api('/api/admin/tenants', 'POST', form);
+        await api('/api/admin/tenants', 'POST', payload);
       }
       onSave();
     } catch (e) { setErr(e.message); }

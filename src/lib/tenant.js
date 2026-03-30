@@ -6,17 +6,27 @@ import { getDb } from './db';
  * Looks up a tenant by its custom_domain.
  * Used for domain-based automatic tenant selection.
  */
+function normalizeHost(raw) {
+  if (!raw) return '';
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/^https?:\/\//, '') // strip protocol
+    .replace(/\/.*$/, '')        // strip path
+    .split(':')[0];              // strip port
+}
+
 export async function getTenantByDomain(host) {
   if (!host) return null;
-  // Strip port if present
-  const cleanHost = host.split(':')[0].toLowerCase().trim();
-  // Ignore Replit's own domains
+  const cleanHost = normalizeHost(host);
+  if (!cleanHost) return null;
+  // Ignore Replit's own domains (handled separately as dev mode)
   if (cleanHost.endsWith('.replit.dev') || cleanHost.endsWith('.repl.co') || cleanHost === 'localhost') return null;
   const db = getDb();
   const result = await db.query(
     `SELECT id, name, slug, primary_color, logo_url, custom_domain
      FROM tenants
-     WHERE LOWER(custom_domain) = $1 AND status = 'active'
+     WHERE LOWER(REGEXP_REPLACE(custom_domain, '^https?://', '')) = $1 AND status = 'active'
      LIMIT 1`,
     [cleanHost]
   );
