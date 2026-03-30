@@ -1,14 +1,15 @@
 {
   "/page": "app/page.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/login/route": "app/api/login/route.js",
+  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js",
   "/icon.png/route": "app/icon.png/route.js",
-  "/api/callback/route": "app/api/callback/route.js",
   "/api/cars/route": "app/api/cars/route.js",
   "/api/reservations/route": "app/api/reservations/route.js",
-  "/api/admin/users/route": "app/api/admin/users/route.js",
   "/admin/page": "app/admin/page.js",
-  "/api/admin/tenants/route": "app/api/admin/tenants/route.js"
+  "/api/admin/tenants/route": "app/api/admin/tenants/route.js",
+  "/planning/page": "app/planning/page.js",
+  "/api/reservations/[id]/route": "app/api/reservations/[id]/route.js",
+  "/autos/page": "app/autos/page.js",
+  "/api/cars/[id]/route": "app/api/cars/[id]/route.js"
 }
