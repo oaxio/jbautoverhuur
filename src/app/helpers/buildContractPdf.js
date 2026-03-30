@@ -64,7 +64,7 @@ function sanitize(text) {
 }
 
 function wrapText(text, maxWidth, fontSize, font) {
-  const words = String(text || '').split(' ');
+  const words = sanitize(String(text || '')).split(' ');
   const lines = [];
   let cur = '';
   for (const w of words) {
@@ -371,7 +371,7 @@ export async function buildContractPdf({
     const maxW = W - M * 2;
 
     for (const rawLine of contractTerms.split('\n')) {
-      const l = rawLine.trimEnd();
+      const l = sanitize(rawLine.trimEnd());
 
       if (ty < M + 18) {
         const next = newTermsPage();
