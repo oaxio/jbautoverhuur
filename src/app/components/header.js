@@ -68,17 +68,7 @@ export default function Header({ user }) {
                 Uitloggen
               </a>
             </>
-          ) : (
-            <div style={{
-              fontSize: '0.7rem',
-              letterSpacing: '0.12em',
-              color: 'rgba(255,255,255,0.35)',
-              textTransform: 'uppercase',
-              fontWeight: 600,
-            }}>
-              Contract Systeem
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
     </header>
