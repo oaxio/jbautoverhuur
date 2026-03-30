@@ -96,7 +96,7 @@ export default function RootLayout({ children }) {
                 </p>
                 <button
                   onClick={() => {
-                    if (loginUrl) window.open(loginUrl, '_blank', 'noopener');
+                    if (loginUrl) window.location.href = loginUrl;
                   }}
                   style={{
                     display: 'block',
