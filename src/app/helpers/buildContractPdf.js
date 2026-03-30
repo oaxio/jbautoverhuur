@@ -77,7 +77,7 @@ export async function buildContractPdf({
   tenantName = 'Autoverhuur',
   primaryColor = '#e8b84b',
   bgColor = '#0a0a14',
-  logoUrl = '',
+  logoDataUrl = null,
   bedrijfAdres = '',
   bedrijfTelefoon = '',
   bedrijfEmail = '',
@@ -97,12 +97,13 @@ export async function buildContractPdf({
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const reg  = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  // ── Embed tenant logo ──
+  // ── Embed tenant logo (als data-URL, omzeilt CORS) ──
   let logoImage = null;
-  if (logoUrl) {
+  if (logoDataUrl) {
     try {
-      const res   = await fetch(logoUrl);
-      const bytes = new Uint8Array(await res.arrayBuffer());
+      // data-URL naar bytes omzetten
+      const base64 = logoDataUrl.split(',')[1];
+      const bytes  = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
       try { logoImage = await pdfDoc.embedPng(bytes); }
       catch { logoImage = await pdfDoc.embedJpg(bytes); }
     } catch (_) {}

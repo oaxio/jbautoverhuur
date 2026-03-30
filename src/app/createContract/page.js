@@ -229,11 +229,32 @@ export default function CreateContract() {
     return `${d}-${m}-${y} ${time}`;
   };
 
+  // Zet een afbeeldings-URL om naar een data-URL via een canvas (omzeilt CORS)
+  const urlToDataUrl = (src) => new Promise((resolve) => {
+    if (!src) return resolve(null);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        resolve(c.toDataURL('image/png'));
+      } catch { resolve(null); }
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+
   const printToPdf = async () => {
     setGenerating(true);
     setOpen(true);
     try {
       const sigData = sigCanvas.current?.isEmpty?.() ? null : sigCanvas.current?.toDataURL('image/png');
+
+      // Logo als data-URL laden zodat de PDF-builder het zonder fetch kan inbedden
+      const logoDataUrl = await urlToDataUrl(tenantLogoUrl);
 
       // Combineer damage-car.jpg achtergrond + getekende markeringen tot één PNG
       let damageData = null;
@@ -300,7 +321,7 @@ export default function CreateContract() {
         tenantName:          tenantName,
         primaryColor:        tenantPrimaryColor,
         bgColor:             tenantBgColor,
-        logoUrl:             tenantLogoUrl,
+        logoDataUrl:         logoDataUrl,
         bedrijfAdres:        bedrijfAdres,
         bedrijfTelefoon:     bedrijfTelefoon,
         bedrijfEmail:        bedrijfEmail,
