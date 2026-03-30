@@ -1,9 +1,6 @@
 {
   "/page": "app/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/planning/page": "app/planning/page.js",
-  "/api/reservations/route": "app/api/reservations/route.js",
-  "/api/cars/route": "app/api/cars/route.js"
+  "/icon.png/route": "app/icon.png/route.js",
+  "/api/auth/config/route": "app/api/auth/config/route.js"
 }

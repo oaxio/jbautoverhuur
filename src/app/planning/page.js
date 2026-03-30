@@ -81,7 +81,7 @@ export default function PlanningPage() {
   });
 
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ car_id: '', customer_name: '', start_date: '', end_date: '', notes: '' });
+  const [form, setForm] = useState({ car_id: '', customer_name: '', phone: '', start_date: '', end_date: '', notes: '' });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -104,7 +104,7 @@ export default function PlanningPage() {
   const nextMonth = () => setViewStart(d => { const n = new Date(d); n.setMonth(n.getMonth() + 1); n.setDate(1); return n; });
 
   const openAdd = (carId = '', startDate = '') => {
-    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), customer_name: '', start_date: startDate, end_date: startDate, notes: '' });
+    setForm({ car_id: carId ? String(carId) : (cars[0] ? String(cars[0].id) : ''), customer_name: '', phone: '', start_date: startDate, end_date: startDate, notes: '' });
     setModal({ type: 'add' });
   };
 
@@ -112,6 +112,7 @@ export default function PlanningPage() {
     setForm({
       car_id: String(res.car_id),
       customer_name: res.customer_name,
+      phone: res.phone || '',
       start_date: res.start_date?.split('T')[0] || res.start_date,
       end_date: res.end_date?.split('T')[0] || res.end_date,
       notes: res.notes || '',
@@ -258,7 +259,7 @@ export default function PlanningPage() {
                         <div
                           key={res.id}
                           onClick={e => { e.stopPropagation(); openEdit(res); }}
-                          title={`${res.customer_name} | ${fmtDateNL(resStart)} – ${fmtDateNL(resEnd)}${res.notes ? '\n' + res.notes : ''}`}
+                          title={`${res.customer_name}${res.phone ? ' · ' + res.phone : ''} | ${fmtDateNL(resStart)} – ${fmtDateNL(resEnd)}${res.notes ? '\n' + res.notes : ''}`}
                           style={{
                             position: 'absolute',
                             left: clampedStart * DAY_W + 2,
@@ -300,9 +301,14 @@ export default function PlanningPage() {
               ))}
             </select>
           </Field>
-          <Field label="Klantnaam *">
-            <input value={form.customer_name} onChange={e => setForm(f => ({ ...f, customer_name: e.target.value }))} style={inputStyle} placeholder="Voornaam Achternaam" />
-          </Field>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <Field label="Klantnaam *">
+              <input value={form.customer_name} onChange={e => setForm(f => ({ ...f, customer_name: e.target.value }))} style={inputStyle} placeholder="Voornaam Achternaam" />
+            </Field>
+            <Field label="Telefoonnummer">
+              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+31 6 ..." type="tel" />
+            </Field>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <Field label="Startdatum *">
               <input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} style={inputStyle} />

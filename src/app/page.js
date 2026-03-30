@@ -48,10 +48,11 @@ export default function Home() {
           gap: '1.25rem',
           width: '100%',
           maxWidth: 960,
+          alignItems: 'stretch',
         }}>
-          <a href="/createContract" style={{ textDecoration: 'none' }}>
+          <a href="/createContract" style={{ textDecoration: 'none', display: 'flex', height: '100%' }}>
             <div className="glass-card" style={{
-              padding: '2rem',
+              padding: '2rem', flex: 1,
               transition: 'border-color 0.2s, transform 0.2s',
               cursor: 'pointer',
             }}
@@ -117,9 +118,9 @@ export default function Home() {
             </div>
           </a>
 
-          <a href="/planning" style={{ textDecoration: 'none' }}>
+          <a href="/planning" style={{ textDecoration: 'none', display: 'flex', height: '100%' }}>
             <div className="glass-card" style={{
-              padding: '2rem',
+              padding: '2rem', flex: 1,
               transition: 'border-color 0.2s, transform 0.2s',
               cursor: 'pointer',
             }}
@@ -156,9 +157,9 @@ export default function Home() {
             </div>
           </a>
 
-          <a href="/autos" style={{ textDecoration: 'none' }}>
+          <a href="/autos" style={{ textDecoration: 'none', display: 'flex', height: '100%' }}>
             <div className="glass-card" style={{
-              padding: '2rem',
+              padding: '2rem', flex: 1,
               transition: 'border-color 0.2s, transform 0.2s',
               cursor: 'pointer',
             }}
