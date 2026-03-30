@@ -88,9 +88,20 @@ export default function RootLayout({ children }) {
                 </p>
                 <button
                   onClick={() => {
-                    // Break out of any iframe so OAuth redirect works in all browsers
-                    const target = window.top || window;
-                    target.location.href = '/api/login';
+                    // In Replit preview the app runs inside an iframe.
+                    // Accessing window.top.location from a cross-origin iframe
+                    // throws a SecurityError, so detect this and open a new tab.
+                    try {
+                      if (window.self !== window.top) {
+                        window.open('/api/login', '_blank', 'noopener');
+                        return;
+                      }
+                    } catch (_) {
+                      // cross-origin iframe — window.top is blocked
+                      window.open('/api/login', '_blank', 'noopener');
+                      return;
+                    }
+                    window.location.href = '/api/login';
                   }}
                   style={{
                     display: 'block',
