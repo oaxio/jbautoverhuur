@@ -53,7 +53,10 @@ export default function CreateContract() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   });
-  const [OphaalTijd, setOphaalTijd] = useState('');
+  const [OphaalTijd, setOphaalTijd] = useState(() => {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  });
   const [Autogegevens, setAutogegevens] = useState('');
   const [Kenteken, setKenteken] = useState('');
   const [Kleur, setKleur] = useState('');
