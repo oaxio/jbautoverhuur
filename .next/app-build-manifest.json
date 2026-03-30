@@ -6,10 +6,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/createContract/page": [
+    "/instellingen/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/createContract/page.js"
+      "static/chunks/app/instellingen/page.js"
     ]
   }
 }

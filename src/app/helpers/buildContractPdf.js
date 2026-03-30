@@ -33,6 +33,36 @@ function fmtDateTime(v) {
   return `${fmtDate(date)} ${time || ''}`.trim();
 }
 
+function sanitize(text) {
+  if (!text) return '';
+  const MAP = {
+    '\u2022': '-',   // bullet •
+    '\u25CB': 'o',   // white circle ○
+    '\u25CF': 'o',   // black circle ●
+    '\u25BA': '>',   // filled right triangle ►
+    '\u2013': '-',   // en dash –
+    '\u2014': '-',   // em dash —
+    '\u2015': '-',   // horizontal bar ―
+    '\u2026': '...',  // ellipsis …
+    '\u201C': '"',   // left double quote "
+    '\u201D': '"',   // right double quote "
+    '\u2018': "'",   // left single quote '
+    '\u2019': "'",   // right single quote '
+    '\u20AC': 'EUR', // euro sign €
+    '\u00D7': 'x',   // multiplication ×
+    '\u2212': '-',   // minus −
+    '\u2192': '->',  // right arrow →
+    '\u2190': '<-',  // left arrow ←
+    '\u00B7': '-',   // middle dot ·
+    '\u2010': '-',   // hyphen ‐
+    '\u2011': '-',   // non-breaking hyphen ‑
+    '\u00A0': ' ',   // non-breaking space
+    '\u00AB': '"',   // «
+    '\u00BB': '"',   // »
+  };
+  return String(text).replace(/[^\x20-\xFF]/g, ch => MAP[ch] ?? '?');
+}
+
 function wrapText(text, maxWidth, fontSize, font) {
   const words = String(text || '').split(' ');
   const lines = [];
@@ -93,7 +123,7 @@ export async function buildContractPdf({
 
   // ── Drawing helpers ──
   const txt = (page, text, x, y, { size = 8.5, f = reg, color = BLACK } = {}) => {
-    const s = String(text ?? '');
+    const s = sanitize(text);
     if (!s) return;
     page.drawText(s, { x, y, size, font: f, color });
   };

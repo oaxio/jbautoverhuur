@@ -1,8 +1,4 @@
 {
-  "/createContract/page": "app/createContract/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/icon.png/route": "app/icon.png/route.js",
-  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js"
+  "/instellingen/page": "app/instellingen/page.js",
+  "/api/tenant/settings/route": "app/api/tenant/settings/route.js"
 }
