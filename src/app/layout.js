@@ -9,12 +9,20 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({ children }) {
   const [user, setUser] = useState(undefined);
+  const [loginUrl, setLoginUrl] = useState('');
 
   useEffect(() => {
     fetch('/api/auth/user', { credentials: 'include' })
       .then(res => res.ok ? res.json() : null)
       .then(data => setUser(data))
       .catch(() => setUser(null));
+
+    // Fetch the absolute login URL from the server so we never end up
+    // navigating to http://0.0.0.0:5000 (the internal dev address).
+    fetch('/api/auth/config')
+      .then(res => res.json())
+      .then(data => setLoginUrl(data.loginUrl))
+      .catch(() => setLoginUrl('/api/login'));
   }, []);
 
   const isLoading = user === undefined;
@@ -88,10 +96,7 @@ export default function RootLayout({ children }) {
                 </p>
                 <button
                   onClick={() => {
-                    // Use the absolute app URL so the browser can reach it
-                    // even when the preview pane loads via http://0.0.0.0:5000.
-                    const base = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-                    window.open(`${base}/api/login`, '_blank', 'noopener');
+                    if (loginUrl) window.open(loginUrl, '_blank', 'noopener');
                   }}
                   style={{
                     display: 'block',
