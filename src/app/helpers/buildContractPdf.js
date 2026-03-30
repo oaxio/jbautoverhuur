@@ -36,29 +36,12 @@ function fmtDateTime(v) {
 function sanitize(text) {
   if (!text) return '';
   const MAP = {
-    '\u2022': '-',   // bullet •
-    '\u25CB': 'o',   // white circle ○
-    '\u25CF': 'o',   // black circle ●
-    '\u25BA': '>',   // filled right triangle ►
-    '\u2013': '-',   // en dash –
-    '\u2014': '-',   // em dash —
-    '\u2015': '-',   // horizontal bar ―
-    '\u2026': '...',  // ellipsis …
-    '\u201C': '"',   // left double quote "
-    '\u201D': '"',   // right double quote "
-    '\u2018': "'",   // left single quote '
-    '\u2019': "'",   // right single quote '
-    '\u20AC': 'EUR', // euro sign €
-    '\u00D7': 'x',   // multiplication ×
-    '\u2212': '-',   // minus −
-    '\u2192': '->',  // right arrow →
-    '\u2190': '<-',  // left arrow ←
-    '\u00B7': '-',   // middle dot ·
-    '\u2010': '-',   // hyphen ‐
-    '\u2011': '-',   // non-breaking hyphen ‑
-    '\u00A0': ' ',   // non-breaking space
-    '\u00AB': '"',   // «
-    '\u00BB': '"',   // »
+    '\u2022': '-',   '\u25CB': 'o',   '\u25CF': 'o',   '\u25BA': '>',
+    '\u2013': '-',   '\u2014': '-',   '\u2015': '-',   '\u2026': '...',
+    '\u201C': '"',   '\u201D': '"',   '\u2018': "'",   '\u2019': "'",
+    '\u20AC': 'EUR', '\u00D7': 'x',   '\u2212': '-',   '\u2192': '->',
+    '\u2190': '<-',  '\u00B7': '-',   '\u2010': '-',   '\u2011': '-',
+    '\u00A0': ' ',   '\u00AB': '"',   '\u00BB': '"',
   };
   return String(text).replace(/[^\x20-\xFF]/g, ch => MAP[ch] ?? '?');
 }
@@ -102,7 +85,6 @@ export async function buildContractPdf({
   const prijsBtw = (autoPrijs / (100 + btw)) * btw;
   const prijsExcBtw = autoPrijs - prijsBtw;
 
-  // Parse tenant colors with fallbacks
   const accentColor = hexToRgb(primaryColor) || rgb(0.91, 0.72, 0.29);
   const headerBg    = hexToRgb(bgColor)       || rgb(0.08, 0.08, 0.12);
 
@@ -110,7 +92,7 @@ export async function buildContractPdf({
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const reg  = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  // Try embedding logo
+  // ── Embed tenant logo ──
   let logoImage = null;
   if (logoUrl) {
     try {
@@ -120,6 +102,14 @@ export async function buildContractPdf({
       catch { logoImage = await pdfDoc.embedJpg(bytes); }
     } catch (_) {}
   }
+
+  // ── Embed damage-car.jpg background ──
+  let damageCarImage = null;
+  try {
+    const res   = await fetch('/damage-car.jpg');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    damageCarImage = await pdfDoc.embedJpg(bytes);
+  } catch (_) {}
 
   // ── Drawing helpers ──
   const txt = (page, text, x, y, { size = 8.5, f = reg, color = BLACK } = {}) => {
@@ -142,20 +132,15 @@ export async function buildContractPdf({
     return y - gap;
   };
 
-  // ── Header builder (reused for terms pages) ──
+  // ── Header (reused for terms pages) ──
   const drawHeader = (page, subtitle = '') => {
     fillRect(page, 0, H - 48, W, 48, headerBg);
-
     let nameX = M;
-
-    // Logo (max 80x32 pt)
     if (logoImage) {
       const dims = logoImage.scaleToFit(80, 32);
       page.drawImage(logoImage, { x: M, y: H - 44, width: dims.width, height: dims.height });
       nameX = M + dims.width + 10;
     }
-
-    // Company name
     txt(page, tenantName, nameX, H - 26, { size: 14, f: bold, color: accentColor });
     if (subtitle) {
       txt(page, subtitle, nameX, H - 39, { size: 6.5, color: rgb(0.6, 0.6, 0.6) });
@@ -167,7 +152,6 @@ export async function buildContractPdf({
 
   drawHeader(p1);
 
-  // Kenteken (top right of header)
   if (kenteken) {
     const k = kenteken.toUpperCase();
     const kw = bold.widthOfTextAtSize(k, 13);
@@ -175,15 +159,14 @@ export async function buildContractPdf({
     txt(p1, k, W - M - kw, H - 38, { size: 13, f: bold, color: accentColor });
   }
 
-  // Title + accent underline (with extra breathing room below header)
-  txt(p1, 'HUURCONTRACT', M, H - 64, { size: 18, f: bold });
-  hLine(p1, M, H - 69, W - M, { thickness: 1.5, color: accentColor });
+  // Title — extra breathing room after header
+  txt(p1, 'HUURCONTRACT', M, H - 68, { size: 18, f: bold });
+  hLine(p1, M, H - 73, W - M, { thickness: 1.5, color: accentColor });
 
-  let y = H - 88;   // 19pt gap between underline and first section
+  let y = H - 96;   // generous gap: 23pt between underline and first section
 
   // ── HUURDER / BESTUURDER ──
   y = sectionBar(p1, 'HUURDER / BESTUURDER', y);
-
   const c2 = W / 2 + 5;
   const lw = 96;
 
@@ -253,13 +236,9 @@ export async function buildContractPdf({
   const cw7 = (W - M * 2) / 7;
   const tH = ['Tarief/dag', 'Dagen', 'Prijs', 'Excl. BTW', 'BTW%', 'BTW bedrag', 'Totaal'];
   const tV = [
-    tarief || '0',
-    dagen  || '0',
-    autoPrijs.toFixed(2),
-    prijsExcBtw.toFixed(2),
-    `${btwPercentage || '21'}%`,
-    prijsBtw.toFixed(2),
-    autoPrijs.toFixed(2),
+    tarief || '0', dagen || '0',
+    autoPrijs.toFixed(2), prijsExcBtw.toFixed(2),
+    `${btwPercentage || '21'}%`, prijsBtw.toFixed(2), autoPrijs.toFixed(2),
   ];
   tH.forEach((h, i) => {
     const tx = M + i * cw7;
@@ -279,7 +258,7 @@ export async function buildContractPdf({
     ['Subtotaal excl. BTW', prijsExcBtw.toFixed(2)],
     [`BTW bedrag (${btwPercentage || 21}%)`, prijsBtw.toFixed(2)],
     ['Subtotaal',  autoPrijs.toFixed(2)],
-    ['Borg voldaan op', borgVoldaanDatum ? fmtDateTime(borgVoldaanDatum) : '—'],
+    ['Borg voldaan op', borgVoldaanDatum ? fmtDateTime(borgVoldaanDatum) : '-'],
     ['TOTAAL',     autoPrijs.toFixed(2)],
   ];
   calcRows.forEach(([label, val], i) => {
@@ -289,14 +268,12 @@ export async function buildContractPdf({
     const fnt   = isTot ? bold : reg;
     const col   = isTot ? BLACK : GRAY;
     txt(p1, label, calcX, ry, { size: sz, f: fnt, color: col });
-    const vw = fnt.widthOfTextAtSize(val, sz);
+    const vw = fnt.widthOfTextAtSize(sanitize(val), sz);
     txt(p1, val, W - M - vw, ry, { size: sz, f: fnt, color: col });
   });
 
-  // Opmerkingen left side
   txt(p1, 'OPMERKINGEN', M, blockTop, { size: 7.5, f: bold });
-  const opLines = (opmerkingen || '').split('\n').slice(0, 6);
-  opLines.forEach((opLine, i) => {
+  (opmerkingen || '').split('\n').slice(0, 6).forEach((opLine, i) => {
     txt(p1, opLine, M, blockTop - 13 - i * 11, { size: 8 });
   });
 
@@ -325,18 +302,16 @@ export async function buildContractPdf({
   hLine(p1, M, y, W - M, { thickness: 1, color: accentColor });
   y -= 8;
 
-  const halfW = (W - M * 2 - 16) / 2;
+  const halfW     = (W - M * 2 - 16) / 2;
   const col2start = M + halfW + 16;
+  const imgAreaH  = 95;   // taller for the car diagram
 
-  // Column labels
   txt(p1, 'Handtekening huurder/bestuurder', M, y, { size: 7.5, f: bold });
-  txt(p1, 'Schaderapport — getekend op auto', col2start, y, { size: 7.5, f: bold });
+  txt(p1, 'Schaderapport', col2start, y, { size: 7.5, f: bold });
   txt(p1, 'Door te tekenen gaat u akkoord met de algemene voorwaarden.', M, y - 10, { size: 6.5, color: GRAY });
   y -= 20;
 
-  const imgAreaH = 60;
-
-  // Signature image
+  // Signature (left)
   if (handtekeningDataUrl) {
     try {
       const img  = await pdfDoc.embedPng(handtekeningDataUrl);
@@ -344,60 +319,94 @@ export async function buildContractPdf({
       p1.drawImage(img, { x: M, y: y - dims.height, width: dims.width, height: dims.height });
     } catch (_) {}
   } else {
-    // Empty signature box
     p1.drawRectangle({ x: M, y: y - imgAreaH, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
   }
 
-  // Damage image (right column)
-  if (handtekeningSchadeDataUrl) {
-    try {
-      const img2  = await pdfDoc.embedPng(handtekeningSchadeDataUrl);
-      const dims2 = img2.scaleToFit(halfW, imgAreaH);
-      p1.drawImage(img2, { x: col2start, y: y - dims2.height, width: dims2.width, height: dims2.height });
-    } catch (_) {}
+  // Schade (right) — damage-car.jpg as background, marks on top
+  const schadeX = col2start;
+  const schadeY = y - imgAreaH;
+
+  // Draw car background first
+  if (damageCarImage) {
+    const dims = damageCarImage.scaleToFit(halfW, imgAreaH);
+    const offsetX = (halfW - dims.width) / 2;
+    const offsetY = (imgAreaH - dims.height) / 2;
+    p1.drawImage(damageCarImage, {
+      x: schadeX + offsetX,
+      y: schadeY + offsetY,
+      width: dims.width,
+      height: dims.height,
+    });
   } else {
-    p1.drawRectangle({ x: col2start, y: y - imgAreaH, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
+    p1.drawRectangle({ x: schadeX, y: schadeY, width: halfW, height: imgAreaH, borderColor: rgb(0.8, 0.8, 0.8), borderWidth: 0.5, color: rgb(0.98, 0.98, 0.98) });
   }
 
-  // ──────────────── PAGE 2+: ALGEMENE VOORWAARDEN ────────────────
+  // Overlay drawn damage marks
+  if (handtekeningSchadeDataUrl) {
+    try {
+      const img2 = await pdfDoc.embedPng(handtekeningSchadeDataUrl);
+      // Draw at same area as the car image so marks align
+      p1.drawImage(img2, { x: schadeX, y: schadeY, width: halfW, height: imgAreaH });
+    } catch (_) {}
+  }
+
+  // ──────────────── PAGE 2+: ALGEMENE VOORWAARDEN (2 kolommen) ────────────────
   if (contractTerms && contractTerms.trim()) {
-    const newTermsPage = () => {
-      const tp  = pdfDoc.addPage([W, H]);
+    const colW    = (W - M * 2 - 12) / 2;   // column width
+    const col1x   = M;
+    const col2x   = M + colW + 12;
+    const pageTop = H - 68;                  // y where text starts (below header)
+    const bottomY = M + 16;
+
+    const BODY_SIZE   = 7;
+    const HEAD_SIZE   = 8.5;
+    const BODY_LEAD   = 9.5;
+
+    let tp, col, ty;
+
+    const addPage = () => {
+      tp  = pdfDoc.addPage([W, H]);
       drawHeader(tp, 'ALGEMENE VOORWAARDEN');
-      return { tp, ty: H - 64 };
+      col = 1;
+      ty  = pageTop;
     };
 
-    let { tp, ty } = newTermsPage();
-    const maxW = W - M * 2;
+    const getX = () => col === 1 ? col1x : col2x;
+
+    const advance = () => {
+      if (ty < bottomY) {
+        if (col === 1) {
+          col = 2;
+          ty  = pageTop;
+        } else {
+          addPage();
+        }
+      }
+    };
+
+    addPage();
 
     for (const rawLine of contractTerms.split('\n')) {
       const l = sanitize(rawLine.trimEnd());
 
-      if (ty < M + 18) {
-        const next = newTermsPage();
-        tp = next.tp;
-        ty = next.ty;
-      }
+      advance();
 
       if (!l.trim()) { ty -= 5; continue; }
 
       const isHeader = /^ARTIKEL\s+\d+/i.test(l.trim());
       if (isHeader) {
         ty -= 4;
-        txt(tp, l.trim(), M, ty, { size: 9, f: bold });
-        ty -= 13;
+        advance();
+        tp.drawText(l.trim(), { x: getX(), y: ty, size: HEAD_SIZE, font: bold, color: BLACK });
+        ty -= HEAD_SIZE + 4;
         continue;
       }
 
-      const wrapped = wrapText(l, maxW, 8, reg);
+      const wrapped = wrapText(l, colW, BODY_SIZE, reg);
       for (const wl of wrapped) {
-        if (ty < M + 18) {
-          const next = newTermsPage();
-          tp = next.tp;
-          ty = next.ty;
-        }
-        txt(tp, wl, M, ty, { size: 8 });
-        ty -= 11;
+        advance();
+        tp.drawText(wl, { x: getX(), y: ty, size: BODY_SIZE, font: reg, color: BLACK });
+        ty -= BODY_LEAD;
       }
     }
   }
