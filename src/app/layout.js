@@ -86,23 +86,29 @@ export default function RootLayout({ children }) {
                 }}>
                   Log in om toegang te krijgen tot het contract systeem.
                 </p>
-                <a
-                  href="/api/login"
+                <button
+                  onClick={() => {
+                    // Break out of any iframe so OAuth redirect works in all browsers
+                    const target = window.top || window;
+                    target.location.href = '/api/login';
+                  }}
                   style={{
                     display: 'block',
+                    width: '100%',
                     background: 'linear-gradient(135deg, #e8b84b, #d4a033)',
                     color: '#000',
                     fontWeight: 700,
                     fontSize: '0.95rem',
                     padding: '0.8rem 2rem',
                     borderRadius: 10,
-                    textDecoration: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
                     letterSpacing: '0.02em',
                     boxShadow: '0 4px 20px rgba(232,184,75,0.3)',
                   }}
                 >
                   Inloggen →
-                </a>
+                </button>
               </div>
             </div>
           ) : (
