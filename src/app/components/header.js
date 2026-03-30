@@ -36,6 +36,25 @@ export default function Header({ user }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
           {user ? (
             <>
+              {user?.isSuperAdmin && (
+                <a
+                  href="/admin"
+                  title="Admin paneel"
+                  style={{
+                    fontSize: '0.72rem',
+                    color: '#e8b84b',
+                    textDecoration: 'none',
+                    background: 'rgba(232,184,75,0.1)',
+                    border: '1px solid rgba(232,184,75,0.25)',
+                    borderRadius: 6,
+                    padding: '0.25rem 0.6rem',
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ⭐ Admin
+                </a>
+              )}
               {hasMultipleTenants && (
                 <a
                   href="/tenant-select"

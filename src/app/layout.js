@@ -31,20 +31,21 @@ export default function RootLayout({ children }) {
 
   const isPublicPage = pathname === '/toegang-geweigerd' || pathname.startsWith('/intake/');
   const isTenantSelect = pathname === '/tenant-select';
+  const isAdminPage = pathname.startsWith('/admin');
 
   // Redirect to tenant-select if authenticated but no tenant chosen (and not already there)
   useEffect(() => {
-    if (isAuthenticated && !hasTenant && !isTenantSelect && !isPublicPage) {
+    if (isAuthenticated && !hasTenant && !isTenantSelect && !isPublicPage && !isAdminPage) {
       window.location.href = '/tenant-select';
     }
-  }, [isAuthenticated, hasTenant, isTenantSelect, isPublicPage]);
+  }, [isAuthenticated, hasTenant, isTenantSelect, isPublicPage, isAdminPage]);
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <Header user={user} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {isPublicPage || isTenantSelect ? children : isLoading ? (
+          {isPublicPage || isTenantSelect || isAdminPage ? children : isLoading ? (
             <div style={{
               minHeight: '100vh',
               display: 'flex',

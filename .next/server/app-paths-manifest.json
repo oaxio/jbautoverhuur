@@ -2,5 +2,6 @@
   "/page": "app/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/tenant-select/page": "app/tenant-select/page.js",
+  "/icon.png/route": "app/icon.png/route.js"
 }

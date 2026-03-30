@@ -12,7 +12,9 @@ export async function GET() {
 
   return NextResponse.json({
     ...session.user,
+    userId: session.userId ?? null,
     tenantId: session.tenantId ?? null,
     tenants: session.tenants ?? [],
+    isSuperAdmin: session.isSuperAdmin ?? false,
   });
 }

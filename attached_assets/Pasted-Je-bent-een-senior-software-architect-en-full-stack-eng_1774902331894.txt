@@ -1,0 +1,307 @@
+Je bent een senior software architect en full-stack engineer.
+
+Mijn bestaande Replit app gebruikt **Replit Auth** voor authenticatie.
+De app wordt omgebouwd naar een **multi-tenant SaaS-app**.
+Ik wil nu een **super admin paneel** toevoegen waarmee platform-beheerders tenants kunnen aanmaken, beheren en gebruikers aan tenants kunnen koppelen.
+
+Werk met mijn **bestaande codebase** en de bestaande **Replit Auth** integratie.
+Voer geen onnodige rewrites uit, maar bouw dit pragmatisch, veilig en production-minded in.
+
+## Belangrijk uitgangspunt
+
+De app gebruikt **Replit Auth** als identity provider.
+Gebruik dus de bestaande authenticatieflow van Replit Auth en pas de autorisatie en user-management logica daarop aan.
+
+Ga ervan uit dat:
+
+* gebruikers inloggen via Replit Auth
+* gebruikers een unieke identity hebben vanuit Replit Auth
+* mijn eigen database aanvullende applicatiegegevens opslaat, zoals:
+
+  * user-profiel
+  * super admin status
+  * tenant memberships
+  * rollen per tenant
+
+Maak dus duidelijk onderscheid tussen:
+
+* **authenticatie via Replit Auth**
+* **autorisatie en memberships in mijn eigen database**
+
+## Doel
+
+Bouw een intern **super admin paneel** voor platform-beheer met de volgende functionaliteiten:
+
+* tenants aanmaken
+* tenants bewerken
+* tenant status beheren
+* ingelogde Replit Auth gebruikers registreren/synchroniseren in mijn eigen database
+* bestaande gebruikers koppelen aan één of meerdere tenants
+* rollen per gebruiker per tenant beheren
+* overzicht van alle tenants, gebruikers en memberships
+* veilige afscherming zodat alleen super admins toegang hebben
+
+## Voer dit plan uit
+
+### 1. Analyseer eerst de huidige codebase
+
+* detecteer hoe Replit Auth momenteel is geïntegreerd
+* detecteer hoe sessies, user objecten en database sync nu werken
+* controleer welke multi-tenant tabellen/models al aanwezig zijn
+* beschrijf kort welke onderdelen nodig zijn voor dit admin paneel
+* maak daarna pas wijzigingen
+
+### 2. Maak een duidelijk user model naast Replit Auth
+
+Gebruik Replit Auth voor login, maar zorg dat mijn app een eigen `users` tabel/model heeft voor applicatielogica.
+
+Maak of update een `users` tabel/model met minimaal:
+
+* `id`
+* `replit_auth_id` of equivalent unieke externe identity key
+* `email` indien beschikbaar
+* `name` / display name indien beschikbaar
+* `profile_image_url` indien beschikbaar
+* `is_super_admin`
+* `created_at`
+* `updated_at`
+
+Belangrijk:
+
+* gebruik Replit Auth als bron voor identity
+* gebruik mijn eigen database als bron voor rollen, memberships en adminrechten
+* synchroniseer users veilig bij login als ze nog niet bestaan
+
+### 3. Bouw een super admin concept
+
+* implementeer een veilige manier om super admins te herkennen via `users.is_super_admin`
+* alleen super admins mogen toegang krijgen tot het admin paneel
+* voeg centrale autorisatie toe voor alle admin routes/pages/API endpoints
+
+### 4. Tenant management
+
+Maak pagina’s / schermen / routes voor:
+
+* **tenant overzicht**
+
+  * lijst van alle tenants
+  * zoekfunctie
+  * filter op status
+  * basisgegevens tonen
+
+* **tenant detail**
+
+  * naam
+  * slug
+  * status
+  * created_at
+  * updated_at
+  * optionele config zoals:
+
+    * logo
+    * primary color
+    * custom domain
+    * feature flags
+    * billing plan
+
+* **tenant aanmaken**
+
+  * formulier voor nieuwe tenant
+  * valideer unieke slug
+  * maak tenant veilig aan in database
+
+* **tenant bewerken**
+
+  * naam, slug, status en configuratie bewerkbaar maken
+
+### 5. Gebruikersbeheer met Replit Auth context
+
+Maak pagina’s / schermen / routes voor:
+
+* **gebruikersoverzicht**
+
+  * lijst van alle gebruikers die al via Replit Auth in de app bekend zijn
+  * zoeken op naam of e-mail
+  * tonen bij welke tenants ze horen
+  * tonen of iemand super admin is
+
+* **gebruiker detail**
+
+  * toon gebruikersgegevens uit mijn eigen database
+  * toon gekoppelde tenants
+  * toon rollen per tenant
+  * toon Replit Auth gekoppelde identity info voor debugging/admin inzicht
+
+Belangrijk:
+
+* maak geen custom wachtwoord-auth
+* bouw geen los login-systeem
+* hergebruik volledig Replit Auth
+* als handmatige user-creation niet logisch is binnen Replit Auth, implementeer dan een flow waarbij gebruikers eerst een keer moeten inloggen voordat ze koppelbaar zijn
+* leg uit welke aanpak het meest logisch is in mijn bestaande codebase en implementeer die
+
+### 6. Koppelen van gebruikers aan tenants
+
+* maak een membership-structuur indien die nog niet bestaat, bijvoorbeeld `tenant_users`
+* minimale velden:
+
+  * `id`
+  * `tenant_id`
+  * `user_id`
+  * `role`
+  * `created_at`
+  * `updated_at`
+
+Zorg dat een super admin:
+
+* een bestaande user aan een tenant kan koppelen
+* een user van een tenant kan loskoppelen
+* per membership een rol kan instellen, zoals:
+
+  * `tenant_admin`
+  * `staff`
+  * `viewer`
+
+### 7. Eerste login / user provisioning
+
+Bouw een veilige provisioningflow:
+
+* wanneer een gebruiker via Replit Auth inlogt en nog niet bestaat in mijn `users` tabel:
+
+  * maak automatisch een lokale user aan
+  * koppel Replit identity gegevens
+  * zet standaard geen super admin rechten
+* documenteer duidelijk waar deze sync plaatsvindt
+* voorkom duplicate users
+
+### 8. Validatie en business rules
+
+Voeg veilige regels toe zoals:
+
+* tenant slug moet uniek zijn
+* duplicate memberships voorkomen
+* user records niet dubbel aanmaken bij herhaald inloggen
+* alleen super admins mogen admin acties uitvoeren
+* duidelijke foutmeldingen tonen
+* rolwijzigingen veilig valideren
+
+### 9. Backend routes / API / services
+
+Bouw of refactor backend-logica voor:
+
+* tenants ophalen
+* tenant aanmaken
+* tenant updaten
+* users ophalen
+* user detail ophalen
+* user koppelen aan tenant
+* user ontkoppelen van tenant
+* membership role aanpassen
+* Replit Auth user sync / provisioning
+
+Zorg dat:
+
+* alle routes netjes gestructureerd zijn
+* autorisatie centraal wordt afgedwongen
+* input-validatie aanwezig is
+* responses consistent zijn
+
+### 10. Frontend admin UI
+
+Bouw een overzichtelijk admin paneel met:
+
+* sidebar of duidelijke admin navigatie
+* pagina voor tenants
+* pagina voor users
+* pagina of sectie voor memberships
+* formulieren voor create/edit flows
+* nette feedback states:
+
+  * loading
+  * empty
+  * success
+  * error
+
+Hou de UI simpel, professioneel en onderhoudbaar.
+Gebruik bestaande componenten, styling en patterns uit mijn huidige codebase zodat het admin paneel visueel en technisch consistent blijft.
+
+### 11. Security
+
+Controleer expliciet op:
+
+* directe URL-toegang door niet-super-admins
+* privilege escalation
+* foutieve tenant-koppelingen
+* datalekken tussen tenant-context en super-admin-context
+* onbeveiligde form submits of API endpoints
+* onveilige aannames over Replit Auth session data
+
+Benoem expliciet welke security-risico’s je hebt afgevangen.
+
+### 12. Seed data en bootstrap
+
+Maak demo/seed data met:
+
+* 2 tenants
+* meerdere memberships
+* minimaal 1 super admin
+
+Omdat de app Replit Auth gebruikt:
+
+* maak een praktische bootstrap-aanpak voor de eerste super admin
+* bijvoorbeeld via:
+
+  * seed op basis van een specifiek e-mailadres
+  * env variable voor init super admin
+  * of veilige handmatige database-init
+* kies de meest pragmatische aanpak voor mijn codebase en leg uit waarom
+
+### 13. Documentatie
+
+Maak een kort `ADMIN_PANEL.md` bestand met:
+
+* architectuur van het admin paneel
+* hoe Replit Auth en lokale user records samenwerken
+* hoe super admins worden bepaald
+* welke routes/pages bestaan
+* hoe tenants worden aangemaakt
+* hoe gebruikers aan tenants worden gekoppeld
+* hoe roles per tenant werken
+* hoe eerste super admin wordt ingesteld
+* hoe lokaal getest kan worden
+
+## Belangrijke eisen
+
+* werk binnen mijn bestaande stack
+* hergebruik Replit Auth volledig
+* geen custom auth-systeem bouwen
+* geen onnodige rewrites
+* pragmatisch en production-minded
+* duidelijke en werkende implementatie
+* laat per stap zien welke bestanden je aanpast
+* leg kort uit waarom
+* voeg waar mogelijk tests toe voor:
+
+  * access control
+  * membership logic
+  * duplicate prevention
+  * user provisioning bij login
+  * tenant create/update flows
+
+## Extra oplevering
+
+Geef ook aan:
+
+* hoe dit admin paneel later uitgebreid kan worden met:
+
+  * billing per tenant
+  * feature flags per tenant
+  * audit logs
+  * impersonation door super admins
+  * usage limits per tenant
+
+Begin met:
+
+1. analyse van de bestaande codebase
+2. implementatieplan
+3. daarna de concrete codewijzigingen
