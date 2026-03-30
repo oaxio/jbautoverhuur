@@ -87,6 +87,11 @@ export default function CreateContract() {
     const pngImageDamage = await pdfDoc.embedPng(sigCanvasDamage.current.toDataURL('image/png'));
 
     firstPage.drawImage(pngImage, { x: 60, y: 120, width: pngDims.width, height: pngDims.height })
+    firstPage.drawText('Door te tekenen gaat u akkoord met de algemene voorwaarden.', {
+      x: 60,
+      y: 108,
+      size: 6.5,
+    })
     firstPage.drawImage(pngImageDamage, { x: 95, y: 220, width: 160, height: 160 })
 
     firstPage.drawText(Voornaam, { x: 135, y: 632, size: 10 })
