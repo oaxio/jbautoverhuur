@@ -1,5 +1,10 @@
 {
   "/page": "app/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js"
+  "/api/admin/tenants/route": "app/api/admin/tenants/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/admin/tenants/[id]/route": "app/api/admin/tenants/[id]/route.js"
 }

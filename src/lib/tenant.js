@@ -3,9 +3,26 @@ import { sessionOptions } from './auth';
 import { getDb } from './db';
 
 /**
- * Returns the tenantId from the current session, or null if not set.
- * Always reads from the server-side session — never from user input.
+ * Looks up a tenant by its custom_domain.
+ * Used for domain-based automatic tenant selection.
  */
+export async function getTenantByDomain(host) {
+  if (!host) return null;
+  // Strip port if present
+  const cleanHost = host.split(':')[0].toLowerCase().trim();
+  // Ignore Replit's own domains
+  if (cleanHost.endsWith('.replit.dev') || cleanHost.endsWith('.repl.co') || cleanHost === 'localhost') return null;
+  const db = getDb();
+  const result = await db.query(
+    `SELECT id, name, slug, primary_color, logo_url, custom_domain
+     FROM tenants
+     WHERE LOWER(custom_domain) = $1 AND status = 'active'
+     LIMIT 1`,
+    [cleanHost]
+  );
+  return result.rows[0] ?? null;
+}
+
 export async function getSessionTenantId(cookieStore) {
   const session = await getIronSession(cookieStore, sessionOptions);
   if (!session.user) return null;

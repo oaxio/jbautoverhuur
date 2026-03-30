@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '../../../lib/auth';
-import { resolveUserTenants } from '../../../lib/tenant';
+import { resolveUserTenants, getTenantByDomain } from '../../../lib/tenant';
 import { syncUserOnLogin } from '../../../lib/admin';
 import { getDb } from '../../../lib/db';
 
@@ -89,6 +89,28 @@ export async function GET(request) {
     if (tenants.length === 1) tenantId = tenants[0].id;
   } catch (e) {
     console.error('[callback] tenant resolution failed:', e.message);
+  }
+
+  // Domain-based tenant auto-selection
+  // If the user logged in via a custom domain, auto-select that tenant
+  // (overrides normal single-tenant shortcut or tenant-select redirect)
+  try {
+    const requestHost =
+      request.headers.get('x-forwarded-host') ||
+      request.headers.get('host') ||
+      '';
+    const domainTenant = await getTenantByDomain(requestHost);
+    if (domainTenant) {
+      const isMember = tenants.some(t => t.id === domainTenant.id);
+      if (isMember) {
+        tenantId = domainTenant.id;
+        console.log('[callback] domain matched tenant:', domainTenant.name, '→ auto-selected');
+      } else {
+        console.log('[callback] domain matched tenant but user is not a member:', domainTenant.name);
+      }
+    }
+  } catch (e) {
+    console.error('[callback] domain tenant resolution failed:', e.message);
   }
 
   const session = await getIronSession(cookies(), sessionOptions);

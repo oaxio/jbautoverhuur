@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
   const [user, setUser] = useState(undefined);
   const [loginUrl, setLoginUrl] = useState('');
+  const [domainTenant, setDomainTenant] = useState(null);
 
   useEffect(() => {
     fetch('/api/auth/user', { credentials: 'include' })
@@ -23,6 +24,11 @@ export default function RootLayout({ children }) {
       .then(res => res.json())
       .then(data => setLoginUrl(data.loginUrl))
       .catch(() => setLoginUrl('/api/login'));
+
+    fetch('/api/tenant/by-domain')
+      .then(res => res.json())
+      .then(data => setDomainTenant(data))
+      .catch(() => {});
   }, []);
 
   const isLoading = user === undefined;
@@ -76,28 +82,62 @@ export default function RootLayout({ children }) {
                 padding: '2.5rem 2rem',
                 textAlign: 'center',
               }}>
-                <div style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 1.75rem',
-                  fontSize: '1.4rem',
-                }}>
-                  🔐
-                </div>
-                <p style={{
-                  color: 'rgba(255,255,255,0.35)',
-                  fontSize: '0.85rem',
-                  marginBottom: '1.75rem',
-                  lineHeight: 1.5,
-                }}>
-                  Inloggen om verder te gaan
-                </p>
+                {domainTenant ? (
+                  // Tenant-branded login
+                  <div style={{ marginBottom: '1.75rem' }}>
+                    {domainTenant.logo_url ? (
+                      <img
+                        src={domainTenant.logo_url}
+                        alt={domainTenant.name}
+                        style={{ height: 52, maxWidth: 200, objectFit: 'contain', margin: '0 auto 1rem', display: 'block' }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        background: `${domainTenant.primary_color ?? '#e8b84b'}22`,
+                        border: `1.5px solid ${domainTenant.primary_color ?? '#e8b84b'}55`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 1rem',
+                        fontSize: '1.5rem',
+                        color: domainTenant.primary_color ?? '#e8b84b',
+                        fontWeight: 800,
+                      }}>
+                        {domainTenant.name.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <div style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.3rem' }}>
+                      {domainTenant.name}
+                    </div>
+                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.82rem', margin: 0 }}>
+                      Inloggen om verder te gaan
+                    </p>
+                  </div>
+                ) : (
+                  // Generic login — no tenant branding
+                  <div style={{ marginBottom: '1.75rem' }}>
+                    <div style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 1.25rem',
+                      fontSize: '1.4rem',
+                    }}>
+                      🔐
+                    </div>
+                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem', margin: 0 }}>
+                      Inloggen om verder te gaan
+                    </p>
+                  </div>
+                )}
                 <button
                   onClick={() => {
                     if (loginUrl) window.location.href = loginUrl;
@@ -105,7 +145,9 @@ export default function RootLayout({ children }) {
                   style={{
                     display: 'block',
                     width: '100%',
-                    background: 'linear-gradient(135deg, #e8b84b, #d4a033)',
+                    background: domainTenant?.primary_color
+                      ? `linear-gradient(135deg, ${domainTenant.primary_color}, ${domainTenant.primary_color}bb)`
+                      : 'linear-gradient(135deg, #e8b84b, #d4a033)',
                     color: '#000',
                     fontWeight: 700,
                     fontSize: '0.95rem',
@@ -114,7 +156,7 @@ export default function RootLayout({ children }) {
                     border: 'none',
                     cursor: 'pointer',
                     letterSpacing: '0.02em',
-                    boxShadow: '0 4px 20px rgba(232,184,75,0.3)',
+                    boxShadow: `0 4px 20px ${domainTenant?.primary_color ?? '#e8b84b'}44`,
                   }}
                 >
                   Inloggen →
