@@ -359,6 +359,7 @@ export default function PlanningPage() {
                       achternaam: form.last_name,
                       telefoon: form.phone || '',
                       ophaaldatum: start || '',
+                      retourdatum: end || '',
                       dagen: String(dagen),
                       carId: form.car_id || '',
                       tarief: form.price_per_day || '',

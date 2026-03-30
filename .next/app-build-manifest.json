@@ -16,10 +16,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/createContract/page.js"
     ],
-    "/not-found": [
+    "/planning/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/planning/page.js"
     ]
   }
 }

@@ -94,12 +94,14 @@ export default function CreateContract() {
     const dagen = sp.get('dagen');
     const carId = sp.get('carId');
     const tarief = sp.get('tarief');
+    const retourdatum = sp.get('retourdatum');
     if (v) setVoornaam(v);
     if (a) setAchternaam(a);
     if (t) setTelefoon(t);
     if (d) setOphaaldatum(d);
     if (dagen) setDagenAuto(dagen);
     if (tarief) setTarievenAuto(tarief);
+    if (retourdatum) setRetourDatum(retourdatum);
 
     fetch('/api/cars').then(r => r.ok ? r.json() : []).then(data => {
       setCars(data);

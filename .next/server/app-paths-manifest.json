@@ -1,10 +1,8 @@
 {
-  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/createContract/page": "app/createContract/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
-  "/api/cars/route": "app/api/cars/route.js"
+  "/api/cars/route": "app/api/cars/route.js",
+  "/planning/page": "app/planning/page.js"
 }
