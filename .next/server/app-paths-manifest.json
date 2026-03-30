@@ -1,9 +1,10 @@
 {
   "/page": "app/page.js",
   "/createContract/page": "app/createContract/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/login/route": "app/api/login/route.js"
+  "/icon.png/route": "app/icon.png/route.js",
+  "/api/login/route": "app/api/login/route.js",
+  "/api/callback/route": "app/api/callback/route.js",
+  "/toegang-geweigerd/page": "app/toegang-geweigerd/page.js"
 }
