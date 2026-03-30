@@ -5,5 +5,6 @@
   "/api/cars/route": "app/api/cars/route.js",
   "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js"
+  "/api/auth/config/route": "app/api/auth/config/route.js",
+  "/api/intake/route": "app/api/intake/route.js"
 }
