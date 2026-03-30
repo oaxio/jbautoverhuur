@@ -88,20 +88,11 @@ export default function RootLayout({ children }) {
                 </p>
                 <button
                   onClick={() => {
-                    // In Replit preview the app runs inside an iframe.
-                    // Accessing window.top.location from a cross-origin iframe
-                    // throws a SecurityError, so detect this and open a new tab.
-                    try {
-                      if (window.self !== window.top) {
-                        window.open('/api/login', '_blank', 'noopener');
-                        return;
-                      }
-                    } catch (_) {
-                      // cross-origin iframe — window.top is blocked
-                      window.open('/api/login', '_blank', 'noopener');
-                      return;
-                    }
-                    window.location.href = '/api/login';
+                    // /api/auth/start redirects server-side to the correct
+                    // Replit domain URL before starting OAuth, so PKCE cookies
+                    // and the callback always share the same origin.
+                    // We open a new tab to avoid iframe cross-origin issues.
+                    window.open('/api/auth/start', '_blank', 'noopener');
                   }}
                   style={{
                     display: 'block',
