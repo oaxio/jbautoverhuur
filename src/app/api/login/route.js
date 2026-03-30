@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { getIronSession } from 'iron-session';
 import * as client from 'openid-client';
-import { getOidcConfig, sessionOptions } from '../../../lib/auth';
+import { getOidcConfig } from '../../../lib/auth';
 
 export async function GET(request) {
   const config = await getOidcConfig();
@@ -11,7 +9,6 @@ export async function GET(request) {
   const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier);
   const state = client.randomState();
 
-  // Use the Replit public domain so the redirect_uri is always reachable
   const domain = process.env.REPLIT_DOMAINS?.split(',')[0]?.trim();
   const baseUrl = domain ? `https://${domain}` : new URL(request.url).origin;
   const callbackUrl = `${baseUrl}/api/callback`;
@@ -24,11 +21,19 @@ export async function GET(request) {
     state,
   });
 
-  const session = await getIronSession(cookies(), sessionOptions);
-  session.codeVerifier = codeVerifier;
-  session.state = state;
-  session.callbackUrl = callbackUrl;
-  await session.save();
+  const response = NextResponse.redirect(authUrl.href);
 
-  return NextResponse.redirect(authUrl.href);
+  // Store PKCE params in plain cookies on the redirect response directly
+  const cookieOpts = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 300,
+  };
+  response.cookies.set('oidc_state', state, cookieOpts);
+  response.cookies.set('oidc_verifier', codeVerifier, cookieOpts);
+  response.cookies.set('oidc_callback', callbackUrl, cookieOpts);
+
+  return response;
 }

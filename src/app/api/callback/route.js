@@ -5,12 +5,11 @@ import * as client from 'openid-client';
 import { getOidcConfig, sessionOptions } from '../../../lib/auth';
 
 export async function GET(request) {
-  const cookieStore = cookies();
-  const session = await getIronSession(cookieStore, sessionOptions);
+  const state = request.cookies.get('oidc_state')?.value;
+  const codeVerifier = request.cookies.get('oidc_verifier')?.value;
+  const callbackUrl = request.cookies.get('oidc_callback')?.value;
 
-  const { codeVerifier, state, callbackUrl } = session;
-
-  if (!codeVerifier || !state) {
+  if (!state || !codeVerifier) {
     return NextResponse.redirect(new URL('/api/login', request.url));
   }
 
@@ -30,6 +29,8 @@ export async function GET(request) {
 
   const claims = tokens.claims();
 
+  // Write user session via cookies() — this is included in any response returned
+  const session = await getIronSession(cookies(), sessionOptions);
   session.user = {
     id: claims.sub,
     email: claims.email ?? null,
@@ -37,10 +38,13 @@ export async function GET(request) {
     lastName: claims.last_name ?? null,
     profileImageUrl: claims.profile_image_url ?? null,
   };
-  delete session.codeVerifier;
-  delete session.state;
-  delete session.callbackUrl;
   await session.save();
 
-  return NextResponse.redirect(new URL('/', request.url));
+  // Redirect home and clear the PKCE cookies
+  const response = NextResponse.redirect(new URL('/', request.url));
+  response.cookies.set('oidc_state', '', { maxAge: 0, path: '/' });
+  response.cookies.set('oidc_verifier', '', { maxAge: 0, path: '/' });
+  response.cookies.set('oidc_callback', '', { maxAge: 0, path: '/' });
+
+  return response;
 }
