@@ -40,6 +40,10 @@ export default function IntakePage() {
   const [akkoord, setAkkoord] = useState(false);
   const [sigEmpty, setSigEmpty] = useState(true);
 
+  const [tenantName, setTenantName] = useState('');
+  const [tenantColor, setTenantColor] = useState('#e8b84b');
+  const [tenantLogo, setTenantLogo] = useState('');
+
   const [voornaam, setVoornaam] = useState('');
   const [achternaam, setAchternaam] = useState('');
   const [straat, setStraat] = useState('');
@@ -56,6 +60,9 @@ export default function IntakePage() {
       .then(r => r.json())
       .then(d => {
         if (d.error) { setStatus('not_found'); return; }
+        if (d.tenant_name) setTenantName(d.tenant_name);
+        if (d.tenant_color) setTenantColor(d.tenant_color);
+        if (d.tenant_logo) setTenantLogo(d.tenant_logo);
         if (d.status === 'submitted') { setStatus('already_submitted'); return; }
         setStatus('open');
       })
@@ -125,7 +132,7 @@ export default function IntakePage() {
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚠️</div>
           <h2 style={{ color: 'white', fontWeight: 700, marginBottom: '0.5rem' }}>Link niet geldig</h2>
           <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.9rem' }}>
-            Deze link bestaat niet of is verlopen. Neem contact op met JB Autoverhuur.
+            Deze link bestaat niet of is verlopen.{tenantName ? ` Neem contact op met ${tenantName}.` : ''}
           </p>
         </div>
       </div>
@@ -153,7 +160,7 @@ export default function IntakePage() {
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
           <h2 style={{ color: 'white', fontWeight: 700, marginBottom: '0.5rem' }}>Bedankt!</h2>
           <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-            Uw gegevens en handtekening zijn ontvangen door JB Autoverhuur.<br />
+            Uw gegevens en handtekening zijn ontvangen{tenantName ? ` door ${tenantName}` : ''}.<br />
             U hoeft niets meer te doen — wij regelen de rest.
           </p>
         </div>
@@ -167,13 +174,18 @@ export default function IntakePage() {
         <div style={{ marginBottom: '1.75rem' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            background: 'rgba(232,184,75,0.12)',
-            border: '1px solid rgba(232,184,75,0.25)',
+            background: `${tenantColor}18`,
+            border: `1px solid ${tenantColor}40`,
             borderRadius: 20, padding: '0.3rem 0.9rem',
-            fontSize: '0.75rem', color: '#e8b84b', fontWeight: 600,
+            fontSize: '0.75rem', color: tenantColor, fontWeight: 600,
             letterSpacing: '0.06em', textTransform: 'uppercase',
             marginBottom: '1rem',
-          }}>🚗 JB Autoverhuur</div>
+          }}>
+            {tenantLogo
+              ? <img src={tenantLogo} alt="" style={{ height: 16, objectFit: 'contain', borderRadius: 2 }} />
+              : '🚗'}
+            {tenantName || 'Autoverhuur'}
+          </div>
           <h1 style={{ color: 'white', fontWeight: 700, fontSize: '1.4rem', marginBottom: '0.4rem' }}>
             Vul uw gegevens in
           </h1>
@@ -230,16 +242,16 @@ export default function IntakePage() {
                 style={{
                   display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                   cursor: 'pointer', userSelect: 'none',
-                  background: akkoord ? 'rgba(232,184,75,0.07)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${akkoord ? 'rgba(232,184,75,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                  background: akkoord ? `${tenantColor}12` : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${akkoord ? `${tenantColor}50` : 'rgba(255,255,255,0.1)'}`,
                   borderRadius: 10, padding: '0.85rem 1rem',
                   transition: 'all 0.15s',
                 }}
               >
                 <div style={{
                   width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
-                  background: akkoord ? '#e8b84b' : 'rgba(255,255,255,0.1)',
-                  border: `2px solid ${akkoord ? '#e8b84b' : 'rgba(255,255,255,0.25)'}`,
+                  background: akkoord ? tenantColor : 'rgba(255,255,255,0.1)',
+                  border: `2px solid ${akkoord ? tenantColor : 'rgba(255,255,255,0.25)'}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.15s',
                 }}>
@@ -248,7 +260,7 @@ export default function IntakePage() {
                 <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.83rem', lineHeight: 1.55, margin: 0 }}>
                   Ik verklaar dat de bovenstaande gegevens correct zijn en ga akkoord met de{' '}
                   <strong style={{ color: 'rgba(255,255,255,0.85)' }}>algemene voorwaarden</strong>{' '}
-                  van JB Autoverhuur. Door te ondertekenen bevestig ik dat ik het voertuig in goede staat heb ontvangen en mij houd aan de gemaakte afspraken.
+                  {tenantName ? `van ${tenantName}. ` : ''}Door te ondertekenen bevestig ik dat ik het voertuig in goede staat heb ontvangen en mij houd aan de gemaakte afspraken.
                 </p>
               </div>
             </div>
@@ -259,7 +271,7 @@ export default function IntakePage() {
               </p>
               <div style={{
                 borderRadius: 10,
-                border: `1px solid ${sigEmpty ? 'rgba(255,255,255,0.15)' : 'rgba(232,184,75,0.35)'}`,
+                border: `1px solid ${sigEmpty ? 'rgba(255,255,255,0.15)' : `${tenantColor}60`}`,
                 overflow: 'hidden',
                 background: 'rgba(255,255,255,0.96)',
                 position: 'relative',
@@ -308,7 +320,7 @@ export default function IntakePage() {
             disabled={submitting}
             style={{
               marginTop: '0.5rem',
-              background: submitting ? 'rgba(232,184,75,0.3)' : 'linear-gradient(135deg, #e8b84b, #c9962e)',
+              background: submitting ? `${tenantColor}50` : `linear-gradient(135deg, ${tenantColor}, ${tenantColor}bb)`,
               color: submitting ? 'rgba(255,255,255,0.4)' : '#1a0f00',
               border: 'none',
               borderRadius: 10,

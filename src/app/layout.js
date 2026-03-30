@@ -77,34 +77,26 @@ export default function RootLayout({ children }) {
                 textAlign: 'center',
               }}>
                 <div style={{
-                  width: 56,
-                  height: 56,
+                  width: 52,
+                  height: 52,
                   borderRadius: '50%',
-                  background: 'rgba(232,184,75,0.15)',
-                  border: '1.5px solid rgba(232,184,75,0.4)',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '0 auto 1.5rem',
-                  fontSize: '1.5rem',
+                  margin: '0 auto 1.75rem',
+                  fontSize: '1.4rem',
                 }}>
                   🔐
                 </div>
-                <h2 style={{
-                  color: 'rgba(255,255,255,0.9)',
-                  fontWeight: 700,
-                  fontSize: '1.2rem',
-                  marginBottom: '0.4rem',
-                }}>
-                  JB Autoverhuur
-                </h2>
                 <p style={{
-                  color: 'rgba(255,255,255,0.4)',
+                  color: 'rgba(255,255,255,0.35)',
                   fontSize: '0.85rem',
-                  marginBottom: '2rem',
+                  marginBottom: '1.75rem',
                   lineHeight: 1.5,
                 }}>
-                  Log in om toegang te krijgen tot het contract systeem.
+                  Inloggen om verder te gaan
                 </p>
                 <button
                   onClick={() => {

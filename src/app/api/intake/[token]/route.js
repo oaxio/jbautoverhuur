@@ -8,7 +8,11 @@ export async function GET(request, { params }) {
   try {
     const db = getDb();
     const result = await db.query(
-      'SELECT token, status, data, created_at FROM intake_submissions WHERE token=$1',
+      `SELECT s.token, s.status, s.data, s.created_at,
+              t.name AS tenant_name, t.primary_color AS tenant_color, t.logo_url AS tenant_logo
+       FROM intake_submissions s
+       LEFT JOIN tenants t ON t.id = s.tenant_id
+       WHERE s.token=$1`,
       [params.token]
     );
     if (result.rows.length === 0) {

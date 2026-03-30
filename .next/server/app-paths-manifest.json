@@ -1,7 +1,9 @@
 {
   "/page": "app/page.js",
+  "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js",
-  "/tenant-select/page": "app/tenant-select/page.js",
-  "/icon.png/route": "app/icon.png/route.js"
+  "/api/cars/route": "app/api/cars/route.js",
+  "/api/reservations/route": "app/api/reservations/route.js",
+  "/createContract/page": "app/createContract/page.js",
+  "/api/auth/config/route": "app/api/auth/config/route.js"
 }

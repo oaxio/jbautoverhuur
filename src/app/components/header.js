@@ -1,7 +1,17 @@
 "use client"
 
+function initials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
 export default function Header({ user }) {
-  const tenantName = user?.tenants?.find(t => t.id === user?.tenantId)?.name ?? null;
+  const activeTenant = user?.tenants?.find(t => t.id === user?.tenantId) ?? null;
+  const tenantName = activeTenant?.name ?? null;
+  const tenantColor = activeTenant?.primary_color ?? '#e8b84b';
+  const logoUrl = activeTenant?.logo_url ?? null;
   const hasMultipleTenants = (user?.tenants?.length ?? 0) > 1;
 
   return (
@@ -12,28 +22,57 @@ export default function Header({ user }) {
       borderBottom: '1px solid rgba(255,255,255,0.08)',
     }}>
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2 no-underline">
-          <span style={{
-            background: 'linear-gradient(135deg, #e8b84b, #f5d27a)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            letterSpacing: '0.02em',
-          }}>
-            JB
-          </span>
-          <span style={{
-            color: 'rgba(255,255,255,0.9)',
-            fontWeight: 500,
-            fontSize: '1rem',
-            letterSpacing: '0.04em',
-          }}>
-            {tenantName ?? 'Autoverhuur'}
-          </span>
+
+        <a href="/" className="flex items-center gap-2 no-underline" style={{ minWidth: 0 }}>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={tenantName ?? 'Logo'}
+              style={{
+                height: 28,
+                maxWidth: 100,
+                objectFit: 'contain',
+                borderRadius: 4,
+                flexShrink: 0,
+              }}
+            />
+          ) : tenantName ? (
+            <>
+              <span style={{
+                background: `linear-gradient(135deg, ${tenantColor}, ${tenantColor}cc)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 800,
+                fontSize: '1.05rem',
+                letterSpacing: '0.02em',
+                flexShrink: 0,
+              }}>
+                {initials(tenantName)}
+              </span>
+              <span style={{
+                color: 'rgba(255,255,255,0.85)',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                letterSpacing: '0.03em',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
+                {tenantName}
+              </span>
+            </>
+          ) : (
+            <span style={{
+              color: 'rgba(255,255,255,0.5)',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+            }}>
+              Autoverhuur
+            </span>
+          )}
         </a>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', minWidth: 0 }}>
           {user ? (
             <>
               {user?.isSuperAdmin && (
@@ -61,10 +100,10 @@ export default function Header({ user }) {
                   title="Van bedrijf wisselen"
                   style={{
                     fontSize: '0.72rem',
-                    color: '#e8b84b',
+                    color: tenantColor,
                     textDecoration: 'none',
-                    background: 'rgba(232,184,75,0.1)',
-                    border: '1px solid rgba(232,184,75,0.25)',
+                    background: `${tenantColor}18`,
+                    border: `1px solid ${tenantColor}40`,
                     borderRadius: 6,
                     padding: '0.25rem 0.6rem',
                     flexShrink: 0,
@@ -82,12 +121,12 @@ export default function Header({ user }) {
                 />
               )}
               <span style={{
-                color: 'rgba(255,255,255,0.55)',
+                color: 'rgba(255,255,255,0.5)',
                 fontSize: '0.82rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                maxWidth: 'clamp(60px, 20vw, 180px)',
+                maxWidth: 'clamp(60px, 18vw, 160px)',
               }}>
                 {user.firstName || user.email || ''}
               </span>
@@ -111,6 +150,7 @@ export default function Header({ user }) {
             </>
           ) : null}
         </div>
+
       </div>
     </header>
   );
