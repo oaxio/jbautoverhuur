@@ -68,9 +68,61 @@ export default function CreateContract() {
   const [cars, setCars] = useState([]);
   const [selectedCarId, setSelectedCarId] = useState('');
 
+  const [intakeToken, setIntakeToken] = useState('');
+  const [intakeUrl, setIntakeUrl] = useState('');
+  const [intakeStatus, setIntakeStatus] = useState('');
+  const [intakeLinkCopied, setIntakeLinkCopied] = useState(false);
+  const [generatingLink, setGeneratingLink] = useState(false);
+  const [loadingIntake, setLoadingIntake] = useState(false);
+
   useEffect(() => {
     fetch('/api/cars').then(r => r.ok ? r.json() : []).then(setCars).catch(() => {});
   }, []);
+
+  const generateIntakeLink = async () => {
+    setGeneratingLink(true);
+    try {
+      const res = await fetch('/api/intake', { method: 'POST' });
+      const { token } = await res.json();
+      const url = `${window.location.origin}/intake/${token}`;
+      setIntakeToken(token);
+      setIntakeUrl(url);
+      setIntakeStatus('pending');
+    } catch {}
+    setGeneratingLink(false);
+  };
+
+  const copyIntakeLink = () => {
+    navigator.clipboard.writeText(intakeUrl);
+    setIntakeLinkCopied(true);
+    setTimeout(() => setIntakeLinkCopied(false), 2000);
+  };
+
+  const loadIntakeData = async () => {
+    if (!intakeToken) return;
+    setLoadingIntake(true);
+    try {
+      const res = await fetch(`/api/intake/${intakeToken}`);
+      const d = await res.json();
+      if (d.status === 'submitted' && d.data) {
+        const data = d.data;
+        if (data.voornaam) setVoornaam(data.voornaam);
+        if (data.achternaam) setAchternaam(data.achternaam);
+        if (data.email) setEmail(data.email);
+        if (data.telefoon) setTelefoon(data.telefoon);
+        if (data.geboortedatum) setGeboortedatum(data.geboortedatum);
+        if (data.straat) setStraatnaam(data.straat);
+        if (data.postcode && data.woonplaats) setPostcodeWoonplaats(`${data.postcode}  ${data.woonplaats}`);
+        if (data.documentnummer) setDocumentnummer(data.documentnummer);
+        if (data.rijbewijsAfgiftedatum) setRijbewijsAfgifteDatum(data.rijbewijsAfgiftedatum);
+        setIntakeStatus('loaded');
+      } else {
+        setIntakeStatus('pending');
+        alert('De klant heeft de link nog niet ingevuld.');
+      }
+    } catch {}
+    setLoadingIntake(false);
+  };
 
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
@@ -208,17 +260,107 @@ export default function CreateContract() {
           </p>
         </div>
 
-        <SectionCard title="Klantgegevens" icon="👤">
-          <Field label="Voornaam" value={Voornaam} onChange={setVoornaam} />
-          <Field label="Achternaam" value={Achternaam} onChange={setAchternaam} />
-          <Field label="E-mailadres" value={Email} onChange={setEmail} />
-          <Field label="Telefoonnummer" value={Telefoon} onChange={setTelefoon} />
-          <Field label="Geboortedatum" value={Geboortedatum} onChange={setGeboortedatum} />
-          <Field label="Straatnaam + Huisnummer" value={Straatnaam} onChange={setStraatnaam} />
-          <Field label="Postcode + Woonplaats" value={PostcodeWoonplaats} onChange={setPostcodeWoonplaats} />
-          <Field label="Documentnummer" value={Documentnummer} onChange={setDocumentnummer} />
-          <Field label="Rijbewijs afgiftedatum" value={RijbewijsAfgifteDatum} onChange={setRijbewijsAfgifteDatum} />
-        </SectionCard>
+        <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
+          <div className="section-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>👤</span> Klantgegevens
+            </span>
+            {intakeStatus === 'loaded' && (
+              <span style={{
+                fontSize: '0.72rem', background: 'rgba(80,200,80,0.12)',
+                border: '1px solid rgba(80,200,80,0.3)', color: '#6dda6d',
+                borderRadius: 20, padding: '0.25rem 0.75rem', fontWeight: 600,
+              }}>✓ Klantdata geladen</span>
+            )}
+          </div>
+
+          <div style={{
+            background: 'rgba(232,184,75,0.06)',
+            border: '1px solid rgba(232,184,75,0.2)',
+            borderRadius: 10,
+            padding: '1rem 1.1rem',
+            marginBottom: '1.25rem',
+          }}>
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', marginBottom: '0.75rem' }}>
+              📲 Stuur een link naar de klant om zelf zijn gegevens in te vullen — bespaart u het typen.
+            </p>
+            {!intakeUrl ? (
+              <button
+                onClick={generateIntakeLink}
+                disabled={generatingLink}
+                style={{
+                  background: 'linear-gradient(135deg, #e8b84b, #c9962e)',
+                  color: '#1a0f00', border: 'none', borderRadius: 8,
+                  padding: '0.55rem 1.1rem', fontWeight: 700, fontSize: '0.82rem',
+                  cursor: generatingLink ? 'not-allowed' : 'pointer',
+                  opacity: generatingLink ? 0.6 : 1,
+                }}
+              >
+                {generatingLink ? 'Bezig…' : '🔗 Genereer klantlink'}
+              </button>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <input
+                    readOnly value={intakeUrl}
+                    style={{
+                      flex: 1, minWidth: 0,
+                      background: 'rgba(0,0,0,0.3)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 7, color: 'rgba(255,255,255,0.7)',
+                      padding: '0.45rem 0.75rem', fontSize: '0.78rem',
+                      fontFamily: 'monospace',
+                    }}
+                  />
+                  <button
+                    onClick={copyIntakeLink}
+                    style={{
+                      background: intakeLinkCopied ? 'rgba(80,200,80,0.2)' : 'rgba(255,255,255,0.1)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: 7, color: intakeLinkCopied ? '#6dda6d' : 'white',
+                      padding: '0.45rem 0.85rem', fontSize: '0.78rem',
+                      cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {intakeLinkCopied ? '✓ Gekopieerd' : 'Kopieer'}
+                  </button>
+                  <button
+                    onClick={loadIntakeData}
+                    disabled={loadingIntake}
+                    style={{
+                      background: 'rgba(232,184,75,0.15)',
+                      border: '1px solid rgba(232,184,75,0.3)',
+                      borderRadius: 7, color: '#e8b84b',
+                      padding: '0.45rem 0.85rem', fontSize: '0.78rem',
+                      cursor: loadingIntake ? 'not-allowed' : 'pointer',
+                      fontWeight: 600, whiteSpace: 'nowrap',
+                      opacity: loadingIntake ? 0.6 : 1,
+                    }}
+                  >
+                    {loadingIntake ? 'Controleren…' : '⬇ Gegevens laden'}
+                  </button>
+                </div>
+                {intakeStatus === 'pending' && (
+                  <p style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+                    Wacht tot de klant de link heeft ingevuld, klik daarna op "Gegevens laden".
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem 2rem' }}>
+            <Field label="Voornaam" value={Voornaam} onChange={setVoornaam} />
+            <Field label="Achternaam" value={Achternaam} onChange={setAchternaam} />
+            <Field label="E-mailadres" value={Email} onChange={setEmail} />
+            <Field label="Telefoonnummer" value={Telefoon} onChange={setTelefoon} />
+            <Field label="Geboortedatum" value={Geboortedatum} onChange={setGeboortedatum} />
+            <Field label="Straatnaam + Huisnummer" value={Straatnaam} onChange={setStraatnaam} />
+            <Field label="Postcode + Woonplaats" value={PostcodeWoonplaats} onChange={setPostcodeWoonplaats} />
+            <Field label="Documentnummer" value={Documentnummer} onChange={setDocumentnummer} />
+            <Field label="Rijbewijs afgiftedatum" value={RijbewijsAfgifteDatum} onChange={setRijbewijsAfgifteDatum} />
+          </div>
+        </div>
 
         <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
           <div className="section-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>

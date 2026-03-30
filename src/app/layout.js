@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
 
   const isLoading = user === undefined;
   const isAuthenticated = !!user;
-  const isPublicPage = pathname === '/toegang-geweigerd';
+  const isPublicPage = pathname === '/toegang-geweigerd' || pathname.startsWith('/intake/');
 
   return (
     <html lang="en">
