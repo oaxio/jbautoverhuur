@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const NAV_ITEMS = [
   { href: '/createContract', icon: '📄', label: 'Contract maken', sub: 'Nieuw verhuurcontract genereren' },
@@ -83,7 +84,7 @@ export default function Home() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             {NAV_ITEMS.map(item => (
-              <a key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+              <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
                 <div
                   className="glass-card"
                   style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', transition: 'border-color 0.2s, transform 0.15s', cursor: 'pointer' }}
@@ -109,7 +110,7 @@ export default function Home() {
                   </div>
                   <div style={{ color: 'rgba(232,184,75,0.7)', fontSize: '1rem', flexShrink: 0 }}>›</div>
                 </div>
-              </a>
+              </Link>
             ))}
 
             <div style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.38, cursor: 'not-allowed' }} className="glass-card">

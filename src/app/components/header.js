@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 
 function initials(name) {
   if (!name) return '?';
@@ -24,7 +25,7 @@ export default function Header({ user, storedBranding = {} }) {
     }}>
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
 
-        <a href="/" className="flex items-center gap-2 no-underline" style={{ minWidth: 0 }}>
+        <Link href="/" className="flex items-center gap-2 no-underline" style={{ minWidth: 0 }}>
           {logoUrl ? (
             <img
               src={logoUrl}
@@ -71,13 +72,13 @@ export default function Header({ user, storedBranding = {} }) {
               Autoverhuur
             </span>
           )}
-        </a>
+        </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', minWidth: 0 }}>
           {user ? (
             <>
               {user?.isSuperAdmin && (
-                <a
+                <Link
                   href="/admin"
                   title="Admin paneel"
                   style={{
@@ -93,10 +94,10 @@ export default function Header({ user, storedBranding = {} }) {
                   }}
                 >
                   ⭐ Admin
-                </a>
+                </Link>
               )}
               {user?.tenantId && (
-                <a
+                <Link
                   href="/instellingen"
                   title="Huisstijl instellingen"
                   style={{
@@ -112,10 +113,10 @@ export default function Header({ user, storedBranding = {} }) {
                   }}
                 >
                   ⚙ Instellingen
-                </a>
+                </Link>
               )}
               {hasMultipleTenants && (
-                <a
+                <Link
                   href="/tenant-select"
                   title="Van bedrijf wisselen"
                   style={{
@@ -131,7 +132,7 @@ export default function Header({ user, storedBranding = {} }) {
                   }}
                 >
                   ⇄ Wissel
-                </a>
+                </Link>
               )}
               {user.profileImageUrl && (
                 <img
