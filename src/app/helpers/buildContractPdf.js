@@ -78,6 +78,10 @@ export async function buildContractPdf({
   primaryColor = '#e8b84b',
   bgColor = '#0a0a14',
   logoUrl = '',
+  bedrijfAdres = '',
+  bedrijfTelefoon = '',
+  bedrijfEmail = '',
+  bedrijfWebsite = '',
 } = {}) {
 
   const btw = parseFloat(btwPercentage) || 21;
@@ -132,38 +136,52 @@ export async function buildContractPdf({
     return y - gap;
   };
 
+  // Bedrijfsgegevens-regel voor de contractheader
+  const companyLine = [
+    bedrijfAdres,
+    bedrijfTelefoon ? `Tel: ${bedrijfTelefoon}` : '',
+    bedrijfEmail,
+    bedrijfWebsite,
+  ].map(s => sanitize(s || '')).filter(Boolean).join('   |   ');
+
   // ── Header (reused for terms pages) ──
-  const drawHeader = (page, subtitle = '') => {
-    fillRect(page, 0, H - 48, W, 48, headerBg);
+  // details = bedrijfsgegevens-regel (alleen op pagina 1)
+  // subtitle = 'ALGEMENE VOORWAARDEN' etc. (alleen op vervolgpagina's)
+  const drawHeader = (page, subtitle = '', details = '') => {
+    fillRect(page, 0, H - 52, W, 52, headerBg);
     let nameX = M;
     if (logoImage) {
-      const dims = logoImage.scaleToFit(80, 32);
-      page.drawImage(logoImage, { x: M, y: H - 44, width: dims.width, height: dims.height });
+      const dims = logoImage.scaleToFit(80, 34);
+      page.drawImage(logoImage, { x: M, y: H - 46, width: dims.width, height: dims.height });
       nameX = M + dims.width + 10;
     }
-    txt(page, tenantName, nameX, H - 26, { size: 14, f: bold, color: accentColor });
+    txt(page, tenantName, nameX, H - 24, { size: 13, f: bold, color: accentColor });
+    if (details) {
+      txt(page, details, nameX, H - 36, { size: 5.8, color: rgb(0.65, 0.65, 0.65) });
+    }
     if (subtitle) {
-      txt(page, subtitle, nameX, H - 39, { size: 6.5, color: rgb(0.6, 0.6, 0.6) });
+      txt(page, subtitle, nameX, H - 36, { size: 6.5, color: rgb(0.6, 0.6, 0.6) });
     }
   };
 
   // ──────────────── PAGE 1: CONTRACT ────────────────
   const p1 = pdfDoc.addPage([W, H]);
 
-  drawHeader(p1);
+  // Pagina 1: bedrijfsgegevens in de header
+  drawHeader(p1, '', companyLine);
 
   if (kenteken) {
     const k = kenteken.toUpperCase();
     const kw = bold.widthOfTextAtSize(k, 13);
-    txt(p1, 'KENTEKEN', W - M - kw, H - 25, { size: 6, color: rgb(0.55, 0.55, 0.55) });
-    txt(p1, k, W - M - kw, H - 38, { size: 13, f: bold, color: accentColor });
+    txt(p1, 'KENTEKEN', W - M - kw, H - 26, { size: 6, color: rgb(0.55, 0.55, 0.55) });
+    txt(p1, k, W - M - kw, H - 37, { size: 13, f: bold, color: accentColor });
   }
 
-  // Title — ruim veld onder de header
-  txt(p1, 'HUURCONTRACT', M, H - 76, { size: 18, f: bold });
-  hLine(p1, M, H - 81, W - M, { thickness: 1.5, color: accentColor });
+  // Titel — voldoende ruimte onder de bredere header (52pt)
+  txt(p1, 'HUURCONTRACT', M, H - 80, { size: 18, f: bold });
+  hLine(p1, M, H - 85, W - M, { thickness: 1.5, color: accentColor });
 
-  let y = H - 106;   // 25pt ademruimte tussen onderlijning en eerste sectie
+  let y = H - 110;   // 25pt ademruimte tussen onderlijning en eerste sectie
 
   // ── HUURDER / BESTUURDER ──
   y = sectionBar(p1, 'HUURDER / BESTUURDER', y);
@@ -245,7 +263,7 @@ export async function buildContractPdf({
     txt(p1, h,     tx, y,      { size: 7,   color: GRAY });
     txt(p1, tV[i], tx, y - 12, { size: 8.5, f: bold });
   });
-  y -= 28;
+  y -= 40;   // ruimere scheiding tussen TARIEVEN en het OPMERKINGEN/prijs-blok
 
   // ── PRIJS BEREKENING (right) + OPMERKINGEN (left) ──
   const calcW    = 180;
@@ -352,7 +370,7 @@ export async function buildContractPdf({
     const colW    = (W - M * 2 - 12) / 2;   // column width
     const col1x   = M;
     const col2x   = M + colW + 12;
-    const pageTop = H - 68;                  // y where text starts (below header)
+    const pageTop = H - 72;                  // y where text starts (20pt below 52pt header)
     const bottomY = M + 16;
 
     const BODY_SIZE   = 6.5;

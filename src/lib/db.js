@@ -30,6 +30,12 @@ export async function initDb() {
   `);
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bg_color TEXT DEFAULT '#0a0a14'`);
   await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bg_image_url TEXT`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS contract_terms TEXT`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS contract_bullets TEXT`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_adres TEXT DEFAULT ''`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_telefoon TEXT DEFAULT ''`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_email TEXT DEFAULT ''`);
+  await db.query(`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bedrijf_website TEXT DEFAULT ''`);
 
   await db.query(`
     INSERT INTO tenants (name, slug, primary_color)

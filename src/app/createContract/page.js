@@ -121,12 +121,16 @@ export default function CreateContract() {
     fetch('/api/tenant/settings', { credentials: 'include' })
       .then(r => r.ok ? r.json() : {})
       .then(data => {
-        if (data.name)            setTenantName(data.name);
-        if (data.contract_terms)  setContractTerms(data.contract_terms);
+        if (data.name)             setTenantName(data.name);
+        if (data.contract_terms)   setContractTerms(data.contract_terms);
         if (data.contract_bullets) setContractBullets(data.contract_bullets);
-        if (data.primary_color)   setTenantPrimaryColor(data.primary_color);
-        if (data.bg_color)        setTenantBgColor(data.bg_color);
-        if (data.logo_url)        setTenantLogoUrl(data.logo_url);
+        if (data.primary_color)    setTenantPrimaryColor(data.primary_color);
+        if (data.bg_color)         setTenantBgColor(data.bg_color);
+        if (data.logo_url)         setTenantLogoUrl(data.logo_url);
+        if (data.bedrijf_adres)    setBedrijfAdres(data.bedrijf_adres);
+        if (data.bedrijf_telefoon) setBedrijfTelefoon(data.bedrijf_telefoon);
+        if (data.bedrijf_email)    setBedrijfEmail(data.bedrijf_email);
+        if (data.bedrijf_website)  setBedrijfWebsite(data.bedrijf_website);
       })
       .catch(() => {});
   }, []);
@@ -196,6 +200,10 @@ export default function CreateContract() {
   const [tenantPrimaryColor, setTenantPrimaryColor] = useState('#e8b84b');
   const [tenantBgColor, setTenantBgColor] = useState('#0a0a14');
   const [tenantLogoUrl, setTenantLogoUrl] = useState('');
+  const [bedrijfAdres, setBedrijfAdres] = useState('');
+  const [bedrijfTelefoon, setBedrijfTelefoon] = useState('');
+  const [bedrijfEmail, setBedrijfEmail] = useState('');
+  const [bedrijfWebsite, setBedrijfWebsite] = useState('');
 
   // Aanpasbare PDF-teksten
   const [disclaimer, setDisclaimer] = useState('Door te tekenen gaat u akkoord met de algemene voorwaarden.');
@@ -291,6 +299,10 @@ export default function CreateContract() {
         primaryColor:        tenantPrimaryColor,
         bgColor:             tenantBgColor,
         logoUrl:             tenantLogoUrl,
+        bedrijfAdres:        bedrijfAdres,
+        bedrijfTelefoon:     bedrijfTelefoon,
+        bedrijfEmail:        bedrijfEmail,
+        bedrijfWebsite:      bedrijfWebsite,
       });
 
       const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });

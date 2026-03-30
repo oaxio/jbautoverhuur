@@ -81,6 +81,10 @@ export default function InstellingenPage() {
     logo_url: '',
     contract_bullets: '',
     contract_terms: '',
+    bedrijf_adres: '',
+    bedrijf_telefoon: '',
+    bedrijf_email: '',
+    bedrijf_website: '',
   });
   const [original, setOriginal] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -100,6 +104,10 @@ export default function InstellingenPage() {
           logo_url: data.logo_url || '',
           contract_bullets: data.contract_bullets || '',
           contract_terms: data.contract_terms || '',
+          bedrijf_adres: data.bedrijf_adres || '',
+          bedrijf_telefoon: data.bedrijf_telefoon || '',
+          bedrijf_email: data.bedrijf_email || '',
+          bedrijf_website: data.bedrijf_website || '',
         };
         setForm(vals);
         setOriginal(vals);
@@ -259,6 +267,46 @@ export default function InstellingenPage() {
                   Directe URL naar een afbeelding (PNG of SVG). Wordt getoond in de header en op het loginscherm.
                 </p>
               </div>
+
+              {error && (
+                <p style={{ color: '#ff7070', fontSize: '0.83rem', margin: 0, background: 'rgba(255,80,80,0.08)', padding: '0.6rem 0.8rem', borderRadius: 8 }}>
+                  {error}
+                </p>
+              )}
+
+              <SaveBar />
+            </div>
+
+            {/* Bedrijfsgegevens */}
+            <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <p className="section-header" style={{ marginBottom: '0.25rem' }}>Bedrijfsgegevens</p>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.3)', lineHeight: 1.5 }}>
+                  Worden weergegeven in de header van elk huurcontract.
+                </p>
+              </div>
+
+              {[
+                { key: 'bedrijf_adres',    label: 'Adres',         placeholder: 'Straatnaam 1, 1234 AB Stad' },
+                { key: 'bedrijf_telefoon', label: 'Telefoonnummer', placeholder: '+31 6 12345678' },
+                { key: 'bedrijf_email',    label: 'E-mailadres',   placeholder: 'info@jouwbedrijf.nl' },
+                { key: 'bedrijf_website',  label: 'Website',       placeholder: 'www.jouwbedrijf.nl' },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>
+                    {label}
+                  </label>
+                  <input
+                    type="text"
+                    value={form[key]}
+                    onChange={e => set(key)(e.target.value)}
+                    placeholder={placeholder}
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 10, color: 'white', padding: '0.6rem 0.9rem', fontSize: '0.88rem', outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                    onFocus={e => { e.target.style.borderColor = `rgba(232,184,75,0.4)`; }}
+                    onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.14)'; }}
+                  />
+                </div>
+              ))}
 
               {error && (
                 <p style={{ color: '#ff7070', fontSize: '0.83rem', margin: 0, background: 'rgba(255,80,80,0.08)', padding: '0.6rem 0.8rem', borderRadius: 8 }}>

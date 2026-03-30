@@ -18,7 +18,8 @@ export async function GET() {
     const db = getDb();
     const result = await db.query(
       `SELECT id, name, primary_color, bg_color, bg_image_url, logo_url,
-              contract_terms, contract_bullets
+              contract_terms, contract_bullets,
+              bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website
        FROM tenants WHERE id = $1`,
       [tenantId]
     );
@@ -37,7 +38,11 @@ export async function PUT(request) {
     const tenantId = session.tenantId;
     if (!tenantId) return NextResponse.json({ error: 'Geen actieve tenant' }, { status: 400 });
 
-    const { primary_color, bg_color, bg_image_url, logo_url, contract_terms, contract_bullets } = await request.json();
+    const {
+      primary_color, bg_color, bg_image_url, logo_url,
+      contract_terms, contract_bullets,
+      bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website,
+    } = await request.json();
 
     const db = getDb();
     const result = await db.query(
@@ -48,10 +53,15 @@ export async function PUT(request) {
            logo_url          = $4,
            contract_terms    = COALESCE($5, contract_terms),
            contract_bullets  = COALESCE($6, contract_bullets),
+           bedrijf_adres     = COALESCE($8, bedrijf_adres),
+           bedrijf_telefoon  = COALESCE($9, bedrijf_telefoon),
+           bedrijf_email     = COALESCE($10, bedrijf_email),
+           bedrijf_website   = COALESCE($11, bedrijf_website),
            updated_at        = NOW()
        WHERE id = $7
        RETURNING id, name, primary_color, bg_color, bg_image_url, logo_url,
-                 contract_terms, contract_bullets`,
+                 contract_terms, contract_bullets,
+                 bedrijf_adres, bedrijf_telefoon, bedrijf_email, bedrijf_website`,
       [
         primary_color || null,
         bg_color || null,
@@ -60,6 +70,10 @@ export async function PUT(request) {
         contract_terms !== undefined ? contract_terms : null,
         contract_bullets !== undefined ? contract_bullets : null,
         tenantId,
+        bedrijf_adres !== undefined ? bedrijf_adres : null,
+        bedrijf_telefoon !== undefined ? bedrijf_telefoon : null,
+        bedrijf_email !== undefined ? bedrijf_email : null,
+        bedrijf_website !== undefined ? bedrijf_website : null,
       ]
     );
 
