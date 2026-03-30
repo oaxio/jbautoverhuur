@@ -1,6 +1,6 @@
 {
   "/page": "app/page.js",
-  "/api/auth/config/route": "app/api/auth/config/route.js",
+  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js"
+  "/api/auth/config/route": "app/api/auth/config/route.js"
 }
