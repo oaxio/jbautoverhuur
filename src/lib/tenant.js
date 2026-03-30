@@ -45,9 +45,8 @@ export async function requireTenantId(cookieStore) {
 
 /**
  * Resolves tenant memberships for a user after login.
- * - If the user has no memberships and there is only 1 tenant → auto-provision
- *   them as a member (backward-compatible with existing single-tenant setup).
- * - Returns the list of tenants the user belongs to.
+ * Returns only tenants the user has been explicitly added to.
+ * No auto-provisioning — access must be granted by an admin.
  */
 export async function resolveUserTenants(userSub, userEmail) {
   const db = getDb();
@@ -60,29 +59,6 @@ export async function resolveUserTenants(userSub, userEmail) {
      ORDER BY t.name`,
     [userSub]
   );
-
-  if (result.rows.length === 0) {
-    const tenantCount = await db.query(`SELECT COUNT(*) FROM tenants WHERE status='active'`);
-    if (parseInt(tenantCount.rows[0].count, 10) === 1) {
-      const defaultTenant = await db.query(`SELECT id FROM tenants WHERE status='active' LIMIT 1`);
-      if (defaultTenant.rows.length > 0) {
-        const tenantId = defaultTenant.rows[0].id;
-        await db.query(
-          `INSERT INTO tenant_users (tenant_id, user_sub, user_email, role)
-           VALUES ($1, $2, $3, 'member')
-           ON CONFLICT (tenant_id, user_sub) DO NOTHING`,
-          [tenantId, userSub, userEmail]
-        );
-        result = await db.query(
-          `SELECT t.id, t.name, t.slug, t.primary_color, t.logo_url, tu.role
-           FROM tenant_users tu
-           JOIN tenants t ON t.id = tu.tenant_id
-           WHERE tu.user_sub = $1 AND t.status = 'active'`,
-          [userSub]
-        );
-      }
-    }
-  }
 
   return result.rows;
 }
