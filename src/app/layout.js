@@ -8,39 +8,41 @@ import { useState, useEffect } from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({ children }) {
-  const [pin, setPin] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [shake, setShake] = useState(false);
+  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    const storedPin = localStorage.getItem('pin');
-    if (storedPin) {
-      setIsAuthenticated(true);
-    }
+    fetch('/api/auth/user', { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setUser(data))
+      .catch(() => setUser(null));
   }, []);
 
-  const handlePinChange = (event) => {
-    const value = event.target.value;
-    setPin(value);
-
-    if (value === '190505') {
-      localStorage.setItem('pin', value);
-      setIsAuthenticated(true);
-    } else if (value.length === 6) {
-      setShake(true);
-      setTimeout(() => {
-        setShake(false);
-        setPin('');
-      }, 600);
-    }
-  };
+  const isLoading = user === undefined;
+  const isAuthenticated = !!user;
 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
+        <Header user={user} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {!isAuthenticated ? (
+          {isLoading ? (
+            <div style={{
+              minHeight: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                border: '3px solid rgba(232,184,75,0.3)',
+                borderTopColor: '#e8b84b',
+                animation: 'spin 0.7s linear infinite',
+              }} />
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : !isAuthenticated ? (
             <div style={{
               minHeight: '100vh',
               display: 'flex',
@@ -48,16 +50,12 @@ export default function RootLayout({ children }) {
               justifyContent: 'center',
               padding: '1rem',
             }}>
-              <div
-                className="glass-card"
-                style={{
-                  width: '100%',
-                  maxWidth: '360px',
-                  padding: '2.5rem 2rem',
-                  textAlign: 'center',
-                  animation: shake ? 'shake 0.5s ease' : 'none',
-                }}
-              >
+              <div className="glass-card" style={{
+                width: '100%',
+                maxWidth: '380px',
+                padding: '2.5rem 2rem',
+                textAlign: 'center',
+              }}>
                 <div style={{
                   width: 56,
                   height: 56,
@@ -75,66 +73,42 @@ export default function RootLayout({ children }) {
                 <h2 style={{
                   color: 'rgba(255,255,255,0.9)',
                   fontWeight: 700,
-                  fontSize: '1.1rem',
-                  marginBottom: '0.35rem',
-                  letterSpacing: '0.02em',
+                  fontSize: '1.2rem',
+                  marginBottom: '0.4rem',
                 }}>
-                  Beveiligde toegang
+                  JB Autoverhuur
                 </h2>
                 <p style={{
                   color: 'rgba(255,255,255,0.4)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.85rem',
                   marginBottom: '2rem',
-                  letterSpacing: '0.01em',
+                  lineHeight: 1.5,
                 }}>
-                  Voer uw 6-cijferige pincode in
+                  Log in met je Replit account om toegang te krijgen tot het contract systeem.
                 </p>
-                <div style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  borderRadius: '10px',
-                  padding: '0.75rem 1rem',
-                }}>
-                  <input
-                    type="password"
-                    value={pin}
-                    onChange={handlePinChange}
-                    maxLength="6"
-                    autoFocus
-                    placeholder="••••••"
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      outline: 'none',
-                      color: '#e8b84b',
-                      fontSize: '2rem',
-                      letterSpacing: '0.8rem',
-                      width: '100%',
-                      textAlign: 'center',
-                      fontFamily: 'monospace',
-                    }}
-                  />
-                </div>
-                {shake && (
-                  <p style={{ color: '#e05c5c', fontSize: '0.8rem', marginTop: '0.75rem' }}>
-                    Ongeldige pincode
-                  </p>
-                )}
+                <a
+                  href="/api/login"
+                  style={{
+                    display: 'inline-block',
+                    background: 'linear-gradient(135deg, #e8b84b, #d4a033)',
+                    color: '#000',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    padding: '0.75rem 2rem',
+                    borderRadius: 10,
+                    textDecoration: 'none',
+                    letterSpacing: '0.02em',
+                    boxShadow: '0 4px 20px rgba(232,184,75,0.3)',
+                  }}
+                >
+                  Inloggen met Replit →
+                </a>
               </div>
             </div>
           ) : (
             children
           )}
         </div>
-        <style>{`
-          @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-5px); }
-            80% { transform: translateX(5px); }
-          }
-        `}</style>
       </body>
     </html>
   )
