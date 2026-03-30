@@ -2,9 +2,10 @@
   "/page": "app/page.js",
   "/createContract/page": "app/createContract/page.js",
   "/intake/[token]/page": "app/intake/[token]/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/config/route": "app/api/auth/config/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/cars/route": "app/api/cars/route.js",
-  "/api/intake/route": "app/api/intake/route.js"
+  "/api/login/route": "app/api/login/route.js",
+  "/api/intake/[token]/route": "app/api/intake/[token]/route.js",
+  "/api/cars/route": "app/api/cars/route.js"
 }

@@ -51,7 +51,7 @@ export default function CreateContract() {
   const [RetourTijd, setRetourTijd] = useState('');
   const [Ophaaldatum, setOphaaldatum] = useState(() => {
     const d = new Date();
-    return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   });
   const [OphaalTijd, setOphaalTijd] = useState('');
   const [Autogegevens, setAutogegevens] = useState('');
@@ -148,6 +148,18 @@ export default function CreateContract() {
 
   const handleClose = () => setOpen(false);
 
+  const fmtDate = (v) => {
+    if (!v) return '';
+    const [y, m, d] = v.split('-');
+    return `${d}-${m}-${y}`;
+  };
+  const fmtDateTime = (v) => {
+    if (!v) return '';
+    const [date, time] = v.split('T');
+    const [y, m, d] = date.split('-');
+    return `${d}-${m}-${y} ${time}`;
+  };
+
   const printToPdf = async () => {
     setGenerating(true);
     setOpen(true);
@@ -176,16 +188,16 @@ export default function CreateContract() {
 
     firstPage.drawText(Voornaam, { x: 135, y: 632, size: 10 })
     firstPage.drawText(Achternaam, { x: 135, y: 620, size: 10 })
-    firstPage.drawText(Geboortedatum, { x: 135, y: 608, size: 10 })
+    firstPage.drawText(fmtDate(Geboortedatum), { x: 135, y: 608, size: 10 })
     firstPage.drawText(Email, { x: 135, y: 596, size: 10 })
     firstPage.drawText(Telefoon, { x: 135, y: 584, size: 10 })
     firstPage.drawText(Straatnaam, { x: 420, y: 633, size: 10 })
     firstPage.drawText(PostcodeWoonplaats, { x: 420, y: 619, size: 10 })
     firstPage.drawText(Documentnummer, { x: 420, y: 607, size: 10 })
-    firstPage.drawText(RijbewijsAfgifteDatum, { x: 420, y: 594, size: 10 })
-    firstPage.drawText(Ophaaldatum, { x: 150, y: 550, size: 10 })
+    firstPage.drawText(fmtDate(RijbewijsAfgifteDatum), { x: 420, y: 594, size: 10 })
+    firstPage.drawText(fmtDate(Ophaaldatum), { x: 150, y: 550, size: 10 })
     firstPage.drawText(OphaalTijd, { x: 150, y: 537, size: 10 })
-    firstPage.drawText(RetourDatum, { x: 395, y: 550, size: 10 })
+    firstPage.drawText(fmtDate(RetourDatum), { x: 395, y: 550, size: 10 })
     firstPage.drawText(RetourTijd, { x: 395, y: 537, size: 10 })
     firstPage.drawText(Autogegevens, { x: 80, y: 491, size: 10 })
     firstPage.drawText(Kenteken, { x: 280, y: 670, size: 10 })
@@ -203,7 +215,7 @@ export default function CreateContract() {
     firstPage.drawText(prijsExcBtw, { x: 483, y: 375, size: 10 })
     firstPage.drawText(prijsBtw, { x: 483, y: 352, size: 10 })
     firstPage.drawText(autoPrijs, { x: 483, y: 329, size: 10 })
-    firstPage.drawText(borgVoldaanDatum, { x: 477, y: 283, size: 8 })
+    firstPage.drawText(fmtDateTime(borgVoldaanDatum), { x: 477, y: 283, size: 8 })
     firstPage.drawText(autoPrijs, { x: 483, y: 258, size: 10 })
 
     const pdfBytes = await pdfDoc.saveAsBase64()
@@ -228,7 +240,7 @@ export default function CreateContract() {
     firstPage.drawText(Straatnaam, { x: 75, y: 620, size: 10 })
     firstPage.drawText(PostcodeWoonplaats, { x: 75, y: 600, size: 10 })
     firstPage.drawText(orderNummer, { x: 155, y: 452, size: 10 })
-    firstPage.drawText(Ophaaldatum, { x: 155, y: 425, size: 10 })
+    firstPage.drawText(fmtDate(Ophaaldatum), { x: 155, y: 425, size: 10 })
     firstPage.drawText(factuurOmschrijving, { x: 80, y: 342, size: 10 })
     firstPage.drawText("1x", { x: 317, y: 342, size: 10 })
     firstPage.drawText(autoPrijs, { x: 347, y: 342, size: 10 })
@@ -382,11 +394,11 @@ export default function CreateContract() {
             <Field label="Achternaam" value={Achternaam} onChange={setAchternaam} />
             <Field label="E-mailadres" value={Email} onChange={setEmail} />
             <Field label="Telefoonnummer" value={Telefoon} onChange={setTelefoon} />
-            <Field label="Geboortedatum" value={Geboortedatum} onChange={setGeboortedatum} />
+            <Field label="Geboortedatum" value={Geboortedatum} onChange={setGeboortedatum} type="date" />
             <Field label="Straatnaam + Huisnummer" value={Straatnaam} onChange={setStraatnaam} />
             <Field label="Postcode + Woonplaats" value={PostcodeWoonplaats} onChange={setPostcodeWoonplaats} />
             <Field label="Documentnummer" value={Documentnummer} onChange={setDocumentnummer} />
-            <Field label="Rijbewijs afgiftedatum" value={RijbewijsAfgifteDatum} onChange={setRijbewijsAfgifteDatum} />
+            <Field label="Rijbewijs afgiftedatum" value={RijbewijsAfgifteDatum} onChange={setRijbewijsAfgifteDatum} type="date" />
           </div>
         </div>
 
@@ -454,16 +466,16 @@ export default function CreateContract() {
         </div>
 
         <SectionCard title="Verhuurperiode" icon="📅">
-          <Field label="Ophaaldatum" value={Ophaaldatum} onChange={setOphaaldatum} />
-          <Field label="Ophaaltijd" value={OphaalTijd} onChange={setOphaalTijd} />
-          <Field label="Retourdatum" value={RetourDatum} onChange={setRetourDatum} />
-          <Field label="Retourtijd" value={RetourTijd} onChange={setRetourTijd} />
+          <Field label="Ophaaldatum" value={Ophaaldatum} onChange={setOphaaldatum} type="date" />
+          <Field label="Ophaaltijd" value={OphaalTijd} onChange={setOphaalTijd} type="time" />
+          <Field label="Retourdatum" value={RetourDatum} onChange={setRetourDatum} type="date" />
+          <Field label="Retourtijd" value={RetourTijd} onChange={setRetourTijd} type="time" />
         </SectionCard>
 
         <SectionCard title="Tarieven & Betaling" icon="💶">
           <Field label="Tarief per dag (€)" value={TarievenAuto} onChange={setTarievenAuto} type="number" />
           <Field label="Aantal dagen" value={DagenAuto} onChange={setDagenAuto} type="number" />
-          <Field label="Borg voldaan (datum + tijd)" value={borgVoldaanDatum} onChange={setborgVoldaanDatum} />
+          <Field label="Borg voldaan (datum + tijd)" value={borgVoldaanDatum} onChange={setborgVoldaanDatum} type="datetime-local" />
           <Field label="Factuurnummer" value={orderNummer} onChange={setOrderNummer} />
         </SectionCard>
 
