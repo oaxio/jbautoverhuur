@@ -7,11 +7,12 @@ function initials(name) {
   return (words[0][0] + words[1][0]).toUpperCase();
 }
 
-export default function Header({ user }) {
+export default function Header({ user, storedBranding = {} }) {
   const activeTenant = user?.tenants?.find(t => t.id === user?.tenantId) ?? null;
-  const tenantName = activeTenant?.name ?? null;
-  const tenantColor = activeTenant?.primary_color ?? '#e8b84b';
-  const logoUrl = activeTenant?.logo_url ?? null;
+  // Use stored branding as fallback so header shows correct name/color immediately during page load
+  const tenantName  = activeTenant?.name          ?? storedBranding.name          ?? null;
+  const tenantColor = activeTenant?.primary_color ?? storedBranding.primary_color ?? '#e8b84b';
+  const logoUrl     = activeTenant?.logo_url      ?? storedBranding.logo_url      ?? null;
   const hasMultipleTenants = (user?.tenants?.length ?? 0) > 1;
 
   return (

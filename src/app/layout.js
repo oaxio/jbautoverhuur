@@ -8,6 +8,27 @@ import { usePathname } from 'next/navigation'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const BRAND_KEY = '_tb';
+
+function readStoredBranding() {
+  if (typeof window === 'undefined') return {};
+  try { return JSON.parse(localStorage.getItem(BRAND_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function saveStoredBranding(tenant) {
+  if (!tenant || typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(BRAND_KEY, JSON.stringify({
+      name:          tenant.name,
+      primary_color: tenant.primary_color,
+      bg_color:      tenant.bg_color,
+      bg_image_url:  tenant.bg_image_url,
+      logo_url:      tenant.logo_url,
+    }));
+  } catch {}
+}
+
 function NoAccessScreen({ title, message, onLogout }) {
   return (
     <div style={{
@@ -48,6 +69,8 @@ export default function RootLayout({ children }) {
   const [user, setUser] = useState(undefined);
   const [loginUrl, setLoginUrl] = useState('');
   const [domainTenant, setDomainTenant] = useState(undefined); // undefined = still loading
+  // Read cached branding from localStorage synchronously so there's no flash on navigation
+  const [storedBranding] = useState(() => readStoredBranding());
 
   useEffect(() => {
     fetch('/api/auth/user', { credentials: 'include' })
@@ -109,9 +132,16 @@ export default function RootLayout({ children }) {
   }, [isAuthenticated, hasTenants, hasTenant, isCustomDomain, isTenantSelect, isPublicPage, isAdminPage]);
 
   const activeTenant = tenants.find(t => t.id === user?.tenantId) ?? null;
-  const domainColor   = domainTenant?.primary_color  ?? activeTenant?.primary_color  ?? '#e8b84b';
-  const bgColor       = domainTenant?.bg_color       ?? activeTenant?.bg_color       ?? '#0a0a14';
-  const bgImageUrl    = domainTenant?.bg_image_url   ?? activeTenant?.bg_image_url   ?? '/background.jpg';
+
+  // Save branding to localStorage whenever activeTenant is loaded, so next navigation is instant
+  useEffect(() => {
+    if (activeTenant) saveStoredBranding(activeTenant);
+  }, [activeTenant?.id]);
+
+  // Use stored branding as immediate fallback to prevent flash of default colors/background
+  const domainColor = domainTenant?.primary_color ?? activeTenant?.primary_color ?? storedBranding.primary_color ?? '#e8b84b';
+  const bgColor     = domainTenant?.bg_color      ?? activeTenant?.bg_color      ?? storedBranding.bg_color      ?? '#0a0a14';
+  const bgImageUrl  = domainTenant?.bg_image_url  ?? activeTenant?.bg_image_url  ?? storedBranding.bg_image_url  ?? '/background.jpg';
 
   const loginScreen = (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -262,7 +292,7 @@ export default function RootLayout({ children }) {
           position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
           background: `linear-gradient(135deg, ${bgColor}d4 0%, ${bgColor}e8 100%)`,
         }} />
-        <Header user={user} />
+        <Header user={user} storedBranding={storedBranding} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           {content}
         </div>
