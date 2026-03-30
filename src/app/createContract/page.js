@@ -229,23 +229,21 @@ export default function CreateContract() {
     return `${d}-${m}-${y} ${time}`;
   };
 
-  // Zet een afbeeldings-URL om naar een data-URL via een canvas (omzeilt CORS)
-  const urlToDataUrl = (src) => new Promise((resolve) => {
-    if (!src) return resolve(null);
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      try {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth;
-        c.height = img.naturalHeight;
-        c.getContext('2d').drawImage(img, 0, 0);
-        resolve(c.toDataURL('image/png'));
-      } catch { resolve(null); }
-    };
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
+  // Haalt een afbeelding op via de server-side proxy en geeft een data-URL terug
+  const urlToDataUrl = async (src) => {
+    if (!src) return null;
+    try {
+      const res = await fetch('/api/proxy-image?url=' + encodeURIComponent(src));
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      return await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror   = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch { return null; }
+  };
 
   const printToPdf = async () => {
     setGenerating(true);
