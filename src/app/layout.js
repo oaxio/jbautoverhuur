@@ -186,8 +186,11 @@ export default function RootLayout({ children }) {
     content = children;
   } else if (isLoading) {
     content = spinner;
+  } else if (!isAuthenticated) {
+    // Always show login screen to unauthenticated users, regardless of domain
+    content = loginScreen;
   } else if (isUnknownProdDomain) {
-    // Unrecognised production domain — block entirely
+    // Logged in, but on an unrecognised production domain — block
     content = (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
         <div className="glass-card" style={{ width: '100%', maxWidth: '380px', padding: '2.5rem 2rem', textAlign: 'center' }}>
@@ -195,14 +198,27 @@ export default function RootLayout({ children }) {
           <h2 style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem' }}>
             Niet beschikbaar
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', lineHeight: 1.55, margin: 0 }}>
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', lineHeight: 1.55, marginBottom: '1.75rem' }}>
             Toegang is alleen mogelijk via jouw eigen domein.
           </p>
+          <button
+            onClick={() => { window.location.href = '/api/logout'; }}
+            style={{
+              background: 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 8,
+              color: 'rgba(255,255,255,0.55)',
+              fontSize: '0.82rem',
+              padding: '0.55rem 1.25rem',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Uitloggen
+          </button>
         </div>
       </div>
     );
-  } else if (!isAuthenticated) {
-    content = loginScreen;
   } else if (noTenantAccess) {
     // Logged in but has no tenant memberships at all
     content = (
