@@ -10,26 +10,6 @@
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-    ],
-    "/planning/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/planning/page.js"
-    ],
-    "/instellingen/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/instellingen/page.js"
-    ],
-    "/createContract/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/createContract/page.js"
-    ],
-    "/intake/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/intake/[token]/page.js"
     ]
   }
 }

@@ -70,6 +70,7 @@ export async function initDb() {
 
   await db.query(`ALTER TABLE cars ADD COLUMN IF NOT EXISTS tenant_id INT REFERENCES tenants(id)`);
   await db.query(`UPDATE cars SET tenant_id = 1 WHERE tenant_id IS NULL`);
+  await db.query(`ALTER TABLE cars ADD COLUMN IF NOT EXISTS eigen_risico TEXT DEFAULT ''`);
 
   await db.query(`
     CREATE TABLE IF NOT EXISTS reservations (

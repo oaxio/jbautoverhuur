@@ -207,6 +207,7 @@ export default function CreateContract() {
   const [bedrijfKvk, setBedrijfKvk] = useState('');
 
   const [factuurOmschrijving, setFactuurOmschrijving] = useState('Autoverhuur');
+  const [eigenRisico, setEigenRisico] = useState('');
 
   const sigCanvas = useRef({});
   const sigCanvasDamage = useRef({});
@@ -307,6 +308,7 @@ export default function CreateContract() {
         dagen:               DagenAuto,
         btwPercentage:       '21',
         borgVoldaanDatum:    borgVoldaanDatum,
+        eigenRisico:         eigenRisico,
         opmerkingen:         opmerkingen,
         handtekeningDataUrl:       sigData,
         handtekeningSchadeDataUrl: damageData,
@@ -532,6 +534,7 @@ export default function CreateContract() {
                       setKenteken(car.kenteken);
                       setKleur(car.kleur);
                       setBrandstof(car.brandstof);
+                      setEigenRisico(car.eigen_risico || '');
                     }
                   }
                 }}
@@ -564,6 +567,7 @@ export default function CreateContract() {
             <Field label="Kleur" value={Kleur} onChange={setKleur} />
             <Field label="Brandstof" value={Brandstof} onChange={setBrandstof} />
             <Field label="Begin KM-stand" value={startKmStand} onChange={setstartKmStand} />
+            <Field label="Eigen risico" value={eigenRisico} onChange={setEigenRisico} />
           </div>
 
           {cars.length === 0 && (

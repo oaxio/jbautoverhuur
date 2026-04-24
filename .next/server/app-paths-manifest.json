@@ -1,11 +1,7 @@
 {
-  "/intake/[token]/page": "app/intake/[token]/page.js",
-  "/instellingen/page": "app/instellingen/page.js",
-  "/api/tenant/settings/route": "app/api/tenant/settings/route.js",
   "/page": "app/page.js",
-  "/api/cars/route": "app/api/cars/route.js",
-  "/api/reservations/route": "app/api/reservations/route.js",
-  "/planning/page": "app/planning/page.js",
-  "/createContract/page": "app/createContract/page.js",
-  "/api/reservations/[id]/route": "app/api/reservations/[id]/route.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/auth/config/route": "app/api/auth/config/route.js",
+  "/api/tenant/by-domain/route": "app/api/tenant/by-domain/route.js"
 }

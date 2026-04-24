@@ -8,10 +8,10 @@ export async function PUT(request, { params }) {
     const tenantId = await getSessionTenantId(cookies());
     if (!tenantId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const db = getDb();
-    const { autogegevens, kenteken, kleur, brandstof } = await request.json();
+    const { autogegevens, kenteken, kleur, brandstof, eigen_risico } = await request.json();
     const result = await db.query(
-      'UPDATE cars SET autogegevens=$1, kenteken=$2, kleur=$3, brandstof=$4 WHERE id=$5 AND tenant_id=$6 RETURNING *',
-      [autogegevens, kenteken, kleur || '', brandstof || '', params.id, tenantId]
+      'UPDATE cars SET autogegevens=$1, kenteken=$2, kleur=$3, brandstof=$4, eigen_risico=$5 WHERE id=$6 AND tenant_id=$7 RETURNING *',
+      [autogegevens, kenteken, kleur || '', brandstof || '', eigen_risico || '', params.id, tenantId]
     );
     if (result.rows.length === 0) {
       return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 });

@@ -26,13 +26,13 @@ export async function POST(request) {
     if (!tenantId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     await initDb();
     const db = getDb();
-    const { autogegevens, kenteken, kleur, brandstof } = await request.json();
+    const { autogegevens, kenteken, kleur, brandstof, eigen_risico } = await request.json();
     if (!autogegevens || !kenteken) {
       return NextResponse.json({ error: 'autogegevens en kenteken zijn verplicht' }, { status: 400 });
     }
     const result = await db.query(
-      'INSERT INTO cars (tenant_id, autogegevens, kenteken, kleur, brandstof) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [tenantId, autogegevens, kenteken, kleur || '', brandstof || '']
+      'INSERT INTO cars (tenant_id, autogegevens, kenteken, kleur, brandstof, eigen_risico) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [tenantId, autogegevens, kenteken, kleur || '', brandstof || '', eigen_risico || '']
     );
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (e) {

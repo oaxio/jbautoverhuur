@@ -70,7 +70,7 @@ export async function buildContractPdf({
   ophaaldatum = '', ophaaltijd = '', retourdatum = '', retourtijd = '',
   autogegevens = '', kenteken = '', kleur = '', brandstof = '', startKmStand = '',
   tarief = '0', dagen = '0', btwPercentage = '21',
-  borgVoldaanDatum = '', opmerkingen = '',
+  borgVoldaanDatum = '', eigenRisico = '', opmerkingen = '',
   handtekeningDataUrl = null, handtekeningSchadeDataUrl = null,
   contractTerms = '',
   contractBullets = '',
@@ -294,7 +294,11 @@ export async function buildContractPdf({
   });
 
   txt(p1, 'OPMERKINGEN', M, blockTop, { size: 7.5, f: bold });
-  (opmerkingen || '').split('\n').slice(0, 6).forEach((opLine, i) => {
+  const erRegel = eigenRisico ? `Eigen risico per gebeurtenis is ${eigenRisico}` : '';
+  const opLines = [erRegel, ...(opmerkingen || '').split('\n')]
+    .filter(Boolean)
+    .slice(0, 6);
+  opLines.forEach((opLine, i) => {
     txt(p1, opLine, M, blockTop - 13 - i * 11, { size: 8 });
   });
 

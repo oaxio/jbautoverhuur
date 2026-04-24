@@ -10,10 +10,11 @@ function CarForm({ initial, onSave, onCancel }) {
   const [kenteken, setKenteken] = useState(initial?.kenteken || '');
   const [kleur, setKleur] = useState(initial?.kleur || '');
   const [brandstof, setBrandstof] = useState(initial?.brandstof || '');
+  const [eigenRisico, setEigenRisico] = useState(initial?.eigen_risico || '');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ autogegevens, kenteken, kleur, brandstof });
+    onSave({ autogegevens, kenteken, kleur, brandstof, eigen_risico: eigenRisico });
   };
 
   return (
@@ -34,6 +35,7 @@ function CarForm({ initial, onSave, onCancel }) {
           <option value=""></option>
           {BRANDSTOF_OPTIES.map(o => <option key={o} value={o}>{o}</option>)}
         </TextField>
+        <TextField variant="standard" label="Eigen risico (bijv. € 1.500,-)" value={eigenRisico} onChange={e => setEigenRisico(e.target.value)} fullWidth />
       </div>
       <div style={{ display: 'flex', gap: '0.75rem' }}>
         <button type="submit" style={{
@@ -155,6 +157,7 @@ export default function AutosPage() {
                         <span>🔑 {car.kenteken}</span>
                         {car.kleur && <span>🎨 {car.kleur}</span>}
                         {car.brandstof && <span>⛽ {car.brandstof}</span>}
+                        {car.eigen_risico && <span>🛡️ ER: {car.eigen_risico}</span>}
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
